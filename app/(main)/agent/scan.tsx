@@ -19,20 +19,6 @@ export default function AgentScanScreen() {
   const [selectedCurrency, setSelectedCurrency] = useState<'NGN' | 'USD' | 'EUR'>('NGN');
   const [scanResult, setScanResult] = useState<{id: string, name: string, balance: number} | null>(null);
 
-  // Dashboard stats
-  const todayStats = {
-    totalTransactions: 47,
-    totalAmount: 2850.00,
-    successRate: 96.8,
-    activeCards: 23
-  };
-
-  const recentTransactions = [
-    { id: '1', name: 'Alex Nexa', amount: 150.00, type: 'topup', time: '2 min ago' },
-    { id: '2', name: 'Sarah Miller', amount: 75.50, type: 'payment', time: '8 min ago' },
-    { id: '3', name: 'John Peterson', amount: 200.00, type: 'topup', time: '15 min ago' },
-  ];
-
   // Animation values
   const pulseScale = useSharedValue(1);
   const pulseOpacity = useSharedValue(0);
@@ -479,13 +465,19 @@ export default function AgentScanScreen() {
           )}
 
           {!scanResult && !isScanning && (
-            <View className="mt-8 bg-blue-50/50 p-5 rounded-2xl border border-blue-100/50 flex-row items-start">
-               <View className="bg-blue-600/10 p-2 rounded-xl mr-4">
-                  <ShieldCheck size={20} color={primaryNavy} />
+            <View className="mt-8 bg-blue-50/50 p-8 rounded-2xl border border-blue-100/50 flex-row items-start">
+               <View className="bg-blue-600/10 p-3 rounded-xl mr-6">
+                  <ShieldCheck size={28} color={primaryNavy} />
                </View>
                <View className="flex-1">
-                  <Text style={{ color: primaryNavy }} className="font-bold text-sm">Nexa Security</Text>
-                  <Text className="text-slate-500 text-xs mt-1 leading-4">Hold your RFID card close to the back of the device for high-speed synchronization.</Text>
+                  <Text style={{ 
+                    color: primaryNavy,
+                    fontFamily: 'Poppins_800ExtraBold'
+                  }} className="text-lg mb-2">Nexa Security</Text>
+                  <Text style={{ 
+                    color: '#64748b',
+                    fontFamily: 'Poppins_500Medium'
+                  }} className="text-base leading-6">Hold your RFID card close to the back of the device for high-speed synchronization.</Text>
                </View>
             </View>
           )}
