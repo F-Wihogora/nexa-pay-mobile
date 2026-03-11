@@ -106,45 +106,105 @@ export default function AgentScanScreen() {
         <NexaCard />
         
         <View className="px-6 mt-10">
-          <View className="flex-row justify-between items-center mb-8">
-             <View>
-                <Text style={{ color: primaryNavy }} className="text-2xl font-black tracking-tighter">Nexa Reader</Text>
-                <Text className="text-slate-400 font-bold text-xs uppercase tracking-widest mt-1">
-                  {isScanning ? 'Establishing Connection...' : 'Ready for connection'}
-                </Text>
-             </View>
-             <View className={`${isScanning ? 'bg-blue-50 border-blue-100' : 'bg-green-50 border-green-100'} px-3 py-1 rounded-full border flex-row items-center`}>
-                <View className={`w-2 h-2 rounded-full ${isScanning ? 'bg-blue-500' : 'bg-green-500'} mr-2`} />
-                <Text className={`${isScanning ? 'text-blue-700' : 'text-green-700'} text-[10px] font-bold uppercase`}>
-                  {isScanning ? 'Pairing' : 'Active'}
-                </Text>
-             </View>
+          {/* Currency Selection Section */}
+          <View className="mb-8">
+            <Text style={{ color: primaryNavy }} className="text-xl font-black mb-4">Currency</Text>
+            <View className="flex-row space-x-3">
+              <Pressable className="bg-emerald-600 px-6 py-3 rounded-2xl">
+                <Text className="text-white font-bold text-sm">NGN</Text>
+              </Pressable>
+              <Pressable className="bg-slate-100 px-6 py-3 rounded-2xl border border-slate-200">
+                <Text className="text-slate-600 font-bold text-sm">USD</Text>
+              </Pressable>
+              <Pressable className="bg-slate-100 px-6 py-3 rounded-2xl border border-slate-200">
+                <Text className="text-slate-600 font-bold text-sm">EUR</Text>
+              </Pressable>
+            </View>
           </View>
-          
-          <View className="items-center justify-center py-4">
-            <Pressable 
-              onPress={handleStartScan}
-              disabled={isScanning}
-              className="items-center justify-center"
-            >
-              {/* Pulse effect */}
-              <Animated.View 
-                style={[
-                  { position: 'absolute', width: 140, height: 140, borderRadius: 70, backgroundColor: primaryNavy },
-                  animatedPulseStyle
-                ]} 
-              />
-              
-              <View 
-                style={{ backgroundColor: isScanning ? primaryNavy : 'white' }}
-                className={`w-32 h-32 rounded-3xl items-center justify-center border-2 ${isScanning ? 'border-primaryNavy' : 'border-slate-100 shadow-xl shadow-blue-900/5'}`}
-              >
-                <Maximize size={40} color={isScanning ? "white" : primaryNavy} />
-                <Text className={`font-black text-[10px] mt-2 uppercase tracking-widest ${isScanning ? 'text-white' : 'text-slate-400'}`}>
-                  {isScanning ? 'Syncing' : 'Tap to scan'}
-                </Text>
+
+          {/* Nexa Reader Section */}
+          <View className="mb-8">
+            <Text style={{ color: primaryNavy }} className="text-xl font-black mb-6">Nexa Reader</Text>
+            
+            <View className="bg-slate-50 rounded-3xl p-8 border border-slate-100">
+              <View className="flex-row justify-between items-start mb-6">
+                <View className="flex-1">
+                  {/* Card Scanning Animation Area */}
+                  <View className="items-center justify-center py-8">
+                    <Pressable 
+                      onPress={handleStartScan}
+                      disabled={isScanning}
+                      className="items-center justify-center"
+                    >
+                      {/* Pulse effect */}
+                      <Animated.View 
+                        style={[
+                          { position: 'absolute', width: 160, height: 100, borderRadius: 16, backgroundColor: primaryNavy },
+                          animatedPulseStyle
+                        ]} 
+                      />
+                      
+                      {/* Card Visual */}
+                      <View 
+                        style={{ 
+                          backgroundColor: isScanning ? primaryNavy : 'white',
+                          width: 140,
+                          height: 88,
+                          borderRadius: 12,
+                          shadowColor: '#000',
+                          shadowOffset: { width: 0, height: 4 },
+                          shadowOpacity: 0.1,
+                          shadowRadius: 8,
+                          elevation: 4
+                        }}
+                        className={`items-center justify-center border-2 ${isScanning ? 'border-blue-400' : 'border-slate-200'} relative`}
+                      >
+                        {/* Card chip */}
+                        <View 
+                          style={{ 
+                            backgroundColor: isScanning ? '#FFD700' : '#E5E7EB',
+                            width: 24,
+                            height: 18,
+                            borderRadius: 4,
+                            position: 'absolute',
+                            top: 12,
+                            left: 12
+                          }}
+                        />
+                        
+                        {/* Card lines */}
+                        <View className="absolute bottom-3 left-3 right-3">
+                          <View className={`h-1 rounded-full mb-1 ${isScanning ? 'bg-white/30' : 'bg-slate-300'}`} />
+                          <View className={`h-1 rounded-full w-3/4 ${isScanning ? 'bg-white/20' : 'bg-slate-200'}`} />
+                        </View>
+                        
+                        {/* Scanning indicator */}
+                        {isScanning && (
+                          <View className="absolute inset-0 items-center justify-center">
+                            <View className="w-2 h-2 bg-white rounded-full animate-pulse" />
+                          </View>
+                        )}
+                      </View>
+                    </Pressable>
+                    
+                    <Text className={`font-bold text-sm mt-4 ${isScanning ? 'text-blue-600' : 'text-slate-500'}`}>
+                      {isScanning ? 'Scanning the card...' : 'Tap to scan card'}
+                    </Text>
+                    
+                    {isScanning && (
+                      <Text className="text-blue-500 text-xs mt-1 animate-pulse">
+                        Hold card steady
+                      </Text>
+                    )}
+                  </View>
+                </View>
+                
+                {/* Copy QR Code Button (styled as scan card button) */}
+                <Pressable className="bg-slate-100 px-4 py-2 rounded-xl border border-slate-200">
+                  <Text className="text-slate-600 font-medium text-sm">Scan card</Text>
+                </Pressable>
               </View>
-            </Pressable>
+            </View>
           </View>
 
           {/* Scan Result Card */}
