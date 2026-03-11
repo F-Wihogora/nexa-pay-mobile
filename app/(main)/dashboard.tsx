@@ -10,9 +10,9 @@ export default function DashboardLauncher() {
     const userRole = 'agent'; 
     
     if (userRole === 'agent') {
-      router.replace('/(main)/agent/scan');
-    } else {
-      router.replace('/(main)/salesperson/scan');
+      router.replace('/agent/scan');
+    } else if (userRole === 'salesperson') {
+      router.replace('/salesperson/dashboard');
     }
   }, []);
 

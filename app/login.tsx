@@ -3,8 +3,11 @@ import { useRouter } from 'expo-router';
 import { Logo } from '../components/Logo';
 import { Mail, Lock, ChevronLeft, ArrowRight } from 'lucide-react-native';
 
+import { useState } from 'react';
+
 export default function LoginScreen() {
   const router = useRouter();
+  const [role, setRole] = useState<'agent' | 'salesperson'>('agent');
   const primaryNavy = "#002B5B";
 
   return (
@@ -60,8 +63,32 @@ export default function LoginScreen() {
               </Pressable>
             </View>
 
+            <View className="mt-4">
+              <Text className="text-slate-400 text-sm font-bold mb-3 ml-1 uppercase tracking-widest">Select Portal</Text>
+              <View className="flex-row space-x-4">
+                <Pressable 
+                  onPress={() => setRole('agent')}
+                  className={`flex-1 h-14 rounded-2xl border-2 items-center justify-center flex-row ${role === 'agent' ? 'border-blue-900 bg-blue-50' : 'bg-slate-50 border-slate-100'}`}
+                >
+                  <Text style={{ color: primaryNavy }} className={role === 'agent' ? 'font-black' : 'font-bold opacity-40'}>Agent</Text>
+                </Pressable>
+                <Pressable 
+                  onPress={() => setRole('salesperson')}
+                  className={`flex-1 h-14 rounded-2xl border-2 items-center justify-center flex-row ${role === 'salesperson' ? 'border-blue-900 bg-blue-50' : 'bg-slate-50 border-slate-100'} ml-4`}
+                >
+                  <Text style={{ color: primaryNavy }} className={role === 'salesperson' ? 'font-black' : 'font-bold opacity-40'}>Sales Pro</Text>
+                </Pressable>
+              </View>
+            </View>
+
             <Pressable 
-              onPress={() => router.replace('/(main)/dashboard')} 
+              onPress={() => {
+                if (role === 'agent') {
+                  router.replace('/(main)/agent/scan');
+                } else {
+                  router.replace('/(main)/salesperson/dashboard');
+                }
+              }} 
               style={{ backgroundColor: primaryNavy, transform: [{ skewX: '-10deg' }] }}
               className="h-16 rounded-xl items-center justify-center flex-row shadow-2xl shadow-blue-900/20 active:opacity-90 mt-10 overflow-hidden"
             >

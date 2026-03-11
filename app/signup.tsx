@@ -90,7 +90,13 @@ export default function SignupScreen() {
             </View>
 
             <Pressable 
-              onPress={() => router.replace('/(main)/dashboard')} 
+              onPress={() => {
+                if (role === 'agent') {
+                  router.replace('/(main)/agent/scan');
+                } else {
+                  router.replace('/(main)/salesperson/dashboard');
+                }
+              }} 
               style={{ backgroundColor: primaryNavy, transform: [{ skewX: '-10deg' }] }}
               className="h-16 rounded-xl items-center justify-center flex-row shadow-2xl shadow-blue-900/20 active:opacity-90 mt-10 overflow-hidden"
             >
