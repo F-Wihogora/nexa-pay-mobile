@@ -1,6 +1,6 @@
 import { View, Text, ScrollView, Pressable, SafeAreaView } from 'react-native';
 import { useRouter } from 'expo-router';
-import { Maximize, Wifi, Cpu, ShieldCheck, CheckCircle, ChevronRight } from 'lucide-react-native';
+import { Maximize, Wifi, Cpu, ShieldCheck, CheckCircle, ChevronRight, TrendingUp, Users, Zap, Clock, BarChart3, Activity, DollarSign, CreditCard, ArrowUpRight, ArrowDownRight } from 'lucide-react-native';
 import { useState, useEffect } from 'react';
 import Animated, { 
   useSharedValue, 
@@ -18,6 +18,20 @@ export default function AgentScanScreen() {
   const [isScanning, setIsScanning] = useState(false);
   const [selectedCurrency, setSelectedCurrency] = useState<'NGN' | 'USD' | 'EUR'>('NGN');
   const [scanResult, setScanResult] = useState<{id: string, name: string, balance: number} | null>(null);
+
+  // Dashboard stats
+  const todayStats = {
+    totalTransactions: 47,
+    totalAmount: 2850.00,
+    successRate: 96.8,
+    activeCards: 23
+  };
+
+  const recentTransactions = [
+    { id: '1', name: 'Alex Nexa', amount: 150.00, type: 'topup', time: '2 min ago' },
+    { id: '2', name: 'Sarah Miller', amount: 75.50, type: 'payment', time: '8 min ago' },
+    { id: '3', name: 'John Peterson', amount: 200.00, type: 'topup', time: '15 min ago' },
+  ];
 
   // Animation values
   const pulseScale = useSharedValue(1);
@@ -67,7 +81,7 @@ export default function AgentScanScreen() {
   const NexaCard = () => (
     <View className="px-4 mt-2">
       <View 
-        style={{ height: 210, backgroundColor: primaryNavy, borderRadius: 24, padding: 30 }} 
+        style={{ height: 280, backgroundColor: primaryNavy, borderRadius: 16, padding: 30 }} 
         className="shadow-2xl shadow-blue-900/20 border border-blue-100 relative overflow-hidden"
       >
         <View style={{ backgroundColor: 'rgba(255,255,255,0.1)', width: 200, height: 200, borderRadius: 100, position: 'absolute', top: -100, right: -100 }} />
@@ -122,6 +136,92 @@ export default function AgentScanScreen() {
         <NexaCard />
         
         <View className="px-6 mt-10">
+          {/* Quick Stats Dashboard */}
+          <View className="mb-8">
+            <Text style={{ color: primaryNavy, fontFamily: 'Poppins_800ExtraBold' }} className="text-2xl mb-6">Today's Overview</Text>
+            
+            <View className="flex-row flex-wrap justify-between mb-4">
+              <View className="w-[48%] bg-white rounded-2xl p-4 border border-slate-100 shadow-sm mb-4">
+                <View className="flex-row items-center justify-between mb-3">
+                  <View className="bg-blue-50 p-2 rounded-xl">
+                    <TrendingUp size={20} color={primaryNavy} />
+                  </View>
+                  <Text style={{ color: '#10b981', fontFamily: 'Poppins_600SemiBold' }} className="text-xs">+12%</Text>
+                </View>
+                <Text style={{ color: primaryNavy, fontFamily: 'Poppins_900Black' }} className="text-2xl">{todayStats.totalTransactions}</Text>
+                <Text style={{ color: '#64748b', fontFamily: 'Poppins_500Medium' }} className="text-xs">Transactions</Text>
+              </View>
+
+              <View className="w-[48%] bg-white rounded-2xl p-4 border border-slate-100 shadow-sm mb-4">
+                <View className="flex-row items-center justify-between mb-3">
+                  <View className="bg-green-50 p-2 rounded-xl">
+                    <DollarSign size={20} color="#10b981" />
+                  </View>
+                  <Text style={{ color: '#10b981', fontFamily: 'Poppins_600SemiBold' }} className="text-xs">+8%</Text>
+                </View>
+                <Text style={{ color: primaryNavy, fontFamily: 'Poppins_900Black' }} className="text-2xl">${todayStats.totalAmount.toLocaleString()}</Text>
+                <Text style={{ color: '#64748b', fontFamily: 'Poppins_500Medium' }} className="text-xs">Total Volume</Text>
+              </View>
+
+              <View className="w-[48%] bg-white rounded-2xl p-4 border border-slate-100 shadow-sm">
+                <View className="flex-row items-center justify-between mb-3">
+                  <View className="bg-purple-50 p-2 rounded-xl">
+                    <Activity size={20} color="#8b5cf6" />
+                  </View>
+                  <Text style={{ color: '#10b981', fontFamily: 'Poppins_600SemiBold' }} className="text-xs">+2%</Text>
+                </View>
+                <Text style={{ color: primaryNavy, fontFamily: 'Poppins_900Black' }} className="text-2xl">{todayStats.successRate}%</Text>
+                <Text style={{ color: '#64748b', fontFamily: 'Poppins_500Medium' }} className="text-xs">Success Rate</Text>
+              </View>
+
+              <View className="w-[48%] bg-white rounded-2xl p-4 border border-slate-100 shadow-sm">
+                <View className="flex-row items-center justify-between mb-3">
+                  <View className="bg-orange-50 p-2 rounded-xl">
+                    <CreditCard size={20} color="#f97316" />
+                  </View>
+                  <Text style={{ color: '#10b981', fontFamily: 'Poppins_600SemiBold' }} className="text-xs">+5</Text>
+                </View>
+                <Text style={{ color: primaryNavy, fontFamily: 'Poppins_900Black' }} className="text-2xl">{todayStats.activeCards}</Text>
+                <Text style={{ color: '#64748b', fontFamily: 'Poppins_500Medium' }} className="text-xs">Active Cards</Text>
+              </View>
+            </View>
+          </View>
+
+          {/* Recent Activity */}
+          <View className="mb-8">
+            <View className="flex-row justify-between items-center mb-4">
+              <Text style={{ color: primaryNavy, fontFamily: 'Poppins_800ExtraBold' }} className="text-xl">Recent Activity</Text>
+              <Pressable onPress={() => router.push('/agent/transactions')}>
+                <Text style={{ color: primaryNavy, fontFamily: 'Poppins_600SemiBold' }} className="text-sm">View All</Text>
+              </Pressable>
+            </View>
+            
+            <View className="bg-white rounded-2xl border border-slate-100 shadow-sm overflow-hidden">
+              {recentTransactions.map((transaction, index) => (
+                <View key={transaction.id} className={`p-4 flex-row items-center justify-between ${index !== recentTransactions.length - 1 ? 'border-b border-slate-50' : ''}`}>
+                  <View className="flex-row items-center flex-1">
+                    <View className={`w-10 h-10 rounded-xl items-center justify-center mr-3 ${transaction.type === 'topup' ? 'bg-green-50' : 'bg-blue-50'}`}>
+                      {transaction.type === 'topup' ? 
+                        <ArrowUpRight size={18} color="#10b981" /> : 
+                        <ArrowDownRight size={18} color={primaryNavy} />
+                      }
+                    </View>
+                    <View>
+                      <Text style={{ color: primaryNavy, fontFamily: 'Poppins_700Bold' }} className="text-sm">{transaction.name}</Text>
+                      <Text style={{ color: '#94a3b8', fontFamily: 'Poppins_500Medium' }} className="text-xs">{transaction.time}</Text>
+                    </View>
+                  </View>
+                  <Text style={{ 
+                    color: transaction.type === 'topup' ? '#10b981' : primaryNavy,
+                    fontFamily: 'Poppins_700Bold'
+                  }} className="text-sm">
+                    {transaction.type === 'topup' ? '+' : '-'}${transaction.amount}
+                  </Text>
+                </View>
+              ))}
+            </View>
+          </View>
+
           {/* Currency Selection Section */}
           <View className="mb-8">
             <Text style={{ color: primaryNavy, fontFamily: 'Poppins_800ExtraBold' }} className="text-2xl mb-6">Currency</Text>
@@ -155,6 +255,47 @@ export default function AgentScanScreen() {
                   color: selectedCurrency === 'EUR' ? 'white' : '#64748b',
                   fontFamily: 'Poppins_700Bold'
                 }} className="text-lg text-center">EUR</Text>
+              </Pressable>
+            </View>
+          </View>
+
+          {/* Quick Actions */}
+          <View className="mb-8">
+            <Text style={{ color: primaryNavy, fontFamily: 'Poppins_800ExtraBold' }} className="text-xl mb-4">Quick Actions</Text>
+            
+            <View className="flex-row justify-between">
+              <Pressable 
+                onPress={() => router.push('/agent/topup')}
+                className="flex-1 bg-gradient-to-br from-blue-500 to-blue-600 rounded-2xl p-4 mr-2 shadow-lg"
+                style={{ backgroundColor: primaryNavy }}
+              >
+                <View className="bg-white/20 p-2 rounded-xl mb-3 self-start">
+                  <Zap size={20} color="white" />
+                </View>
+                <Text style={{ color: 'white', fontFamily: 'Poppins_700Bold' }} className="text-sm">Top-up</Text>
+                <Text style={{ color: 'rgba(255,255,255,0.8)', fontFamily: 'Poppins_500Medium' }} className="text-xs">Add funds</Text>
+              </Pressable>
+
+              <Pressable 
+                onPress={() => router.push('/agent/transactions')}
+                className="flex-1 bg-white rounded-2xl p-4 mx-1 border border-slate-100 shadow-sm"
+              >
+                <View className="bg-slate-50 p-2 rounded-xl mb-3 self-start">
+                  <BarChart3 size={20} color={primaryNavy} />
+                </View>
+                <Text style={{ color: primaryNavy, fontFamily: 'Poppins_700Bold' }} className="text-sm">History</Text>
+                <Text style={{ color: '#64748b', fontFamily: 'Poppins_500Medium' }} className="text-xs">View all</Text>
+              </Pressable>
+
+              <Pressable 
+                onPress={() => router.push('/agent/settings')}
+                className="flex-1 bg-white rounded-2xl p-4 ml-2 border border-slate-100 shadow-sm"
+              >
+                <View className="bg-slate-50 p-2 rounded-xl mb-3 self-start">
+                  <Users size={20} color={primaryNavy} />
+                </View>
+                <Text style={{ color: primaryNavy, fontFamily: 'Poppins_700Bold' }} className="text-sm">Settings</Text>
+                <Text style={{ color: '#64748b', fontFamily: 'Poppins_500Medium' }} className="text-xs">Configure</Text>
               </Pressable>
             </View>
           </View>
