@@ -30,20 +30,30 @@ export default function LoginScreen() {
             {/* Header section with Logo */}
             <View className="mb-10 items-center">
               <Logo size={60} showText={false} inverted={true} />
-              <Text className="text-white text-4xl font-black mt-6 tracking-tighter">Sign In</Text>
-              <Text className="text-white/60 text-lg mt-1 font-medium">Access your portal</Text>
+              <Text style={{ 
+                color: 'white',
+                fontFamily: 'Poppins_900Black'
+              }} className="text-4xl mt-6 tracking-tighter">Sign In</Text>
+              <Text style={{ 
+                color: 'rgba(255,255,255,0.6)',
+                fontFamily: 'Poppins_500Medium'
+              }} className="text-lg mt-1">Access your portal</Text>
             </View>
 
             {/* Form Section */}
             <View className="space-y-6">
               <View>
-                <Text className="text-white/40 text-[10px] font-black mb-3 ml-1 uppercase tracking-[2px]">Email Address</Text>
+                <Text style={{ 
+                  color: 'rgba(255,255,255,0.4)',
+                  fontFamily: 'Poppins_800ExtraBold'
+                }} className="text-[10px] mb-3 ml-1 uppercase tracking-[2px]">Email Address</Text>
                 <View className="flex-row items-center bg-white rounded-2xl px-6 h-20 shadow-lg shadow-black/20">
                   <Mail size={20} color={primaryNavy} opacity={0.4} className="mr-3" />
                   <TextInput 
                     placeholder="name@example.com"
                     placeholderTextColor="#94a3b8"
-                    className="flex-1 text-slate-900 text-lg font-bold h-full"
+                    style={{ fontFamily: 'Poppins_700Bold' }}
+                    className="flex-1 text-slate-900 text-lg h-full"
                     keyboardType="email-address"
                     autoCapitalize="none"
                   />

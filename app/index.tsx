@@ -26,20 +26,23 @@ export default function WelcomeScreen() {
               onPress={() => router.push('/signup')}
               className="bg-white h-16 rounded-2xl items-center justify-center shadow-xl shadow-black/20 active:bg-slate-50"
             >
-              <Text style={{ color: primaryNavy }} className="text-lg font-bold">Register</Text>
+              <Text style={{ color: primaryNavy, fontFamily: 'Poppins_700Bold' }} className="text-lg">Register</Text>
             </Pressable>
             
             <Pressable 
               onPress={() => router.push('/login')}
               className="bg-white h-16 rounded-2xl items-center justify-center shadow-xl shadow-black/20 active:bg-slate-50 mt-4"
             >
-              <Text style={{ color: primaryNavy }} className="text-lg font-bold">Login</Text>
+              <Text style={{ color: primaryNavy, fontFamily: 'Poppins_700Bold' }} className="text-lg">Login</Text>
             </Pressable>
           </View>
 
           {/* Footer */}
           <View className="items-center">
-            <Text className="text-white/30 text-xs font-medium tracking-widest">Nexa Pay v1.0</Text>
+            <Text style={{ 
+              color: 'rgba(255,255,255,0.3)',
+              fontFamily: 'Poppins_500Medium'
+            }} className="text-xs tracking-widest">Nexa Pay v1.0</Text>
           </View>
 
         </View>
