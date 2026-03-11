@@ -415,22 +415,26 @@ const AgentSettingsScreen = () => {
                 ]
               );
             }}
-            className="flex-row items-center justify-center bg-gradient-to-r from-red-500 to-red-600 p-6 rounded-2xl mt-8 shadow-lg active:from-red-600 active:to-red-700"
+            className="flex-row items-center justify-center bg-white border-2 border-red-200 p-6 rounded-2xl mt-8 shadow-sm active:bg-red-50"
             style={{ 
-              backgroundColor: '#dc2626',
-              height: 64,
-              shadowColor: '#dc2626',
-              shadowOffset: { width: 0, height: 4 },
-              shadowOpacity: 0.3,
-              shadowRadius: 8,
-              elevation: 8
+              height: 80,
+              borderColor: '#fecaca'
             }}
           >
-            <LogOut size={22} color="white" />
-            <Text style={{ 
-              color: 'white',
-              fontFamily: 'Poppins_700Bold'
-            }} className="ml-3 text-lg">Sign Out</Text>
+            <View className="bg-red-100 p-3 rounded-xl mr-4">
+              <LogOut size={24} color="#dc2626" />
+            </View>
+            <View className="flex-1">
+              <Text style={{ 
+                color: '#dc2626',
+                fontFamily: 'Poppins_800ExtraBold'
+              }} className="text-lg">Sign Out</Text>
+              <Text style={{ 
+                color: '#ef4444',
+                fontFamily: 'Poppins_500Medium'
+              }} className="text-sm">End your current session</Text>
+            </View>
+            <ChevronRight size={20} color="#dc2626" />
           </Pressable>
         </View>
         <View className="h-40" />
