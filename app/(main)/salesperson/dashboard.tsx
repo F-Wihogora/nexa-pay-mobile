@@ -1,142 +1,299 @@
-import { View, Text, ScrollView, SafeAreaView, Pressable, TextInput, Platform } from 'react-native';
-import { ShoppingBag, Zap, History, LayoutGrid, Bell, Search, MoreVertical, Layers, PieChart, BarChart3, Target } from 'lucide-react-native';
+import { View, Text, ScrollView, SafeAreaView, Pressable, TextInput, Platform, Image } from 'react-native';
+import { ShoppingBag, Zap, History, LayoutGrid, Bell, Search, MoreVertical, Layers, PieChart, BarChart3, Target, MapPin, Filter, Clock, Shirt, Package, Gem, Briefcase, ChevronDown } from 'lucide-react-native';
 import { useRouter } from 'expo-router';
+import { useState } from 'react';
 import { SalespersonBottomNav } from '../../../components/SalespersonBottomNav';
 
 export default function SalespersonDashboard() {
   const router = useRouter();
   const primaryNavy = "#002B5B";
   const accentBlue = "#3b82f6";
-  const lightBlue = "#f1f5f9";
+  const [selectedFilter, setSelectedFilter] = useState('Newest');
+  const [selectedLocation, setSelectedLocation] = useState('New York, USA');
 
-  const metrics = [
-    { 
-      date: 'March 11, 2026', 
-      title: 'Total Revenue', 
-      category: 'Target: $5,000', 
-      progress: 0.75, 
-      icon: PieChart, 
-      dark: true 
+  const locations = ['New York, USA', 'Los Angeles, USA', 'Chicago, USA', 'Miami, USA'];
+
+  const categories = [
+    { name: 'T-Shirt', icon: Shirt, color: primaryNavy },
+    { name: 'Pants', icon: Package, color: primaryNavy },
+    { name: 'Dress', icon: Gem, color: primaryNavy },
+    { name: 'Jacket', icon: Briefcase, color: primaryNavy },
+  ];
+
+  const filters = ['All', 'Newest', 'Popular', 'Men', 'Women'];
+
+  const flashSaleProducts = [
+    {
+      id: 1,
+      name: 'Summer Collection Dress',
+      price: '$89.99',
+      originalPrice: '$149.99',
+      discount: '40%',
+      image: 'https://images.unsplash.com/photo-1515372039744-b8f02a3ae446?w=400&h=400&fit=crop&crop=face',
+      category: 'Women'
     },
-    { 
-      date: 'March 11, 2026', 
-      title: 'Sales Count', 
-      category: 'Target: 50', 
-      progress: 0.45, 
-      icon: BarChart3, 
-      dark: false 
-    },
-    { 
-      date: 'March 11, 2026', 
-      title: 'Top Product', 
-      category: 'Nexa Pro Card', 
-      progress: 0.90, 
-      icon: Target, 
-      dark: false 
-    },
-    { 
-      date: 'March 11, 2026', 
-      title: 'Avg. Rating', 
-      category: 'Goal: 4.8', 
-      progress: 0.60, 
-      icon: Layers, 
-      dark: false 
+    {
+      id: 2,
+      name: 'Casual Men\'s Shirt',
+      price: '$45.99',
+      originalPrice: '$79.99',
+      discount: '42%',
+      image: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=400&fit=crop&crop=face',
+      category: 'Men'
     },
   ];
 
+  const handleLocationSelect = (location: string) => {
+    setSelectedLocation(location);
+  };
+
+  const handleCategoryPress = (categoryName: string) => {
+    router.push({
+      pathname: '/(main)/salesperson/products',
+      params: { category: categoryName }
+    });
+  };
+
+  const handleFilterPress = (filter: string) => {
+    setSelectedFilter(filter);
+    // Filter products based on selection
+  };
+
+  const handleProductPress = (productId: number) => {
+    router.push({
+      pathname: '/(main)/salesperson/products',
+      params: { productId: productId.toString() }
+    });
+  };
+
   return (
-    <SafeAreaView className="flex-1 bg-slate-50/50">
-      {/* Custom Header */}
-      <View style={{ paddingTop: Platform.OS === 'android' ? 40 : 10 }} className="px-6 pb-4 flex-row justify-between items-center bg-white">
-        <Pressable className="w-10 h-10 items-center justify-center">
-          <LayoutGrid size={24} color={primaryNavy} />
-        </Pressable>
-        <Text style={{ color: primaryNavy }} className="text-lg font-bold">Home</Text>
-        <Pressable className="w-10 h-10 items-center justify-center">
+    <SafeAreaView className="flex-1 bg-white">
+      {/* Header with Location */}
+      <View style={{ paddingTop: Platform.OS === 'android' ? 40 : 10 }} className="px-6 pb-4 bg-white">
+        <View className="flex-row justify-between items-center mb-4">
+          <View className="flex-row items-center">
+            <Text style={{ 
+              color: '#64748b',
+              fontFamily: 'Poppins_500Medium'
+            }} className="text-sm mr-2">Location</Text>
+          </View>
           <View className="relative">
-            <Bell size={24} color={primaryNavy} />
-            <View className="absolute top-0 right-0 w-2 h-2 bg-red-500 rounded-full border border-white" />
-          </View>
-        </Pressable>
-      </View>
-
-      <ScrollView className="flex-1 px-6" showsVerticalScrollIndicator={false}>
-        {/* Greeting */}
-        <View className="mt-8 mb-6">
-          <Text style={{ color: primaryNavy }} className="text-3xl font-bold">Hi Sarah!</Text>
-          <Text className="text-slate-400 text-lg">Good Morning</Text>
-        </View>
-
-        {/* Search Bar */}
-        <View className="flex-row items-center bg-white border border-slate-100 px-6 py-4 rounded-full mb-8 shadow-sm shadow-slate-200/50">
-          <Search size={20} color="#94a3b8" />
-          <TextInput 
-            placeholder="Search products or sales..." 
-            className="ml-3 flex-1 text-slate-600 text-base"
-            placeholderTextColor="#94a3b8"
-          />
-        </View>
-
-        {/* Welcome Banner */}
-        <View style={{ borderColor: primaryNavy + '20' }} className="border rounded-3xl p-6 mb-8 flex-row items-center justify-between overflow-hidden">
-          <View className="flex-1 pr-4">
-            <Text style={{ color: primaryNavy }} className="text-xl font-bold mb-1">Welcome!</Text>
-            <Text className="text-slate-500 text-sm leading-5">Track your daily sales and performance metrics here.</Text>
-          </View>
-          <View className="bg-slate-50 w-28 h-20 rounded-xl items-center justify-center">
-             <Target size={40} color={primaryNavy} opacity={0.2} />
+            <View 
+              style={{ backgroundColor: primaryNavy, width: 40, height: 40, borderRadius: 20 }} 
+              className="items-center justify-center"
+            >
+              <Text style={{ 
+                color: 'white',
+                fontFamily: 'Poppins_900Black'
+              }} className="text-sm">SN</Text>
+            </View>
           </View>
         </View>
-
-        {/* Section Title */}
-        <View className="flex-row justify-between items-center mb-6">
-          <Text style={{ color: primaryNavy }} className="text-xl font-bold">Today's Performance</Text>
-          <Pressable>
-            <Text className="text-slate-400 font-medium">view all</Text>
+        
+        <View className="flex-row items-center mb-4">
+          <Pressable 
+            onPress={() => {
+              // Show location picker
+            }}
+            className="flex-row items-center"
+          >
+            <MapPin size={18} color={accentBlue} />
+            <Text style={{ 
+              color: primaryNavy,
+              fontFamily: 'Poppins_700Bold'
+            }} className="text-lg ml-2">{selectedLocation}</Text>
+            <ChevronDown size={18} color={primaryNavy} className="ml-1" />
           </Pressable>
         </View>
 
-        {/* Metrics Grid */}
-        <View className="flex-row flex-wrap justify-between">
-          {metrics.map((item, index) => (
-            <View key={index} className="w-[48%] mb-4">
-              <View 
-                style={{ backgroundColor: item.dark ? primaryNavy : '#f8fafc' }} 
-                className={`p-4 h-44 rounded-3xl justify-between ${!item.dark && 'border border-slate-100'}`}
+        {/* Search Bar */}
+        <View className="flex-row items-center">
+          <View className="flex-1 flex-row items-center bg-slate-50 border border-slate-200 px-4 py-3 rounded-2xl mr-3">
+            <Search size={20} color="#94a3b8" />
+            <TextInput 
+              placeholder="Search" 
+              className="ml-3 flex-1 text-slate-600 text-base"
+              placeholderTextColor="#94a3b8"
+              style={{ fontFamily: 'Poppins_500Medium' }}
+            />
+          </View>
+          <Pressable 
+            style={{ backgroundColor: accentBlue }}
+            className="w-14 h-14 rounded-2xl items-center justify-center shadow-lg"
+          >
+            <Filter size={22} color="white" />
+          </Pressable>
+        </View>
+      </View>
+
+      <ScrollView className="flex-1" showsVerticalScrollIndicator={false}>
+        {/* Promotional Banner */}
+        <View className="px-6 mb-8">
+          <Pressable 
+            style={{ backgroundColor: '#EBF4FF' }}
+            className="rounded-3xl p-8 flex-row items-center justify-between overflow-hidden relative shadow-sm border border-blue-100"
+          >
+            <View className="flex-1 pr-4">
+              <Text style={{ 
+                color: primaryNavy,
+                fontFamily: 'Poppins_800ExtraBold'
+              }} className="text-2xl mb-2">New Collection</Text>
+              <Text style={{ 
+                color: '#64748b',
+                fontFamily: 'Poppins_500Medium'
+              }} className="text-sm mb-4 leading-5">Discount 50% for{'\n'}the first transaction</Text>
+              <Pressable 
+                style={{ backgroundColor: primaryNavy }}
+                className="px-8 py-4 rounded-2xl self-start shadow-lg"
               >
-                <View className="flex-row justify-between items-start">
-                  <Text className={`text-[10px] font-medium ${item.dark ? 'text-blue-200' : 'text-slate-400'}`}>{item.date}</Text>
-                  <Pressable>
-                    <MoreVertical size={16} color={item.dark ? 'white' : '#94a3b8'} />
-                  </Pressable>
-                </View>
+                <Text style={{ 
+                  color: 'white',
+                  fontFamily: 'Poppins_600SemiBold'
+                }} className="text-sm">Shop Now</Text>
+              </Pressable>
+            </View>
+            <View className="w-36 h-36 rounded-2xl overflow-hidden shadow-lg">
+              <Image 
+                source={{ uri: 'https://images.unsplash.com/photo-1469334031218-e382a71b716b?w=300&h=300&fit=crop' }}
+                style={{ width: '100%', height: '100%', resizeMode: 'cover' }}
+              />
+            </View>
+          </Pressable>
+        </View>
 
-                <View>
-                  <View 
-                    style={{ backgroundColor: item.dark ? 'rgba(255,255,255,0.1)' : '#EFF6FF' }} 
-                    className="w-10 h-10 rounded-xl items-center justify-center mb-3"
-                  >
-                    <item.icon size={20} color={item.dark ? 'white' : accentBlue} />
-                  </View>
-                  <Text className={`text-sm font-bold ${item.dark ? 'text-white' : 'text-slate-800'}`}>{item.title}</Text>
-                  <Text className={`text-[10px] ${item.dark ? 'text-blue-100/60' : 'text-slate-400'}`}>{item.category}</Text>
+        {/* Categories */}
+        <View className="px-6 mb-8">
+          <View className="flex-row justify-between items-center mb-6">
+            <Text style={{ 
+              color: primaryNavy,
+              fontFamily: 'Poppins_800ExtraBold'
+            }} className="text-xl">Category</Text>
+            <Pressable onPress={() => router.push('/(main)/salesperson/products')}>
+              <Text style={{ 
+                color: accentBlue,
+                fontFamily: 'Poppins_600SemiBold'
+              }} className="text-sm">See All</Text>
+            </Pressable>
+          </View>
+          
+          <View className="flex-row justify-between">
+            {categories.map((category, index) => (
+              <Pressable 
+                key={index}
+                onPress={() => handleCategoryPress(category.name)}
+                className="items-center"
+              >
+                <View 
+                  style={{ backgroundColor: `${accentBlue}15` }}
+                  className="w-20 h-20 rounded-3xl items-center justify-center mb-3 shadow-sm border border-blue-100"
+                >
+                  <category.icon size={32} color={category.color} />
                 </View>
+                <Text style={{ 
+                  color: '#64748b',
+                  fontFamily: 'Poppins_600SemiBold'
+                }} className="text-sm">{category.name}</Text>
+              </Pressable>
+            ))}
+          </View>
+        </View>
 
-                <View>
-                  <Text className={`text-[10px] font-medium mb-1 ${item.dark ? 'text-blue-100/60' : 'text-slate-400'}`}>Progress</Text>
-                  <View className="flex-row items-center">
-                    <View className={`h-1 flex-1 rounded-full ${item.dark ? 'bg-blue-900/40' : 'bg-slate-200'} mr-2 overflow-hidden`}>
-                      <View 
-                        style={{ width: `${item.progress * 100}%`, backgroundColor: item.dark ? 'white' : accentBlue }} 
-                        className="h-full rounded-full" 
-                      />
-                    </View>
-                    <Text className={`text-[10px] font-bold ${item.dark ? 'text-white' : 'text-slate-800'}`}>{Math.round(item.progress * 100)}%</Text>
-                  </View>
+        {/* Flash Sale */}
+        <View className="px-6 mb-6">
+          <View className="flex-row justify-between items-center mb-6">
+            <Text style={{ 
+              color: primaryNavy,
+              fontFamily: 'Poppins_800ExtraBold'
+            }} className="text-xl">Flash Sale</Text>
+            <View className="flex-row items-center">
+              <Text style={{ 
+                color: '#64748b',
+                fontFamily: 'Poppins_500Medium'
+              }} className="text-sm mr-2">Closing in :</Text>
+              <View className="flex-row items-center">
+                <View style={{ backgroundColor: primaryNavy }} className="px-3 py-2 rounded-lg">
+                  <Text style={{ 
+                    color: 'white',
+                    fontFamily: 'Poppins_700Bold'
+                  }} className="text-sm">02</Text>
+                </View>
+                <Text className="mx-2 text-sm font-bold">:</Text>
+                <View style={{ backgroundColor: primaryNavy }} className="px-3 py-2 rounded-lg">
+                  <Text style={{ 
+                    color: 'white',
+                    fontFamily: 'Poppins_700Bold'
+                  }} className="text-sm">12</Text>
+                </View>
+                <Text className="mx-2 text-sm font-bold">:</Text>
+                <View style={{ backgroundColor: primaryNavy }} className="px-3 py-2 rounded-lg">
+                  <Text style={{ 
+                    color: 'white',
+                    fontFamily: 'Poppins_700Bold'
+                  }} className="text-sm">56</Text>
                 </View>
               </View>
             </View>
-          ))}
+          </View>
+
+          {/* Filter Tabs */}
+          <View className="flex-row mb-6">
+            <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+              {filters.map((filter, index) => (
+                <Pressable 
+                  key={index}
+                  onPress={() => handleFilterPress(filter)}
+                  style={{ 
+                    backgroundColor: selectedFilter === filter ? primaryNavy : 'transparent',
+                    marginRight: 16
+                  }}
+                  className="px-6 py-3 rounded-2xl border border-slate-200 shadow-sm"
+                >
+                  <Text style={{ 
+                    color: selectedFilter === filter ? 'white' : '#64748b',
+                    fontFamily: 'Poppins_600SemiBold'
+                  }} className="text-base">{filter}</Text>
+                </Pressable>
+              ))}
+            </ScrollView>
+          </View>
+
+          {/* Flash Sale Products */}
+          <View className="flex-row justify-between">
+            {flashSaleProducts.map((product) => (
+              <Pressable 
+                key={product.id}
+                onPress={() => handleProductPress(product.id)}
+                className="w-[48%] bg-white rounded-3xl p-5 border border-slate-100 shadow-sm"
+              >
+                <View className="w-full h-48 rounded-2xl overflow-hidden mb-4 relative">
+                  <Image 
+                    source={{ uri: product.image }}
+                    style={{ width: '100%', height: '100%', resizeMode: 'cover' }}
+                  />
+                  <View className="absolute top-3 right-3 bg-red-500 px-3 py-1 rounded-full">
+                    <Text style={{ 
+                      color: 'white',
+                      fontFamily: 'Poppins_700Bold'
+                    }} className="text-xs">-{product.discount}</Text>
+                  </View>
+                </View>
+                <Text style={{ 
+                  color: primaryNavy,
+                  fontFamily: 'Poppins_700Bold'
+                }} className="text-base mb-2" numberOfLines={2}>{product.name}</Text>
+                <View className="flex-row items-center">
+                  <Text style={{ 
+                    color: accentBlue,
+                    fontFamily: 'Poppins_800ExtraBold'
+                  }} className="text-xl mr-2">{product.price}</Text>
+                  <Text style={{ 
+                    color: '#94a3b8',
+                    fontFamily: 'Poppins_500Medium'
+                  }} className="text-sm line-through">{product.originalPrice}</Text>
+                </View>
+              </Pressable>
+            ))}
+          </View>
         </View>
         
         <View className="h-40" />
