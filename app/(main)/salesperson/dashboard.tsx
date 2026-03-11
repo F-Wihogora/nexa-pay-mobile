@@ -77,7 +77,7 @@ export default function SalespersonDashboard() {
 
   const handleProductPress = (productId: number) => {
     router.push({
-      pathname: '/(main)/salesperson/products',
+      pathname: '/(main)/salesperson/product-detail',
       params: { productId: productId.toString() }
     });
   };
@@ -280,8 +280,9 @@ export default function SalespersonDashboard() {
                 key={product.id}
                 onPress={() => handleProductPress(product.id)}
                 className="w-[48%] bg-white rounded-3xl p-5 border border-slate-100 shadow-sm"
+                style={{ height: 280 }}
               >
-                <View className="w-full h-48 rounded-2xl overflow-hidden mb-4 relative">
+                <View className="w-full h-56 rounded-2xl overflow-hidden mb-4 relative">
                   <Image 
                     source={{ uri: product.image }}
                     style={{ width: '100%', height: '100%', resizeMode: 'cover' }}
