@@ -386,13 +386,22 @@ const AgentSettingsScreen = () => {
           {/* Logout Button */}
           <Pressable 
             onPress={() => router.replace('/login')}
-            className="flex-row items-center justify-center bg-red-50 border border-red-100 p-4 rounded-2xl mt-8 shadow-sm active:bg-red-100"
+            className="flex-row items-center justify-center bg-gradient-to-r from-red-500 to-red-600 p-6 rounded-2xl mt-8 shadow-lg active:from-red-600 active:to-red-700"
+            style={{ 
+              backgroundColor: '#dc2626',
+              height: 64,
+              shadowColor: '#dc2626',
+              shadowOffset: { width: 0, height: 4 },
+              shadowOpacity: 0.3,
+              shadowRadius: 8,
+              elevation: 8
+            }}
           >
-            <LogOut size={20} color="#ef4444" />
+            <LogOut size={22} color="white" />
             <Text style={{ 
-              color: '#ef4444',
+              color: 'white',
               fontFamily: 'Poppins_700Bold'
-            }} className="ml-3 text-base">Sign Out</Text>
+            }} className="ml-3 text-lg">Sign Out</Text>
           </Pressable>
         </View>
         <View className="h-40" />
