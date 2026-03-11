@@ -126,31 +126,54 @@ export default function AgentTopupScreen() {
         </View>
 
         {/* card-details-card */}
-        <View className="bg-slate-900 rounded-3xl p-8 mb-8 shadow-2xl shadow-blue-900/40 relative overflow-hidden">
-           {/* Decorative chips */}
-           <View style={{ position: 'absolute', top: -10, right: -10, width: 60, height: 60, borderRadius: 30, backgroundColor: 'white', opacity: 0.05 }} />
-           <View style={{ position: 'absolute', bottom: -20, left: 40, width: 100, height: 100, borderRadius: 50, backgroundColor: 'white', opacity: 0.03 }} />
-
-           <View className="flex-row justify-between mb-8 pb-4 border-b border-white/5">
-              <View>
-                <Text className="text-white/40 text-[10px] font-black uppercase tracking-widest mb-1">Nex Card UID</Text>
-                <Text className="text-white font-black text-lg tracking-widest">70:77:88:99</Text>
+        <View 
+          style={{ height: 280, backgroundColor: primaryNavy, borderRadius: 16, padding: 30 }} 
+          className="shadow-2xl shadow-blue-900/20 border border-blue-100 relative overflow-hidden mb-8"
+        >
+          <View style={{ backgroundColor: 'rgba(255,255,255,0.1)', width: 200, height: 200, borderRadius: 100, position: 'absolute', top: -100, right: -100 }} />
+          <View className="flex-row justify-between items-start mb-6">
+            <View style={{ backgroundColor: '#FFD700', width: 50, height: 38, borderRadius: 8, opacity: 0.9, position: 'relative', overflow: 'hidden' }}>
+               <View className="absolute inset-0 border border-black/10 opacity-20" />
+               <View className="absolute top-1/2 w-full h-[1px] bg-black/10" />
+               <View className="absolute left-1/2 h-full w-[1px] bg-black/10" />
+            </View>
+            <View className="bg-white/20 p-1 rounded-md">
+              <Text style={{ 
+                color: 'white',
+                fontFamily: 'Poppins_600SemiBold'
+              }} className="text-xs">VISA</Text>
+            </View>
+          </View>
+          <Text style={{ 
+            color: 'white',
+            fontFamily: 'Poppins_900Black'
+          }} className="text-2xl tracking-[4px] mb-8 opacity-80">
+            **** **** **** ****
+          </Text>
+          <View className="flex-row justify-between items-end mt-auto">
+            <View>
+              <Text style={{ 
+                color: 'rgba(255,255,255,0.6)',
+                fontFamily: 'Poppins_800ExtraBold'
+              }} className="text-[10px] uppercase tracking-[2px] mb-2">CARD UID</Text>
+              <View className="flex-row items-center">
+                <Text style={{ 
+                  color: 'white',
+                  fontFamily: 'Poppins_900Black'
+                }} className="text-lg tracking-tighter">70:77:88:99</Text>
               </View>
-              <View style={{ backgroundColor: '#FFD700', width: 40, height: 30, borderRadius: 6, opacity: 0.8 }} />
-           </View>
-
-           <View className="flex-row justify-between items-end">
-              <View>
-                <Text className="text-white/40 text-[10px] font-black uppercase tracking-widest mb-1">Owner: Alex Nexa</Text>
-                <View className="bg-blue-500 px-2 py-[2px] rounded-md self-start">
-                   <Text className="text-white text-[8px] font-black uppercase">Active</Text>
-                </View>
-              </View>
-              <View className="items-end">
-                <Text className="text-white/40 text-[10px] font-black uppercase tracking-widest mb-1">Current Balance</Text>
-                <Text className="text-white text-3xl font-black leading-none">${balance.toFixed(2)}</Text>
-              </View>
-           </View>
+            </View>
+            <View className="items-end">
+              <Text style={{ 
+                color: 'rgba(255,255,255,0.6)',
+                fontFamily: 'Poppins_800ExtraBold'
+              }} className="text-[10px] uppercase tracking-[2px] mb-2">WALLET BALANCE</Text>
+              <Text style={{ 
+                color: 'white',
+                fontFamily: 'Poppins_900Black'
+              }} className="text-2xl">${balance.toFixed(2)}</Text>
+            </View>
+          </View>
         </View>
 
         {/* amount-input-section */}
@@ -173,16 +196,21 @@ export default function AgentTopupScreen() {
         </View>
 
         {/* confirm-button */}
-        <Pressable 
-          onPress={handleTopUp}
-          style={{ backgroundColor: primaryNavy, borderRadius: 24 }}
-          className="h-18 items-center justify-center flex-row shadow-2xl shadow-blue-900/30 overflow-hidden mb-12 py-5"
-        >
-          <View className="flex-row items-center">
-            <Text className="text-white font-black text-xl mr-2 uppercase tracking-widest">Load Money</Text>
-            <ArrowRight size={24} color="white" />
-          </View>
-        </Pressable>
+        <View className="items-center mb-12">
+          <Pressable 
+            onPress={handleTopUp}
+            style={{ backgroundColor: primaryNavy, borderRadius: 16, width: '80%' }}
+            className="h-20 items-center justify-center flex-row shadow-2xl shadow-blue-900/30 overflow-hidden"
+          >
+            <View className="flex-row items-center">
+              <Text style={{ 
+                color: 'white',
+                fontFamily: 'Poppins_800ExtraBold'
+              }} className="text-xl mr-2 uppercase tracking-widest">Top up</Text>
+              <ArrowRight size={24} color="white" />
+            </View>
+          </Pressable>
+        </View>
         <View className="h-40" />
       </ScrollView>
 
