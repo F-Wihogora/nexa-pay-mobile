@@ -181,35 +181,35 @@ export default function ProductDetail() {
       </ScrollView>
 
       {/* Bottom Action Bar */}
-      <View className="px-6 py-6 bg-white border-t border-slate-100">
-        <View className="flex-row items-center justify-between">
+      <View className="px-6 py-4 bg-white border-t border-slate-100" style={{ paddingBottom: 120 }}>
+        <View className="flex-row items-center justify-between mb-4">
           {/* Quantity Selector */}
           <View className="flex-row items-center">
             <Pressable 
               onPress={() => updateQuantity(-1)}
-              className="w-12 h-12 rounded-full border border-slate-300 items-center justify-center mr-4"
+              className="w-14 h-14 rounded-full border border-slate-300 items-center justify-center mr-4"
             >
-              <Minus size={20} color={primaryNavy} />
+              <Minus size={22} color={primaryNavy} />
             </Pressable>
-            <View className="w-14 h-14 rounded-full bg-slate-900 items-center justify-center">
+            <View className="w-16 h-16 rounded-full bg-slate-900 items-center justify-center">
               <Text style={{ 
                 color: 'white',
                 fontFamily: 'Poppins_700Bold'
-              }} className="text-xl">{quantity}</Text>
+              }} className="text-2xl">{quantity}</Text>
             </View>
             <Pressable 
               onPress={() => updateQuantity(1)}
-              className="w-12 h-12 rounded-full border border-slate-300 items-center justify-center ml-4"
+              className="w-14 h-14 rounded-full border border-slate-300 items-center justify-center ml-4"
             >
-              <Plus size={20} color={primaryNavy} />
+              <Plus size={22} color={primaryNavy} />
             </Pressable>
           </View>
 
           {/* Add to Cart Button */}
           <Pressable 
             onPress={handleAddToCart}
-            style={{ backgroundColor: '#fbbf24' }}
-            className="flex-1 ml-6 h-16 items-center justify-center rounded-2xl shadow-lg"
+            style={{ backgroundColor: accentBlue }}
+            className="flex-1 ml-6 h-18 items-center justify-center rounded-2xl shadow-lg"
           >
             <Text style={{ 
               color: 'white',

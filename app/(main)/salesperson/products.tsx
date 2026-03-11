@@ -186,7 +186,13 @@ export default function SalespersonProducts() {
           <View className="flex-row flex-wrap justify-between">
             {filteredProducts.map(product => (
               <View key={product.id} className="w-[48%] mb-4">
-                <View className="bg-white border border-slate-100 rounded-3xl p-4 shadow-sm">
+                <Pressable 
+                  onPress={() => router.push({
+                    pathname: '/(main)/salesperson/product-detail',
+                    params: { productId: product.id }
+                  })}
+                  className="bg-white border border-slate-100 rounded-3xl p-4 shadow-sm"
+                >
                   <View className="relative mb-3">
                     <View className="w-full h-40 rounded-2xl overflow-hidden">
                       <Image 
@@ -250,7 +256,10 @@ export default function SalespersonProducts() {
                   {product.inStock && (
                     <View className="flex-row items-center justify-between bg-slate-50 p-3 rounded-2xl">
                       <Pressable 
-                        onPress={() => updateQuantity(product.id, -1)} 
+                        onPress={(e) => {
+                          e.stopPropagation();
+                          updateQuantity(product.id, -1);
+                        }} 
                         className="w-10 h-10 items-center justify-center bg-white rounded-full border border-slate-200 shadow-sm"
                       >
                         <Minus size={16} color={primaryNavy} />
@@ -260,21 +269,31 @@ export default function SalespersonProducts() {
                         fontFamily: 'Poppins_700Bold'
                       }} className="text-base">{quantities[product.id] || 0}</Text>
                       <Pressable 
-                        onPress={() => updateQuantity(product.id, 1)} 
+                        onPress={(e) => {
+                          e.stopPropagation();
+                          updateQuantity(product.id, 1);
+                        }} 
                         className="w-10 h-10 items-center justify-center bg-white rounded-full border border-slate-200 shadow-sm"
                       >
                         <Plus size={16} color={primaryNavy} />
                       </Pressable>
                     </View>
                   )}
-                </View>
+                </Pressable>
               </View>
             ))}
           </View>
         ) : (
           <View className="space-y-4">
             {filteredProducts.map(product => (
-              <View key={product.id} className="bg-white border border-slate-100 rounded-3xl p-4 shadow-sm">
+              <Pressable 
+                key={product.id} 
+                onPress={() => router.push({
+                  pathname: '/(main)/salesperson/product-detail',
+                  params: { productId: product.id }
+                })}
+                className="bg-white border border-slate-100 rounded-3xl p-4 shadow-sm"
+              >
                 <View className="flex-row">
                   <View className="w-20 h-20 rounded-2xl overflow-hidden mr-4">
                     <Image 
@@ -299,7 +318,10 @@ export default function SalespersonProducts() {
                       {product.inStock && (
                         <View className="flex-row items-center">
                           <Pressable 
-                            onPress={() => updateQuantity(product.id, -1)} 
+                            onPress={(e) => {
+                              e.stopPropagation();
+                              updateQuantity(product.id, -1);
+                            }} 
                             className="w-10 h-10 items-center justify-center bg-slate-50 rounded-full"
                           >
                             <Minus size={16} color={primaryNavy} />
@@ -309,7 +331,10 @@ export default function SalespersonProducts() {
                             fontFamily: 'Poppins_700Bold'
                           }} className="mx-4 text-base">{quantities[product.id] || 0}</Text>
                           <Pressable 
-                            onPress={() => updateQuantity(product.id, 1)} 
+                            onPress={(e) => {
+                              e.stopPropagation();
+                              updateQuantity(product.id, 1);
+                            }} 
                             className="w-10 h-10 items-center justify-center bg-slate-50 rounded-full"
                           >
                             <Plus size={16} color={primaryNavy} />
@@ -319,7 +344,7 @@ export default function SalespersonProducts() {
                     </View>
                   </View>
                 </View>
-              </View>
+              </Pressable>
             ))}
           </View>
         )}

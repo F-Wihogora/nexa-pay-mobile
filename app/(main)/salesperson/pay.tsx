@@ -52,10 +52,10 @@ export default function SalespersonPay() {
       setStatus('success');
       successScale.value = withTiming(1, { duration: 500, easing: Easing.back(1.5) });
       
-      // Auto redirect back to dashboard after 4 seconds of success
+      // Auto redirect to success page after 3 seconds
       setTimeout(() => {
-        router.replace('/salesperson/dashboard');
-      }, 4000);
+        router.push('/(main)/salesperson/success');
+      }, 3000);
     }, 3000);
   };
 
