@@ -96,29 +96,85 @@ export default function SalespersonPay() {
         </View>
 
         {/* Selected Items Summary */}
-        <View className="bg-gradient-to-br from-slate-900 to-slate-800 rounded-3xl p-8 mb-10 shadow-2xl shadow-slate-900/40 relative overflow-hidden">
-           {/* Background decorative elements */}
-           <View style={{ position: 'absolute', top: -20, right: -20, width: 100, height: 100, borderRadius: 50, backgroundColor: 'rgba(59, 130, 246, 0.1)' }} />
-           <View style={{ position: 'absolute', bottom: -10, left: -10, width: 60, height: 60, borderRadius: 30, backgroundColor: 'rgba(255, 255, 255, 0.05)' }} />
+        <View className="rounded-3xl p-8 mb-10 shadow-2xl shadow-slate-900/40 relative overflow-hidden" 
+              style={{ backgroundColor: '#1e293b' }}>
+           {/* Background decorative elements with gradients */}
+           <View style={{ 
+             position: 'absolute', 
+             top: -20, 
+             right: -20, 
+             width: 100, 
+             height: 100, 
+             borderRadius: 50, 
+             backgroundColor: 'rgba(59, 130, 246, 0.2)'
+           }} />
+           <View style={{ 
+             position: 'absolute', 
+             top: -10, 
+             right: -30, 
+             width: 80, 
+             height: 80, 
+             borderRadius: 40, 
+             backgroundColor: 'rgba(147, 51, 234, 0.1)'
+           }} />
+           <View style={{ 
+             position: 'absolute', 
+             bottom: -10, 
+             left: -10, 
+             width: 60, 
+             height: 60, 
+             borderRadius: 30, 
+             backgroundColor: 'rgba(255, 255, 255, 0.1)'
+           }} />
+           <View style={{ 
+             position: 'absolute', 
+             bottom: -20, 
+             left: -20, 
+             width: 40, 
+             height: 40, 
+             borderRadius: 20, 
+             backgroundColor: 'rgba(255, 255, 255, 0.05)'
+           }} />
            
            {/* Card Header */}
            <View className="flex-row items-center justify-between mb-6">
               <View className="flex-row items-center">
-                 <View className="bg-blue-500/20 p-3 rounded-2xl mr-4">
-                    <ShoppingCart size={24} color="#3b82f6" />
+                 <View className="p-3 rounded-2xl mr-4" 
+                       style={{ backgroundColor: 'rgba(59, 130, 246, 0.3)' }}>
+                    <View style={{ 
+                      position: 'absolute', 
+                      inset: 0, 
+                      borderRadius: 16, 
+                      backgroundColor: 'rgba(147, 51, 234, 0.2)' 
+                    }} />
+                    <ShoppingCart size={24} color="#60a5fa" />
                  </View>
                  <View>
                     <Text className="text-white/60 text-xs font-bold uppercase tracking-widest mb-1">Transaction Summary</Text>
                     <Text className="text-white font-black text-xl tracking-tight">3 Items Selected</Text>
                  </View>
               </View>
-              <View className="bg-green-500/20 px-4 py-2 rounded-full border border-green-500/30">
+              <View className="px-4 py-2 rounded-full border border-green-500/30" 
+                    style={{ backgroundColor: 'rgba(34, 197, 94, 0.2)' }}>
+                 <View style={{ 
+                   position: 'absolute', 
+                   inset: 0, 
+                   borderRadius: 20, 
+                   backgroundColor: 'rgba(16, 185, 129, 0.1)' 
+                 }} />
                  <Text className="text-green-400 text-xs font-black uppercase tracking-wide">Ready to Pay</Text>
               </View>
            </View>
 
            {/* Items Preview */}
-           <View className="bg-white/5 rounded-2xl p-4 mb-6 border border-white/10">
+           <View className="rounded-2xl p-4 mb-6 border border-white/10" 
+                 style={{ backgroundColor: 'rgba(255, 255, 255, 0.08)' }}>
+              <View style={{ 
+                position: 'absolute', 
+                inset: 0, 
+                borderRadius: 16, 
+                backgroundColor: 'rgba(255, 255, 255, 0.03)' 
+              }} />
               <View className="flex-row justify-between items-center mb-2">
                  <Text className="text-white/80 text-sm font-semibold">Summer Collection Dress</Text>
                  <Text className="text-white font-bold">$89.99</Text>
@@ -141,7 +197,14 @@ export default function SalespersonPay() {
                  <Text className="text-blue-400 text-sm font-semibold mt-1">Including tax & fees</Text>
               </View>
               <View className="items-end">
-                 <View className="bg-blue-500 w-12 h-12 rounded-2xl items-center justify-center mb-2">
+                 <View className="w-12 h-12 rounded-2xl items-center justify-center mb-2" 
+                       style={{ backgroundColor: '#3b82f6' }}>
+                    <View style={{ 
+                      position: 'absolute', 
+                      inset: 0, 
+                      borderRadius: 16, 
+                      backgroundColor: '#1d4ed8' 
+                    }} />
                     <Text className="text-white text-lg font-black">💳</Text>
                  </View>
                  <Text className="text-white/60 text-xs font-semibold">RFID Ready</Text>
@@ -176,7 +239,6 @@ export default function SalespersonPay() {
               {/* Main card scanning area */}
               <View 
                 style={{ 
-                  backgroundColor: status === 'scanning' ? primaryNavy : 'white',
                   width: 180,
                   height: 120,
                   borderRadius: 20,
@@ -184,11 +246,12 @@ export default function SalespersonPay() {
                   shadowOffset: { width: 0, height: 8 },
                   shadowOpacity: status === 'scanning' ? 0.3 : 0.1,
                   shadowRadius: 16,
-                  elevation: 12
+                  elevation: 12,
+                  backgroundColor: status === 'scanning' ? primaryNavy : '#ffffff'
                 }}
                 className="items-center justify-center border-2 border-slate-100 relative overflow-hidden"
               >
-                 {/* Card background pattern */}
+                 {/* Card background pattern with layered colors */}
                  <View style={{ 
                    position: 'absolute', 
                    top: -20, 
@@ -196,7 +259,16 @@ export default function SalespersonPay() {
                    width: 80, 
                    height: 80, 
                    borderRadius: 40, 
-                   backgroundColor: status === 'scanning' ? 'rgba(255,255,255,0.1)' : 'rgba(59, 130, 246, 0.1)' 
+                   backgroundColor: status === 'scanning' ? 'rgba(255,255,255,0.15)' : 'rgba(59, 130, 246, 0.15)'
+                 }} />
+                 <View style={{ 
+                   position: 'absolute', 
+                   top: -10, 
+                   right: -30, 
+                   width: 60, 
+                   height: 60, 
+                   borderRadius: 30, 
+                   backgroundColor: status === 'scanning' ? 'rgba(255,255,255,0.05)' : 'rgba(147, 51, 234, 0.05)'
                  }} />
                  
                  {/* RFID waves animation */}
@@ -212,7 +284,14 @@ export default function SalespersonPay() {
                    </View>
                  ) : (
                    <View className="items-center">
-                      <View className="w-16 h-16 bg-blue-50 rounded-2xl items-center justify-center mb-3">
+                      <View className="w-16 h-16 rounded-2xl items-center justify-center mb-3" 
+                            style={{ backgroundColor: '#dbeafe' }}>
+                         <View style={{ 
+                           position: 'absolute', 
+                           inset: 0, 
+                           borderRadius: 16, 
+                           backgroundColor: '#bfdbfe' 
+                         }} />
                          <Wifi size={32} color={primaryNavy} />
                       </View>
                       <Text style={{ color: primaryNavy }} className="font-bold text-base">Tap Here</Text>
