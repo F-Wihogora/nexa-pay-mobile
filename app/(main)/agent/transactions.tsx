@@ -1,10 +1,10 @@
 import { View, Text, ScrollView, SafeAreaView, Pressable, Image } from 'react-native';
 import { History, Filter, CheckCircle, XCircle, TrendingUp, Calendar, Clock, ArrowUpRight, ArrowDownRight, Search } from 'lucide-react-native';
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useCallback } from 'react';
 import { AgentTopbar } from '../../../components/AgentTopbar';
 import { AgentBottomNav } from '../../../components/AgentBottomNav';
 
-export default function AgentTransactionsScreen() {
+const AgentTransactionsScreen = () => {
   const primaryNavy = "#002B5B";
   const [activeFilter, setActiveFilter] = useState<'all' | 'success' | 'failed'>('all');
 
@@ -32,6 +32,10 @@ export default function AgentTransactionsScreen() {
 
   const successCount = useMemo(() => allTransactions.filter(t => t.status === 'SUCCESS').length, [allTransactions]);
   const failedCount = useMemo(() => allTransactions.filter(t => t.status === 'FAILED').length, [allTransactions]);
+
+  const handleFilterChange = useCallback((filter: 'all' | 'success' | 'failed') => {
+    setActiveFilter(filter);
+  }, []);
 
   return (
     <SafeAreaView className="flex-1 bg-slate-50">
@@ -146,7 +150,7 @@ export default function AgentTransactionsScreen() {
           {/* Functional Filter Tabs */}
           <View className="flex-row mb-6">
             <Pressable 
-              onPress={() => setActiveFilter('all')}
+              onPress={() => handleFilterChange('all')}
               className={`px-6 py-3 rounded-xl mr-3 border ${
                 activeFilter === 'all' ? 'bg-white border-slate-200 shadow-sm' : 'bg-slate-100 border-transparent'
               }`}
@@ -157,7 +161,7 @@ export default function AgentTransactionsScreen() {
               }} className="text-sm">All ({allTransactions.length})</Text>
             </Pressable>
             <Pressable 
-              onPress={() => setActiveFilter('success')}
+              onPress={() => handleFilterChange('success')}
               className={`px-6 py-3 rounded-xl mr-3 border ${
                 activeFilter === 'success' ? 'bg-white border-slate-200 shadow-sm' : 'bg-slate-100 border-transparent'
               }`}
@@ -168,7 +172,7 @@ export default function AgentTransactionsScreen() {
               }} className="text-sm">Success ({successCount})</Text>
             </Pressable>
             <Pressable 
-              onPress={() => setActiveFilter('failed')}
+              onPress={() => handleFilterChange('failed')}
               className={`px-6 py-3 rounded-xl border ${
                 activeFilter === 'failed' ? 'bg-white border-slate-200 shadow-sm' : 'bg-slate-100 border-transparent'
               }`}
@@ -257,4 +261,6 @@ export default function AgentTransactionsScreen() {
       <AgentBottomNav primaryNavy={primaryNavy} />
     </SafeAreaView>
   );
-}
+};
+
+export default AgentTransactionsScreen;
