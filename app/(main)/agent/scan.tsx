@@ -79,20 +79,35 @@ export default function AgentScanScreen() {
           </View>
           <Wifi size={24} color="white" opacity={0.6} />
         </View>
-        <Text className="text-white text-2xl font-black tracking-[4px] mb-8 opacity-80">
+        <Text style={{ 
+          color: 'white',
+          fontFamily: 'Poppins_900Black'
+        }} className="text-2xl tracking-[4px] mb-8 opacity-80">
           **** **** **** ****
         </Text>
         <View className="flex-row justify-between items-end mt-auto">
           <View>
-            <Text className="text-white/60 text-[10px] font-black uppercase tracking-[2px] mb-2">CARD UID</Text>
+            <Text style={{ 
+              color: 'rgba(255,255,255,0.6)',
+              fontFamily: 'Poppins_800ExtraBold'
+            }} className="text-[10px] uppercase tracking-[2px] mb-2">CARD UID</Text>
             <View className="flex-row items-center">
               <Cpu size={14} color="white" className="mr-2" opacity={0.7} />
-              <Text className="text-white text-lg font-black tracking-tighter">70:77:88:99</Text>
+              <Text style={{ 
+                color: 'white',
+                fontFamily: 'Poppins_900Black'
+              }} className="text-lg tracking-tighter">70:77:88:99</Text>
             </View>
           </View>
           <View className="items-end">
-            <Text className="text-white/60 text-[10px] font-black uppercase tracking-[2px] mb-2">WALLET BALANCE</Text>
-            <Text className="text-white text-2xl font-black">$1,250.00</Text>
+            <Text style={{ 
+              color: 'rgba(255,255,255,0.6)',
+              fontFamily: 'Poppins_800ExtraBold'
+            }} className="text-[10px] uppercase tracking-[2px] mb-2">WALLET BALANCE</Text>
+            <Text style={{ 
+              color: 'white',
+              fontFamily: 'Poppins_900Black'
+            }} className="text-2xl">$1,250.00</Text>
           </View>
         </View>
       </View>
@@ -109,32 +124,44 @@ export default function AgentScanScreen() {
         <View className="px-6 mt-10">
           {/* Currency Selection Section */}
           <View className="mb-8">
-            <Text style={{ color: primaryNavy }} className="text-2xl font-black mb-6">Currency</Text>
+            <Text style={{ color: primaryNavy, fontFamily: 'Poppins_800ExtraBold' }} className="text-2xl mb-6">Currency</Text>
             <View className="flex-row justify-between">
               <Pressable 
                 onPress={() => setSelectedCurrency('NGN')}
-                className={`flex-1 mx-2 px-10 py-5 rounded-2xl shadow-lg ${selectedCurrency === 'NGN' ? 'bg-blue-600' : 'bg-slate-100 border border-slate-200'}`}
+                style={{ backgroundColor: selectedCurrency === 'NGN' ? primaryNavy : '#f1f5f9' }}
+                className={`flex-1 mx-2 px-10 py-5 rounded-2xl shadow-lg ${selectedCurrency === 'NGN' ? '' : 'border border-slate-200'}`}
               >
-                <Text className={`font-bold text-lg text-center ${selectedCurrency === 'NGN' ? 'text-white' : 'text-slate-600'}`}>NGN</Text>
+                <Text style={{ 
+                  color: selectedCurrency === 'NGN' ? 'white' : '#64748b',
+                  fontFamily: 'Poppins_700Bold'
+                }} className="text-lg text-center">NGN</Text>
               </Pressable>
               <Pressable 
                 onPress={() => setSelectedCurrency('USD')}
-                className={`flex-1 mx-2 px-10 py-5 rounded-2xl shadow-lg ${selectedCurrency === 'USD' ? 'bg-blue-600' : 'bg-slate-100 border border-slate-200'}`}
+                style={{ backgroundColor: selectedCurrency === 'USD' ? primaryNavy : '#f1f5f9' }}
+                className={`flex-1 mx-2 px-10 py-5 rounded-2xl shadow-lg ${selectedCurrency === 'USD' ? '' : 'border border-slate-200'}`}
               >
-                <Text className={`font-bold text-lg text-center ${selectedCurrency === 'USD' ? 'text-white' : 'text-slate-600'}`}>USD</Text>
+                <Text style={{ 
+                  color: selectedCurrency === 'USD' ? 'white' : '#64748b',
+                  fontFamily: 'Poppins_700Bold'
+                }} className="text-lg text-center">USD</Text>
               </Pressable>
               <Pressable 
                 onPress={() => setSelectedCurrency('EUR')}
-                className={`flex-1 mx-2 px-10 py-5 rounded-2xl shadow-lg ${selectedCurrency === 'EUR' ? 'bg-blue-600' : 'bg-slate-100 border border-slate-200'}`}
+                style={{ backgroundColor: selectedCurrency === 'EUR' ? primaryNavy : '#f1f5f9' }}
+                className={`flex-1 mx-2 px-10 py-5 rounded-2xl shadow-lg ${selectedCurrency === 'EUR' ? '' : 'border border-slate-200'}`}
               >
-                <Text className={`font-bold text-lg text-center ${selectedCurrency === 'EUR' ? 'text-white' : 'text-slate-600'}`}>EUR</Text>
+                <Text style={{ 
+                  color: selectedCurrency === 'EUR' ? 'white' : '#64748b',
+                  fontFamily: 'Poppins_700Bold'
+                }} className="text-lg text-center">EUR</Text>
               </Pressable>
             </View>
           </View>
 
           {/* Nexa Reader Section */}
           <View className="mb-8">
-            <Text style={{ color: primaryNavy }} className="text-2xl font-black mb-6">Nexa Reader</Text>
+            <Text style={{ color: primaryNavy, fontFamily: 'Poppins_800ExtraBold' }} className="text-2xl mb-6">Nexa Reader</Text>
             
             <View className="bg-slate-50 rounded-3xl p-8 border border-slate-100">
               <View className="flex-row justify-between items-start mb-6">
@@ -246,12 +273,18 @@ export default function AgentScanScreen() {
                       </View>
                     </Pressable>
                     
-                    <Text className={`font-bold text-lg mt-6 ${isScanning ? 'text-blue-600' : 'text-slate-500'}`}>
+                    <Text style={{ 
+                      color: isScanning ? '#2563eb' : '#64748b',
+                      fontFamily: 'Poppins_700Bold'
+                    }} className="text-lg mt-6">
                       {isScanning ? 'Scanning the card...' : 'Tap to scan card'}
                     </Text>
                     
                     {isScanning && (
-                      <Text className="text-blue-500 text-sm mt-2 animate-pulse">
+                      <Text style={{ 
+                        color: '#3b82f6',
+                        fontFamily: 'Poppins_500Medium'
+                      }} className="text-sm mt-2 animate-pulse">
                         Hold card steady
                       </Text>
                     )}
@@ -260,7 +293,10 @@ export default function AgentScanScreen() {
                 
                 {/* Copy QR Code Button (styled as scan card button) */}
                 <Pressable className="bg-slate-100 px-6 py-3 rounded-xl border border-slate-200 shadow-sm">
-                  <Text className="text-slate-600 font-medium text-base">Scan card</Text>
+                  <Text style={{ 
+                    color: '#64748b',
+                    fontFamily: 'Poppins_500Medium'
+                  }} className="text-base">Scan card</Text>
                 </Pressable>
               </View>
             </View>
