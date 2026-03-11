@@ -122,129 +122,6 @@ export default function AgentScanScreen() {
         <NexaCard />
         
         <View className="px-6 mt-10">
-          {/* Quick Stats Dashboard */}
-          <View className="mb-8">
-            <Text style={{ color: primaryNavy, fontFamily: 'Poppins_800ExtraBold' }} className="text-2xl mb-6">Today's Overview</Text>
-            
-            <View className="flex-row flex-wrap justify-between mb-4">
-              <View className="w-[48%] bg-white rounded-2xl p-4 border border-slate-100 shadow-sm mb-4">
-                <View className="flex-row items-center justify-between mb-3">
-                  <View className="bg-blue-50 p-2 rounded-xl">
-                    <TrendingUp size={20} color={primaryNavy} />
-                  </View>
-                  <Text style={{ color: '#10b981', fontFamily: 'Poppins_600SemiBold' }} className="text-xs">+12%</Text>
-                </View>
-                <Text style={{ color: primaryNavy, fontFamily: 'Poppins_900Black' }} className="text-2xl">{todayStats.totalTransactions}</Text>
-                <Text style={{ color: '#64748b', fontFamily: 'Poppins_500Medium' }} className="text-xs">Transactions</Text>
-              </View>
-
-              <View className="w-[48%] bg-white rounded-2xl p-4 border border-slate-100 shadow-sm mb-4">
-                <View className="flex-row items-center justify-between mb-3">
-                  <View className="bg-green-50 p-2 rounded-xl">
-                    <DollarSign size={20} color="#10b981" />
-                  </View>
-                  <Text style={{ color: '#10b981', fontFamily: 'Poppins_600SemiBold' }} className="text-xs">+8%</Text>
-                </View>
-                <Text style={{ color: primaryNavy, fontFamily: 'Poppins_900Black' }} className="text-2xl">${todayStats.totalAmount.toLocaleString()}</Text>
-                <Text style={{ color: '#64748b', fontFamily: 'Poppins_500Medium' }} className="text-xs">Total Volume</Text>
-              </View>
-
-              <View className="w-[48%] bg-white rounded-2xl p-4 border border-slate-100 shadow-sm">
-                <View className="flex-row items-center justify-between mb-3">
-                  <View className="bg-purple-50 p-2 rounded-xl">
-                    <Activity size={20} color="#8b5cf6" />
-                  </View>
-                  <Text style={{ color: '#10b981', fontFamily: 'Poppins_600SemiBold' }} className="text-xs">+2%</Text>
-                </View>
-                <Text style={{ color: primaryNavy, fontFamily: 'Poppins_900Black' }} className="text-2xl">{todayStats.successRate}%</Text>
-                <Text style={{ color: '#64748b', fontFamily: 'Poppins_500Medium' }} className="text-xs">Success Rate</Text>
-              </View>
-
-              <View className="w-[48%] bg-white rounded-2xl p-4 border border-slate-100 shadow-sm">
-                <View className="flex-row items-center justify-between mb-3">
-                  <View className="bg-orange-50 p-2 rounded-xl">
-                    <CreditCard size={20} color="#f97316" />
-                  </View>
-                  <Text style={{ color: '#10b981', fontFamily: 'Poppins_600SemiBold' }} className="text-xs">+5</Text>
-                </View>
-                <Text style={{ color: primaryNavy, fontFamily: 'Poppins_900Black' }} className="text-2xl">{todayStats.activeCards}</Text>
-                <Text style={{ color: '#64748b', fontFamily: 'Poppins_500Medium' }} className="text-xs">Active Cards</Text>
-              </View>
-            </View>
-          </View>
-
-          {/* Recent Activity */}
-          <View className="mb-8">
-            <View className="flex-row justify-between items-center mb-4">
-              <Text style={{ color: primaryNavy, fontFamily: 'Poppins_800ExtraBold' }} className="text-xl">Recent Activity</Text>
-              <Pressable onPress={() => router.push('/agent/transactions')}>
-                <Text style={{ color: primaryNavy, fontFamily: 'Poppins_600SemiBold' }} className="text-sm">View All</Text>
-              </Pressable>
-            </View>
-            
-            <View className="bg-white rounded-2xl border border-slate-100 shadow-sm overflow-hidden">
-              {recentTransactions.map((transaction, index) => (
-                <View key={transaction.id} className={`p-4 flex-row items-center justify-between ${index !== recentTransactions.length - 1 ? 'border-b border-slate-50' : ''}`}>
-                  <View className="flex-row items-center flex-1">
-                    <View className={`w-10 h-10 rounded-xl items-center justify-center mr-3 ${transaction.type === 'topup' ? 'bg-green-50' : 'bg-blue-50'}`}>
-                      {transaction.type === 'topup' ? 
-                        <ArrowUpRight size={18} color="#10b981" /> : 
-                        <ArrowDownRight size={18} color={primaryNavy} />
-                      }
-                    </View>
-                    <View>
-                      <Text style={{ color: primaryNavy, fontFamily: 'Poppins_700Bold' }} className="text-sm">{transaction.name}</Text>
-                      <Text style={{ color: '#94a3b8', fontFamily: 'Poppins_500Medium' }} className="text-xs">{transaction.time}</Text>
-                    </View>
-                  </View>
-                  <Text style={{ 
-                    color: transaction.type === 'topup' ? '#10b981' : primaryNavy,
-                    fontFamily: 'Poppins_700Bold'
-                  }} className="text-sm">
-                    {transaction.type === 'topup' ? '+' : '-'}${transaction.amount}
-                  </Text>
-                </View>
-              ))}
-            </View>
-          </View>
-
-          {/* Currency Selection Section */}
-          <View className="mb-8">
-            <Text style={{ color: primaryNavy, fontFamily: 'Poppins_800ExtraBold' }} className="text-2xl mb-6">Currency</Text>
-            <View className="flex-row justify-between">
-              <Pressable 
-                onPress={() => setSelectedCurrency('NGN')}
-                style={{ backgroundColor: selectedCurrency === 'NGN' ? primaryNavy : '#f1f5f9' }}
-                className={`flex-1 mx-2 px-10 py-5 rounded-2xl shadow-lg ${selectedCurrency === 'NGN' ? '' : 'border border-slate-200'}`}
-              >
-                <Text style={{ 
-                  color: selectedCurrency === 'NGN' ? 'white' : '#64748b',
-                  fontFamily: 'Poppins_700Bold'
-                }} className="text-lg text-center">NGN</Text>
-              </Pressable>
-              <Pressable 
-                onPress={() => setSelectedCurrency('USD')}
-                style={{ backgroundColor: selectedCurrency === 'USD' ? primaryNavy : '#f1f5f9' }}
-                className={`flex-1 mx-2 px-10 py-5 rounded-2xl shadow-lg ${selectedCurrency === 'USD' ? '' : 'border border-slate-200'}`}
-              >
-                <Text style={{ 
-                  color: selectedCurrency === 'USD' ? 'white' : '#64748b',
-                  fontFamily: 'Poppins_700Bold'
-                }} className="text-lg text-center">USD</Text>
-              </Pressable>
-              <Pressable 
-                onPress={() => setSelectedCurrency('EUR')}
-                style={{ backgroundColor: selectedCurrency === 'EUR' ? primaryNavy : '#f1f5f9' }}
-                className={`flex-1 mx-2 px-10 py-5 rounded-2xl shadow-lg ${selectedCurrency === 'EUR' ? '' : 'border border-slate-200'}`}
-              >
-                <Text style={{ 
-                  color: selectedCurrency === 'EUR' ? 'white' : '#64748b',
-                  fontFamily: 'Poppins_700Bold'
-                }} className="text-lg text-center">EUR</Text>
-              </Pressable>
-            </View>
-          </View>
-
           {/* Quick Actions */}
           <View className="mb-8">
             <Text style={{ color: primaryNavy, fontFamily: 'Poppins_800ExtraBold' }} className="text-xl mb-4">Quick Actions</Text>
@@ -282,6 +159,43 @@ export default function AgentScanScreen() {
                 </View>
                 <Text style={{ color: primaryNavy, fontFamily: 'Poppins_700Bold' }} className="text-sm">Settings</Text>
                 <Text style={{ color: '#64748b', fontFamily: 'Poppins_500Medium' }} className="text-xs">Configure</Text>
+              </Pressable>
+            </View>
+          </View>
+
+          {/* Currency Selection Section */}
+          <View className="mb-8">
+            <Text style={{ color: primaryNavy, fontFamily: 'Poppins_800ExtraBold' }} className="text-2xl mb-6">Currency</Text>
+            <View className="flex-row justify-between">
+              <Pressable 
+                onPress={() => setSelectedCurrency('NGN')}
+                style={{ backgroundColor: selectedCurrency === 'NGN' ? primaryNavy : '#f1f5f9' }}
+                className={`flex-1 mx-2 px-10 py-5 rounded-2xl shadow-lg ${selectedCurrency === 'NGN' ? '' : 'border border-slate-200'}`}
+              >
+                <Text style={{ 
+                  color: selectedCurrency === 'NGN' ? 'white' : '#64748b',
+                  fontFamily: 'Poppins_700Bold'
+                }} className="text-lg text-center">NGN</Text>
+              </Pressable>
+              <Pressable 
+                onPress={() => setSelectedCurrency('USD')}
+                style={{ backgroundColor: selectedCurrency === 'USD' ? primaryNavy : '#f1f5f9' }}
+                className={`flex-1 mx-2 px-10 py-5 rounded-2xl shadow-lg ${selectedCurrency === 'USD' ? '' : 'border border-slate-200'}`}
+              >
+                <Text style={{ 
+                  color: selectedCurrency === 'USD' ? 'white' : '#64748b',
+                  fontFamily: 'Poppins_700Bold'
+                }} className="text-lg text-center">USD</Text>
+              </Pressable>
+              <Pressable 
+                onPress={() => setSelectedCurrency('EUR')}
+                style={{ backgroundColor: selectedCurrency === 'EUR' ? primaryNavy : '#f1f5f9' }}
+                className={`flex-1 mx-2 px-10 py-5 rounded-2xl shadow-lg ${selectedCurrency === 'EUR' ? '' : 'border border-slate-200'}`}
+              >
+                <Text style={{ 
+                  color: selectedCurrency === 'EUR' ? 'white' : '#64748b',
+                  fontFamily: 'Poppins_700Bold'
+                }} className="text-lg text-center">EUR</Text>
               </Pressable>
             </View>
           </View>
