@@ -234,11 +234,14 @@ export default function AgentTopupScreen() {
                   style={{ 
                     color: primaryNavy, 
                     fontFamily: 'Poppins_900Black',
-                    fontSize: 32,
-                    letterSpacing: -1
+                    fontSize: 28,
+                    letterSpacing: -1,
+                    textAlignVertical: 'center'
                   }}
-                  className="h-12"
+                  className="h-16 py-0"
                   autoFocus
+                  multiline={false}
+                  scrollEnabled={false}
                 />
                 <Text style={{ 
                   color: '#94a3b8',
