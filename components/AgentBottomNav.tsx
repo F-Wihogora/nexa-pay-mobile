@@ -7,10 +7,10 @@ export const AgentBottomNav = ({ primaryNavy }: { primaryNavy: string }) => {
   const pathname = usePathname();
 
   const tabs = [
-    { id: 'scan', icon: Maximize, path: '/agent/scan' },
-    { id: 'topup', icon: PlusCircle, path: '/agent/topup' },
-    { id: 'transactions', icon: History, path: '/agent/transactions' },
-    { id: 'settings', icon: Settings, path: '/agent/settings' },
+    { id: 'scan', icon: Maximize, path: '/(main)/agent/scan' },
+    { id: 'topup', icon: PlusCircle, path: '/(main)/agent/topup' },
+    { id: 'transactions', icon: History, path: '/(main)/agent/transactions' },
+    { id: 'settings', icon: Settings, path: '/(main)/agent/settings' },
   ];
 
   // More robust path matching that ignores group segments like (main)

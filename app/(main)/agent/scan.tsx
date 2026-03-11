@@ -128,7 +128,7 @@ export default function AgentScanScreen() {
             
             <View className="flex-row justify-between">
               <Pressable 
-                onPress={() => router.push('/agent/topup')}
+                onPress={() => router.push('/(main)/agent/topup')}
                 className="flex-1 bg-gradient-to-br from-blue-500 to-blue-600 rounded-2xl p-4 mr-2 shadow-lg"
                 style={{ backgroundColor: primaryNavy }}
               >
@@ -140,7 +140,7 @@ export default function AgentScanScreen() {
               </Pressable>
 
               <Pressable 
-                onPress={() => router.push('/agent/transactions')}
+                onPress={() => router.push('/(main)/agent/transactions')}
                 className="flex-1 bg-white rounded-2xl p-4 mx-1 border border-slate-100 shadow-sm"
               >
                 <View className="bg-slate-50 p-2 rounded-xl mb-3 self-start">
@@ -151,7 +151,7 @@ export default function AgentScanScreen() {
               </Pressable>
 
               <Pressable 
-                onPress={() => router.push('/agent/settings')}
+                onPress={() => router.push('/(main)/agent/settings')}
                 className="flex-1 bg-white rounded-2xl p-4 ml-2 border border-slate-100 shadow-sm"
               >
                 <View className="bg-slate-50 p-2 rounded-xl mb-3 self-start">
@@ -368,7 +368,7 @@ export default function AgentScanScreen() {
                </View>
 
                <Pressable 
-                 onPress={() => router.push('/agent/topup')}
+                 onPress={() => router.push('/(main)/agent/topup')}
                  style={{ backgroundColor: primaryNavy }}
                  className="h-14 rounded-2xl flex-row items-center justify-center active:bg-blue-900"
                >

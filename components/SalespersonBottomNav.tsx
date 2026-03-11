@@ -7,11 +7,11 @@ export const SalespersonBottomNav = ({ primaryNavy }: { primaryNavy: string }) =
   const pathname = usePathname();
 
   const tabs = [
-    { id: 'dashboard', icon: LayoutGrid, path: '/salesperson/dashboard' },
-    { id: 'products', icon: ShoppingBag, path: '/salesperson/products' },
-    { id: 'pay', icon: Zap, path: '/salesperson/pay' },
-    { id: 'history', icon: History, path: '/salesperson/history' },
-    { id: 'settings', icon: Settings, path: '/salesperson/settings' },
+    { id: 'dashboard', icon: LayoutGrid, path: '/(main)/salesperson/dashboard' },
+    { id: 'products', icon: ShoppingBag, path: '/(main)/salesperson/products' },
+    { id: 'pay', icon: Zap, path: '/(main)/salesperson/pay' },
+    { id: 'history', icon: History, path: '/(main)/salesperson/history' },
+    { id: 'settings', icon: Settings, path: '/(main)/salesperson/settings' },
   ];
 
   const isActive = (path: string) => {
