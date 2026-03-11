@@ -73,10 +73,12 @@ export default function ProductDetail() {
         {/* Main Product Image */}
         <View className="px-6 mb-6">
           <View className="bg-slate-50 rounded-3xl p-8 items-center justify-center" style={{ height: 320 }}>
-            <Image 
-              source={{ uri: product.image }}
-              style={{ width: 280, height: 240, resizeMode: 'contain' }}
-            />
+            <View className="w-280 h-240 rounded-3xl overflow-hidden">
+              <Image 
+                source={{ uri: product.image }}
+                style={{ width: 280, height: 240, resizeMode: 'cover' }}
+              />
+            </View>
           </View>
         </View>
 
@@ -208,8 +210,8 @@ export default function ProductDetail() {
           {/* Add to Cart Button */}
           <Pressable 
             onPress={handleAddToCart}
-            style={{ backgroundColor: accentBlue }}
-            className="flex-1 ml-6 h-18 items-center justify-center rounded-2xl shadow-lg"
+            style={{ backgroundColor: primaryNavy, height: 72 }}
+            className="flex-1 ml-6 items-center justify-center rounded-2xl shadow-lg"
           >
             <Text style={{ 
               color: 'white',
