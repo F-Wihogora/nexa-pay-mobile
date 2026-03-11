@@ -5,9 +5,10 @@ interface AgentTopbarProps {
   name: string;
   role: string;
   primaryNavy: string;
+  showWelcome?: boolean;
 }
 
-export const AgentTopbar = ({ name, role, primaryNavy }: AgentTopbarProps) => (
+export const AgentTopbar = ({ name, role, primaryNavy, showWelcome = true }: AgentTopbarProps) => (
   <View style={{ paddingTop: Platform.OS === 'ios' ? 0 : 40 }} className="px-6 pb-6 bg-white">
     {/* Top row with logo and profile */}
     <View className="flex-row justify-between items-center mb-4">
@@ -46,16 +47,18 @@ export const AgentTopbar = ({ name, role, primaryNavy }: AgentTopbarProps) => (
       </View>
     </View>
     
-    {/* Welcome message */}
-    <View>
-      <Text style={{ 
-        color: primaryNavy,
-        fontFamily: 'Poppins_800ExtraBold'
-      }} className="text-3xl tracking-tight">Welcome back, {name}!</Text>
-      <Text style={{ 
-        color: '#94a3b8',
-        fontFamily: 'Poppins_600SemiBold'
-      }} className="text-sm uppercase tracking-widest mt-1">{role}</Text>
-    </View>
+    {/* Welcome message - conditionally rendered */}
+    {showWelcome && (
+      <View>
+        <Text style={{ 
+          color: primaryNavy,
+          fontFamily: 'Poppins_800ExtraBold'
+        }} className="text-3xl tracking-tight">Welcome back, {name}!</Text>
+        <Text style={{ 
+          color: '#94a3b8',
+          fontFamily: 'Poppins_600SemiBold'
+        }} className="text-sm uppercase tracking-widest mt-1">{role}</Text>
+      </View>
+    )}
   </View>
 );

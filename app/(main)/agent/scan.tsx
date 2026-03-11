@@ -1,13 +1,15 @@
 import { View, Text, ScrollView, Pressable, SafeAreaView } from 'react-native';
 import { useRouter } from 'expo-router';
-import { Maximize, Wifi, Cpu, ShieldCheck, CheckCircle, ChevronRight, TrendingUp, Users, Zap, Clock, BarChart3, Activity, DollarSign, CreditCard, ArrowUpRight, ArrowDownRight } from 'lucide-react-native';
+import { Maximize, Wifi, Cpu, ShieldCheck, CheckCircle, ChevronRight, TrendingUp, Users, Zap, Clock, BarChart3, Activity, DollarSign, CreditCard, ArrowUpRight, ArrowDownRight, Radio } from 'lucide-react-native';
 import { useState, useEffect } from 'react';
 import Animated, { 
   useSharedValue, 
   useAnimatedStyle, 
   withTiming, 
   withRepeat, 
-  withSequence 
+  withSequence,
+  interpolate,
+  Easing
 } from 'react-native-reanimated';
 import { AgentTopbar } from '../../../components/AgentTopbar';
 import { AgentBottomNav } from '../../../components/AgentBottomNav';
@@ -22,31 +24,91 @@ export default function AgentScanScreen() {
   // Animation values
   const pulseScale = useSharedValue(1);
   const pulseOpacity = useSharedValue(0);
+  const scanLinePosition = useSharedValue(0);
+  const rippleScale = useSharedValue(1);
+  const rippleOpacity = useSharedValue(0);
+  const glowOpacity = useSharedValue(0);
 
   useEffect(() => {
     if (isScanning) {
+      // Pulse animation
       pulseScale.value = withRepeat(
-        withTiming(1.5, { duration: 1000 }),
+        withTiming(1.3, { duration: 1200, easing: Easing.inOut(Easing.quad) }),
         -1,
-        false
+        true
       );
       pulseOpacity.value = withRepeat(
         withSequence(
-          withTiming(0.4, { duration: 500 }),
-          withTiming(0, { duration: 500 })
+          withTiming(0.6, { duration: 600 }),
+          withTiming(0, { duration: 600 })
         ),
         -1,
         false
       );
+
+      // Scanning line animation
+      scanLinePosition.value = withRepeat(
+        withSequence(
+          withTiming(1, { duration: 1500, easing: Easing.inOut(Easing.quad) }),
+          withTiming(0, { duration: 1500, easing: Easing.inOut(Easing.quad) })
+        ),
+        -1,
+        false
+      );
+
+      // Ripple effect
+      rippleScale.value = withRepeat(
+        withTiming(2, { duration: 2000, easing: Easing.out(Easing.quad) }),
+        -1,
+        false
+      );
+      rippleOpacity.value = withRepeat(
+        withSequence(
+          withTiming(0.4, { duration: 200 }),
+          withTiming(0, { duration: 1800 })
+        ),
+        -1,
+        false
+      );
+
+      // Glow effect
+      glowOpacity.value = withRepeat(
+        withSequence(
+          withTiming(0.8, { duration: 800 }),
+          withTiming(0.3, { duration: 800 })
+        ),
+        -1,
+        true
+      );
     } else {
-      pulseScale.value = 1;
-      pulseOpacity.value = 0;
+      pulseScale.value = withTiming(1, { duration: 300 });
+      pulseOpacity.value = withTiming(0, { duration: 300 });
+      scanLinePosition.value = withTiming(0, { duration: 300 });
+      rippleScale.value = withTiming(1, { duration: 300 });
+      rippleOpacity.value = withTiming(0, { duration: 300 });
+      glowOpacity.value = withTiming(0, { duration: 300 });
     }
   }, [isScanning]);
 
   const animatedPulseStyle = useAnimatedStyle(() => ({
     transform: [{ scale: pulseScale.value }],
     opacity: pulseOpacity.value,
+  }));
+
+  const animatedScanLineStyle = useAnimatedStyle(() => ({
+    transform: [{ 
+      translateY: interpolate(scanLinePosition.value, [0, 1], [-55, 55]) 
+    }],
+    opacity: isScanning ? 0.8 : 0,
+  }));
+
+  const animatedRippleStyle = useAnimatedStyle(() => ({
+    transform: [{ scale: rippleScale.value }],
+    opacity: rippleOpacity.value,
+  }));
+
+  const animatedGlowStyle = useAnimatedStyle(() => ({
+    opacity: glowOpacity.value,
   }));
 
   const handleStartScan = () => {
@@ -214,11 +276,44 @@ export default function AgentScanScreen() {
                       disabled={isScanning}
                       className="items-center justify-center"
                     >
+                      {/* Multiple ripple effects */}
+                      <Animated.View 
+                        style={[
+                          { position: 'absolute', width: 300, height: 300, borderRadius: 150, backgroundColor: primaryNavy },
+                          animatedRippleStyle
+                        ]} 
+                      />
+                      <Animated.View 
+                        style={[
+                          { position: 'absolute', width: 250, height: 250, borderRadius: 125, backgroundColor: '#3b82f6' },
+                          { ...animatedRippleStyle, opacity: animatedRippleStyle.opacity * 0.6 }
+                        ]} 
+                      />
+                      
                       {/* Pulse effect */}
                       <Animated.View 
                         style={[
                           { position: 'absolute', width: 200, height: 125, borderRadius: 16, backgroundColor: primaryNavy },
                           animatedPulseStyle
+                        ]} 
+                      />
+                      
+                      {/* Glow effect */}
+                      <Animated.View 
+                        style={[
+                          { 
+                            position: 'absolute', 
+                            width: 190, 
+                            height: 115, 
+                            borderRadius: 14, 
+                            backgroundColor: '#60a5fa',
+                            shadowColor: '#3b82f6',
+                            shadowOffset: { width: 0, height: 0 },
+                            shadowOpacity: 1,
+                            shadowRadius: 20,
+                            elevation: 20
+                          },
+                          animatedGlowStyle
                         ]} 
                       />
                       
@@ -305,10 +400,35 @@ export default function AgentScanScreen() {
                           <Text className="text-white/60 text-xs">12/28</Text>
                         </View>
                         
-                        {/* Scanning indicator */}
+                        {/* Scanning line animation */}
+                        {isScanning && (
+                          <Animated.View 
+                            style={[
+                              {
+                                position: 'absolute',
+                                width: '100%',
+                                height: 2,
+                                backgroundColor: '#60a5fa',
+                                shadowColor: '#60a5fa',
+                                shadowOffset: { width: 0, height: 0 },
+                                shadowOpacity: 1,
+                                shadowRadius: 8,
+                                elevation: 10
+                              },
+                              animatedScanLineStyle
+                            ]}
+                          />
+                        )}
+                        
+                        {/* RFID scanning indicator */}
                         {isScanning && (
                           <View className="absolute inset-0 items-center justify-center">
-                            <View className="w-3 h-3 bg-white rounded-full animate-pulse" />
+                            <View className="flex-row items-center">
+                              <Radio size={16} color="white" className="mr-2" />
+                              <View className="w-2 h-2 bg-white rounded-full animate-pulse mr-1" />
+                              <View className="w-2 h-2 bg-white rounded-full animate-pulse mr-1" />
+                              <View className="w-2 h-2 bg-white rounded-full animate-pulse" />
+                            </View>
                           </View>
                         )}
                       </View>
@@ -318,16 +438,27 @@ export default function AgentScanScreen() {
                       color: isScanning ? '#2563eb' : '#64748b',
                       fontFamily: 'Poppins_700Bold'
                     }} className="text-lg mt-6">
-                      {isScanning ? 'Scanning the card...' : 'Tap to scan card'}
+                      {isScanning ? 'Scanning RFID card...' : 'Tap to scan RFID card'}
                     </Text>
                     
                     {isScanning && (
-                      <Text style={{ 
-                        color: '#3b82f6',
-                        fontFamily: 'Poppins_500Medium'
-                      }} className="text-sm mt-2 animate-pulse">
-                        Hold card steady
-                      </Text>
+                      <View className="items-center mt-3">
+                        <Text style={{ 
+                          color: '#3b82f6',
+                          fontFamily: 'Poppins_500Medium'
+                        }} className="text-sm animate-pulse mb-2">
+                          Hold card close to device
+                        </Text>
+                        <View className="flex-row items-center">
+                          <Radio size={14} color="#3b82f6" className="mr-2" />
+                          <Text style={{ 
+                            color: '#64748b',
+                            fontFamily: 'Poppins_400Regular'
+                          }} className="text-xs">
+                            RFID signal detected
+                          </Text>
+                        </View>
+                      </View>
                     )}
                   </View>
                 </View>
