@@ -74,7 +74,9 @@ export class StorageService {
     static async isLoggedIn(): Promise<boolean> {
         try {
             const isLoggedIn = await safeAsyncStorage.getItem(STORAGE_KEYS.IS_LOGGED_IN);
-            return isLoggedIn === 'true';
+            const result = isLoggedIn === 'true';
+            console.log('🔍 Checking login status:', { isLoggedIn, result });
+            return result;
         } catch (error) {
             console.error('Failed to check login status:', error);
             return false;
@@ -95,11 +97,19 @@ export class StorageService {
 
     static async initializeAuth(): Promise<{ token: string | null; user: User | null; isLoggedIn: boolean }> {
         try {
+            console.log('🔄 Initializing auth...');
             const [token, user, isLoggedIn] = await Promise.all([
                 this.getToken(),
                 this.getUser(),
                 this.isLoggedIn(),
             ]);
+
+            console.log('🔍 Auth initialization result:', {
+                hasToken: !!token,
+                hasUser: !!user,
+                isLoggedIn,
+                userRole: user?.role
+            });
 
             return { token, user, isLoggedIn };
         } catch (error) {

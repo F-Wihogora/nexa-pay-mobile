@@ -15,7 +15,8 @@ import Animated, {
 import { AgentTopbar } from '../../../components/AgentTopbar';
 import { AgentBottomNav } from '../../../components/AgentBottomNav';
 import { StorageService } from '../../../services/storage';
-import { User } from '../../../services/api';
+import { User, apiService } from '../../../services/api';
+import { Alert } from 'react-native';
 
 export default function AgentScanScreen() {
   const router = useRouter();
@@ -31,6 +32,13 @@ export default function AgentScanScreen() {
       try {
         const user = await StorageService.getUser();
         setCurrentUser(user);
+        
+        // Set API token for authenticated requests
+        const token = await StorageService.getToken();
+        if (token) {
+          apiService.setToken(token);
+          console.log('🔑 API token set for authenticated requests');
+        }
       } catch (error) {
         console.error('Failed to load user data:', error);
       }
@@ -128,19 +136,38 @@ export default function AgentScanScreen() {
     opacity: glowOpacity.value,
   }));
 
-  const handleStartScan = () => {
+  const handleStartScan = async () => {
     setIsScanning(true);
     setScanResult(null);
     
-    // Simulate successful scan after 2.5 seconds
-    setTimeout(() => {
+    try {
+      // Simulate RFID card detection - in real implementation, this would connect to RFID hardware
+      // For now, we'll simulate with a known card UID
+      const simulatedCardUID = '70:77:88:99';
+      
+      console.log('🔍 Scanning RFID card:', simulatedCardUID);
+      
+      // Get wallet balance from backend
+      const balanceResponse = await apiService.getBalance(simulatedCardUID);
+      
+      if (balanceResponse.success) {
+        setTimeout(() => {
+          setIsScanning(false);
+          setScanResult({
+            id: simulatedCardUID,
+            name: 'Card Holder',
+            balance: balanceResponse.balance
+          });
+          console.log('✅ Card scanned successfully:', balanceResponse);
+        }, 2500);
+      } else {
+        throw new Error('Failed to get card balance');
+      }
+    } catch (error) {
+      console.error('❌ Scan error:', error);
       setIsScanning(false);
-      setScanResult({
-        id: '70:77:88:99',
-        name: 'Alex Nexa',
-        balance: 1250.00
-      });
-    }, 2500);
+      Alert.alert('Scan Error', 'Failed to read card. Please try again.');
+    }
   };
 
   const NexaCard = () => (

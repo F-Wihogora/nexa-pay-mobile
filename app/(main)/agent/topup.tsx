@@ -21,13 +21,16 @@ import Animated, {
 import { AgentTopbar } from '../../../components/AgentTopbar';
 import { AgentBottomNav } from '../../../components/AgentBottomNav';
 import { StorageService } from '../../../services/storage';
-import { User } from '../../../services/api';
+import { User, apiService } from '../../../services/api';
+import { Alert } from 'react-native';
 
 export default function AgentTopupScreen() {
   const router = useRouter();
   const primaryNavy = "#002B5B";
   const [amount, setAmount] = useState('');
   const [currentUser, setCurrentUser] = useState<User | null>(null);
+  const [isProcessing, setIsProcessing] = useState(false);
+  const [cardUID, setCardUID] = useState('70:77:88:99'); // Simulated card UID
 
   // Load current user data
   useEffect(() => {
@@ -35,12 +38,56 @@ export default function AgentTopupScreen() {
       try {
         const user = await StorageService.getUser();
         setCurrentUser(user);
+        
+        // Set API token for authenticated requests
+        const token = await StorageService.getToken();
+        if (token) {
+          apiService.setToken(token);
+        }
       } catch (error) {
         console.error('Failed to load user data:', error);
       }
     };
     loadUserData();
   }, []);
+
+  const handleTopUp = async () => {
+    if (!amount || parseFloat(amount) <= 0) {
+      Alert.alert('Invalid Amount', 'Please enter a valid amount');
+      return;
+    }
+
+    setIsProcessing(true);
+    try {
+      console.log('💰 Processing top-up:', { cardUID, amount });
+      
+      const response = await apiService.topup(cardUID, parseFloat(amount));
+      
+      if (response.success) {
+        Alert.alert(
+          'Top-up Successful',
+          `Successfully added $${amount} to card ${cardUID}\nNew balance: $${response.newBalance}`,
+          [
+            {
+              text: 'OK',
+              onPress: () => {
+                setAmount('');
+                router.back();
+              }
+            }
+          ]
+        );
+        console.log('✅ Top-up successful:', response);
+      } else {
+        throw new Error(response.error || 'Top-up failed');
+      }
+    } catch (error) {
+      console.error('❌ Top-up error:', error);
+      Alert.alert('Top-up Failed', error.message || 'Failed to process top-up. Please try again.');
+    } finally {
+      setIsProcessing(false);
+    }
+  };
   const [isSuccess, setIsSuccess] = useState(false);
   const [balance, setBalance] = useState(1250.00);
 
@@ -49,33 +96,6 @@ export default function AgentTopupScreen() {
   const moneyProgress = useSharedValue(0);
   const successOpacity = useSharedValue(0);
   const moneyPulse = useSharedValue(1);
-
-  const handleTopUp = () => {
-    if (!amount) return;
-    
-    // Start animation sequence
-    setIsSuccess(true);
-    walletProgress.value = withTiming(1, { duration: 1500, easing: Easing.bezier(0.4, 0, 0.2, 1) });
-    moneyProgress.value = withSequence(
-      withTiming(1, { duration: 800 }),
-      withDelay(200, withTiming(0, { duration: 500 }))
-    );
-    moneyPulse.value = withRepeatPulse();
-    successOpacity.value = withDelay(1200, withTiming(1, { duration: 500 }));
-
-    // Simulate balance update
-    const loadAmount = parseFloat(amount);
-    setTimeout(() => {
-      setBalance(prev => prev + loadAmount);
-    }, 1300);
-
-    // Navigate back to transactions after success
-    setTimeout(() => {
-      setIsSuccess(false);
-      setAmount('');
-      router.replace('/(main)/agent/transactions');
-    }, 3500);
-  };
 
   function withRepeatPulse() {
     return withSequence(
@@ -322,13 +342,14 @@ export default function AgentTopupScreen() {
         <View className="items-center mb-12">
           <Pressable 
             onPress={handleTopUp}
-            style={{ backgroundColor: primaryNavy, borderRadius: 16, width: '80%' }}
+            disabled={isProcessing}
+            style={{ backgroundColor: primaryNavy, borderRadius: 16, width: '80%', opacity: isProcessing ? 0.7 : 1 }}
             className="h-20 items-center justify-center flex-row shadow-2xl shadow-blue-900/30 overflow-hidden"
           >
             <Text style={{ 
               color: 'white',
               fontFamily: 'Poppins_800ExtraBold'
-            }} className="text-xl uppercase tracking-widest">Top up</Text>
+            }} className="text-xl uppercase tracking-widest">{isProcessing ? 'Processing...' : 'Top up'}</Text>
           </Pressable>
         </View>
         <View className="h-40" />

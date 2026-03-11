@@ -5,19 +5,30 @@ import { useState, useMemo, useCallback, useEffect } from 'react';
 import { AgentTopbar } from '../../../components/AgentTopbar';
 import { AgentBottomNav } from '../../../components/AgentBottomNav';
 import { StorageService } from '../../../services/storage';
-import { User } from '../../../services/api';
+import { User, apiService } from '../../../services/api';
 
 const AgentTransactionsScreen = () => {
   const primaryNavy = "#002B5B";
   const [activeFilter, setActiveFilter] = useState<'all' | 'success' | 'failed'>('all');
   const [currentUser, setCurrentUser] = useState<User | null>(null);
+  const [transactions, setTransactions] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
 
-  // Load current user data
+  // Load current user data and transactions
   useEffect(() => {
     const loadUserData = async () => {
       try {
         const user = await StorageService.getUser();
         setCurrentUser(user);
+        
+        // Set API token for authenticated requests
+        const token = await StorageService.getToken();
+        if (token) {
+          apiService.setToken(token);
+        }
+        
+        // Load transactions for a sample card UID
+        await loadTransactions();
       } catch (error) {
         console.error('Failed to load user data:', error);
       }
@@ -25,29 +36,47 @@ const AgentTransactionsScreen = () => {
     loadUserData();
   }, []);
 
-  const allTransactions = useMemo(() => [
-    { id: '1', name: 'Alex Nexa', uid: '70:77:88:99', amt: '+$50.00', date: 'Oct 24, 09:41 AM', status: 'SUCCESS', type: 'topup', time: '09:41 AM' },
-    { id: '2', name: 'John Peterson', uid: 'EEFF-1122', amt: '+$100.00', date: 'Oct 23, 08:20 AM', status: 'SUCCESS', type: 'topup', time: '08:20 AM' },
-    { id: '3', name: 'Sarah Miller', uid: '4455-6677', amt: '+$20.00', date: 'Oct 23, 02:15 PM', status: 'FAILED', type: 'payment', time: '02:15 PM' },
-    { id: '4', name: 'David Wilson', uid: '9900-3321', amt: '+$150.00', date: 'Oct 22, 11:30 AM', status: 'SUCCESS', type: 'topup', time: '11:30 AM' },
-    { id: '5', name: 'Emma Johnson', uid: '1234-5678', amt: '+$75.00', date: 'Oct 21, 03:45 PM', status: 'FAILED', type: 'payment', time: '03:45 PM' },
-  ], []);
+  const loadTransactions = async () => {
+    try {
+      setIsLoading(true);
+      const cardUID = '70:77:88:99'; // Sample card UID
+      const response = await apiService.getTransactions(cardUID, 20);
+      
+      if (response.success) {
+        setTransactions(response.transactions);
+        console.log('✅ Transactions loaded:', response.transactions.length);
+      } else {
+        console.error('Failed to load transactions:', response.error);
+      }
+    } catch (error) {
+      console.error('❌ Error loading transactions:', error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   const filteredTransactions = useMemo(() => {
-    return allTransactions.filter(transaction => {
+    if (!transactions.length) return [];
+    
+    return transactions.filter(transaction => {
       if (activeFilter === 'success') return transaction.status === 'SUCCESS';
       if (activeFilter === 'failed') return transaction.status === 'FAILED';
       return true; // 'all' filter
     });
-  }, [allTransactions, activeFilter]);
+  }, [transactions, activeFilter]);
 
   const todayTotal = useMemo(() => {
-    return allTransactions
-      .filter(t => t.date.includes('Oct 24'))
-      .reduce((sum, t) => sum + parseFloat(t.amt.replace(/[+$]/g, '')), 0);
-  }, [allTransactions]);
+    if (!transactions.length) return 0;
+    
+    const today = new Date().toDateString();
+    return transactions
+      .filter(t => new Date(t.createdAt).toDateString() === today)
+      .reduce((sum, t) => sum + Math.abs(t.amount), 0);
+  }, [transactions]);
 
-  const successCount = useMemo(() => allTransactions.filter(t => t.status === 'SUCCESS').length, [allTransactions]);
+  const successCount = useMemo(() => {
+    return transactions.filter(t => t.status === 'SUCCESS').length;
+  }, [transactions]);
   const failedCount = useMemo(() => allTransactions.filter(t => t.status === 'FAILED').length, [allTransactions]);
 
   const handleFilterChange = useCallback((filter: 'all' | 'success' | 'failed') => {
@@ -205,50 +234,103 @@ const AgentTransactionsScreen = () => {
             </Pressable>
           </View>
 
+          {/* Refresh Button */}
+          <Pressable 
+            onPress={loadTransactions}
+            disabled={isLoading}
+            className="bg-white border border-slate-200 rounded-xl p-4 mb-6 flex-row items-center justify-center shadow-sm"
+          >
+            <Text style={{ 
+              color: primaryNavy,
+              fontFamily: 'Poppins_600SemiBold'
+            }} className="text-base">{isLoading ? 'Refreshing...' : 'Refresh Transactions'}</Text>
+          </Pressable>
+
           {/* Enhanced Transaction Cards */}
-          {filteredTransactions.map((item, index) => (
-            <View key={item.id} className="bg-white border border-slate-100 p-6 rounded-2xl mb-4 shadow-sm shadow-blue-900/5 relative overflow-hidden">
-              {/* Decorative element */}
-              <View style={{ 
-                position: 'absolute', 
-                top: 0, 
-                right: 0, 
-                width: 60, 
-                height: 60, 
-                borderRadius: 30, 
-                backgroundColor: item.status === 'SUCCESS' ? '#10b981' : '#ef4444', 
-                opacity: 0.05 
-              }} />
-              
-              <View className="flex-row justify-between items-start mb-4">
-                <View className="flex-row items-center flex-1">
-                  <View className={`w-14 h-14 rounded-2xl items-center justify-center mr-4 ${
-                    item.status === 'SUCCESS' ? 'bg-green-50 border border-green-100' : 'bg-red-50 border border-red-100'
-                  }`}>
-                    {item.type === 'topup' ? 
-                      <ArrowUpRight size={24} color={item.status === 'SUCCESS' ? '#10b981' : '#ef4444'} /> : 
-                      <ArrowDownRight size={24} color={item.status === 'SUCCESS' ? '#10b981' : '#ef4444'} />
-                    }
+          {isLoading ? (
+            <View className="items-center py-8">
+              <Text style={{ 
+                color: '#94a3b8',
+                fontFamily: 'Poppins_500Medium'
+              }} className="text-base">Loading transactions...</Text>
+            </View>
+          ) : filteredTransactions.length === 0 ? (
+            <View className="items-center py-8">
+              <Text style={{ 
+                color: '#94a3b8',
+                fontFamily: 'Poppins_500Medium'
+              }} className="text-base">No transactions found</Text>
+            </View>
+          ) : (
+            filteredTransactions.map((item, index) => (
+              <View key={item._id} className="bg-white border border-slate-100 p-6 rounded-2xl mb-4 shadow-sm shadow-blue-900/5 relative overflow-hidden">
+                {/* Decorative element */}
+                <View style={{ 
+                  position: 'absolute', 
+                  top: 0, 
+                  right: 0, 
+                  width: 60, 
+                  height: 60, 
+                  borderRadius: 30, 
+                  backgroundColor: item.status === 'SUCCESS' ? '#10b981' : '#ef4444', 
+                  opacity: 0.05 
+                }} />
+                
+                <View className="flex-row justify-between items-start mb-4">
+                  <View className="flex-row items-center flex-1">
+                    <View className={`w-14 h-14 rounded-2xl items-center justify-center mr-4 ${
+                      item.status === 'SUCCESS' ? 'bg-green-50 border border-green-100' : 'bg-red-50 border border-red-100'
+                    }`}>
+                      {item.type === 'TOPUP' ? 
+                        <ArrowUpRight size={24} color={item.status === 'SUCCESS' ? '#10b981' : '#ef4444'} /> : 
+                        <ArrowDownRight size={24} color={item.status === 'SUCCESS' ? '#10b981' : '#ef4444'} />
+                      }
+                    </View>
+                    <View className="flex-1">
+                      <Text style={{ 
+                        color: primaryNavy,
+                        fontFamily: 'Poppins_800ExtraBold'
+                      }} className="text-lg leading-tight">{item.type === 'TOPUP' ? 'Top-up' : 'Payment'}</Text>
+                      <Text style={{ 
+                        color: '#94a3b8',
+                        fontFamily: 'Poppins_500Medium'
+                      }} className="text-sm mt-1">{item.cardUid}</Text>
+                    </View>
                   </View>
-                  <View className="flex-1">
+                  <View className="items-end">
                     <Text style={{ 
-                      color: primaryNavy,
-                      fontFamily: 'Poppins_800ExtraBold'
-                    }} className="text-lg leading-tight">{item.name}</Text>
+                      color: item.status === 'SUCCESS' ? '#10b981' : '#ef4444',
+                      fontFamily: 'Poppins_900Black'
+                    }} className="text-xl">{item.type === 'TOPUP' ? '+' : '-'}${item.amount.toFixed(2)}</Text>
+                    <View className={`px-2 py-1 rounded-md mt-2 ${
+                      item.status === 'SUCCESS' ? 'bg-green-100' : 'bg-red-100'
+                    }`}>
+                      <Text style={{ 
+                        color: item.status === 'SUCCESS' ? '#10b981' : '#ef4444',
+                        fontFamily: 'Poppins_700Bold'
+                      }} className="text-xs">{item.status}</Text>
+                    </View>
+                  </View>
+                </View>
+                
+                <View className="flex-row justify-between items-center pt-4 border-t border-slate-50">
+                  <View className="flex-row items-center">
+                    <Clock size={14} color="#94a3b8" />
                     <Text style={{ 
                       color: '#94a3b8',
                       fontFamily: 'Poppins_500Medium'
-                    }} className="text-sm mt-1">{item.uid}</Text>
+                    }} className="text-sm ml-2">{new Date(item.createdAt).toLocaleString()}</Text>
                   </View>
+                  {item.reason && (
+                    <Text style={{ 
+                      color: '#64748b',
+                      fontFamily: 'Poppins_400Regular'
+                    }} className="text-xs">{item.reason}</Text>
+                  )}
                 </View>
-                <View className="items-end">
-                  <Text style={{ 
-                    color: item.status === 'SUCCESS' ? '#10b981' : '#ef4444',
-                    fontFamily: 'Poppins_900Black'
-                  }} className="text-xl">{item.amt}</Text>
-                  <View className={`px-2 py-1 rounded-md mt-2 ${
-                    item.status === 'SUCCESS' ? 'bg-green-100' : 'bg-red-100'
-                  }`}>
+              </View>
+            ))
+          )}
                     <Text style={{ 
                       color: item.status === 'SUCCESS' ? '#10b981' : '#ef4444',
                       fontFamily: 'Poppins_700Bold'

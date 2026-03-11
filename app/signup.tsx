@@ -1,8 +1,8 @@
 import { View, Text, TextInput, Pressable, KeyboardAvoidingView, Platform, ScrollView, StatusBar, Alert } from 'react-native';
 import { useRouter } from 'expo-router';
 import { Logo } from '../components/Logo';
-import { Mail, Lock, User, ChevronLeft, Wallet, Briefcase } from 'lucide-react-native';
-import { useState } from 'react';
+import { Mail, Lock, User, ChevronLeft, Wallet, Briefcase, Eye, EyeOff } from 'lucide-react-native';
+import { useState, useEffect } from 'react';
 import { apiService } from '../services/api';
 import { StorageService } from '../services/storage';
 
@@ -13,7 +13,28 @@ export default function SignupScreen() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
   const primaryNavy = "#002B5B";
+
+  // Check if user is already logged in
+  useEffect(() => {
+    const checkExistingSession = async () => {
+      try {
+        const { isLoggedIn, user } = await StorageService.initializeAuth();
+        if (isLoggedIn && user) {
+          console.log('✅ User already logged in, redirecting...');
+          if (user.role === 'admin') {
+            router.replace('/(main)/agent/scan');
+          } else {
+            router.replace('/(main)/salesperson/dashboard');
+          }
+        }
+      } catch (error) {
+        console.error('Error checking existing session:', error);
+      }
+    };
+    checkExistingSession();
+  }, []);
 
   const handleSignup = async () => {
     if (!username || !email || !password) {
@@ -132,10 +153,20 @@ export default function SignupScreen() {
                     placeholder="••••••••"
                     placeholderTextColor="#94a3b8"
                     className="flex-1 text-slate-900 text-base font-bold h-full"
-                    secureTextEntry
+                    secureTextEntry={!showPassword}
                     value={password}
                     onChangeText={setPassword}
                   />
+                  <Pressable 
+                    onPress={() => setShowPassword(!showPassword)}
+                    className="ml-2 p-2"
+                  >
+                    {showPassword ? (
+                      <EyeOff size={18} color={primaryNavy} opacity={0.6} />
+                    ) : (
+                      <Eye size={18} color={primaryNavy} opacity={0.6} />
+                    )}
+                  </Pressable>
                 </View>
               </View>
 
