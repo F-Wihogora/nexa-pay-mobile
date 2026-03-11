@@ -16,6 +16,7 @@ export default function AgentScanScreen() {
   const router = useRouter();
   const primaryNavy = "#002B5B";
   const [isScanning, setIsScanning] = useState(false);
+  const [selectedCurrency, setSelectedCurrency] = useState<'NGN' | 'USD' | 'EUR'>('NGN');
   const [scanResult, setScanResult] = useState<{id: string, name: string, balance: number} | null>(null);
 
   // Animation values
@@ -66,32 +67,32 @@ export default function AgentScanScreen() {
   const NexaCard = () => (
     <View className="px-4 mt-2">
       <View 
-        style={{ height: 210, backgroundColor: 'white', borderRadius: 24, padding: 30 }} 
-        className="shadow-2xl shadow-blue-900/10 border border-slate-100 relative overflow-hidden"
+        style={{ height: 210, backgroundColor: primaryNavy, borderRadius: 24, padding: 30 }} 
+        className="shadow-2xl shadow-blue-900/20 border border-blue-100 relative overflow-hidden"
       >
-        <View style={{ backgroundColor: primaryNavy, width: 200, height: 200, borderRadius: 100, position: 'absolute', top: -100, right: -100, opacity: 0.03 }} />
+        <View style={{ backgroundColor: 'rgba(255,255,255,0.1)', width: 200, height: 200, borderRadius: 100, position: 'absolute', top: -100, right: -100 }} />
         <View className="flex-row justify-between items-start mb-6">
           <View style={{ backgroundColor: '#FFD700', width: 50, height: 38, borderRadius: 8, opacity: 0.9, position: 'relative', overflow: 'hidden' }}>
              <View className="absolute inset-0 border border-black/10 opacity-20" />
              <View className="absolute top-1/2 w-full h-[1px] bg-black/10" />
              <View className="absolute left-1/2 h-full w-[1px] bg-black/10" />
           </View>
-          <Wifi size={24} color={primaryNavy} opacity={0.2} />
+          <Wifi size={24} color="white" opacity={0.6} />
         </View>
-        <Text style={{ color: primaryNavy }} className="text-2xl font-black tracking-[4px] mb-8 opacity-80">
+        <Text className="text-white text-2xl font-black tracking-[4px] mb-8 opacity-80">
           **** **** **** ****
         </Text>
         <View className="flex-row justify-between items-end mt-auto">
           <View>
-            <Text className="text-slate-400 text-[10px] font-black uppercase tracking-[2px] mb-2">CARD UID</Text>
+            <Text className="text-white/60 text-[10px] font-black uppercase tracking-[2px] mb-2">CARD UID</Text>
             <View className="flex-row items-center">
-              <Cpu size={14} color={primaryNavy} className="mr-2" opacity={0.5} />
-              <Text style={{ color: primaryNavy }} className="text-lg font-black tracking-tighter">70:77:88:99</Text>
+              <Cpu size={14} color="white" className="mr-2" opacity={0.7} />
+              <Text className="text-white text-lg font-black tracking-tighter">70:77:88:99</Text>
             </View>
           </View>
           <View className="items-end">
-            <Text className="text-slate-400 text-[10px] font-black uppercase tracking-[2px] mb-2">WALLET BALANCE</Text>
-            <Text style={{ color: primaryNavy }} className="text-2xl font-black">$1,250.00</Text>
+            <Text className="text-white/60 text-[10px] font-black uppercase tracking-[2px] mb-2">WALLET BALANCE</Text>
+            <Text className="text-white text-2xl font-black">$1,250.00</Text>
           </View>
         </View>
       </View>
@@ -109,15 +110,24 @@ export default function AgentScanScreen() {
           {/* Currency Selection Section */}
           <View className="mb-8">
             <Text style={{ color: primaryNavy }} className="text-2xl font-black mb-6">Currency</Text>
-            <View className="flex-row space-x-4">
-              <Pressable className="bg-emerald-600 px-10 py-5 rounded-2xl shadow-lg">
-                <Text className="text-white font-bold text-lg">NGN</Text>
+            <View className="flex-row justify-between">
+              <Pressable 
+                onPress={() => setSelectedCurrency('NGN')}
+                className={`flex-1 mx-2 px-10 py-5 rounded-2xl shadow-lg ${selectedCurrency === 'NGN' ? 'bg-blue-600' : 'bg-slate-100 border border-slate-200'}`}
+              >
+                <Text className={`font-bold text-lg text-center ${selectedCurrency === 'NGN' ? 'text-white' : 'text-slate-600'}`}>NGN</Text>
               </Pressable>
-              <Pressable className="bg-slate-100 px-10 py-5 rounded-2xl border border-slate-200 shadow-sm">
-                <Text className="text-slate-600 font-bold text-lg">USD</Text>
+              <Pressable 
+                onPress={() => setSelectedCurrency('USD')}
+                className={`flex-1 mx-2 px-10 py-5 rounded-2xl shadow-lg ${selectedCurrency === 'USD' ? 'bg-blue-600' : 'bg-slate-100 border border-slate-200'}`}
+              >
+                <Text className={`font-bold text-lg text-center ${selectedCurrency === 'USD' ? 'text-white' : 'text-slate-600'}`}>USD</Text>
               </Pressable>
-              <Pressable className="bg-slate-100 px-10 py-5 rounded-2xl border border-slate-200 shadow-sm">
-                <Text className="text-slate-600 font-bold text-lg">EUR</Text>
+              <Pressable 
+                onPress={() => setSelectedCurrency('EUR')}
+                className={`flex-1 mx-2 px-10 py-5 rounded-2xl shadow-lg ${selectedCurrency === 'EUR' ? 'bg-blue-600' : 'bg-slate-100 border border-slate-200'}`}
+              >
+                <Text className={`font-bold text-lg text-center ${selectedCurrency === 'EUR' ? 'text-white' : 'text-slate-600'}`}>EUR</Text>
               </Pressable>
             </View>
           </View>
@@ -139,15 +149,15 @@ export default function AgentScanScreen() {
                       {/* Pulse effect */}
                       <Animated.View 
                         style={[
-                          { position: 'absolute', width: 200, height: 125, borderRadius: 16, backgroundColor: '#059669' },
+                          { position: 'absolute', width: 200, height: 125, borderRadius: 16, backgroundColor: primaryNavy },
                           animatedPulseStyle
                         ]} 
                       />
                       
-                      {/* Card Visual - Green Design */}
+                      {/* Card Visual - Blue Design */}
                       <View 
                         style={{ 
-                          backgroundColor: isScanning ? '#059669' : '#10b981',
+                          backgroundColor: isScanning ? '#1e40af' : primaryNavy,
                           width: 180,
                           height: 110,
                           borderRadius: 12,
@@ -236,12 +246,12 @@ export default function AgentScanScreen() {
                       </View>
                     </Pressable>
                     
-                    <Text className={`font-bold text-lg mt-6 ${isScanning ? 'text-emerald-600' : 'text-slate-500'}`}>
+                    <Text className={`font-bold text-lg mt-6 ${isScanning ? 'text-blue-600' : 'text-slate-500'}`}>
                       {isScanning ? 'Scanning the card...' : 'Tap to scan card'}
                     </Text>
                     
                     {isScanning && (
-                      <Text className="text-emerald-500 text-sm mt-2 animate-pulse">
+                      <Text className="text-blue-500 text-sm mt-2 animate-pulse">
                         Hold card steady
                       </Text>
                     )}
