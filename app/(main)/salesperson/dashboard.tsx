@@ -14,10 +14,26 @@ export default function SalespersonDashboard() {
   const locations = ['New York, USA', 'Los Angeles, USA', 'Chicago, USA', 'Miami, USA'];
 
   const categories = [
-    { name: 'T-Shirt', icon: Shirt, color: primaryNavy },
-    { name: 'Pants', icon: Package, color: primaryNavy },
-    { name: 'Dress', icon: Gem, color: primaryNavy },
-    { name: 'Jacket', icon: Briefcase, color: primaryNavy },
+    { 
+      name: 'T-Shirt', 
+      color: primaryNavy,
+      image: 'https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=200&h=200&fit=crop'
+    },
+    { 
+      name: 'Pants', 
+      color: primaryNavy,
+      image: 'https://images.unsplash.com/photo-1542272604-787c3835535d?w=200&h=200&fit=crop'
+    },
+    { 
+      name: 'Dress', 
+      color: primaryNavy,
+      image: 'https://images.unsplash.com/photo-1515372039744-b8f02a3ae446?w=200&h=200&fit=crop'
+    },
+    { 
+      name: 'Jacket', 
+      color: primaryNavy,
+      image: 'https://images.unsplash.com/photo-1551028719-00167b16eac5?w=200&h=200&fit=crop'
+    },
   ];
 
   const filters = ['All', 'Newest', 'Popular', 'Men', 'Women'];
@@ -130,29 +146,29 @@ export default function SalespersonDashboard() {
         {/* Promotional Banner */}
         <View className="px-6 mb-8">
           <Pressable 
-            style={{ backgroundColor: '#EBF4FF' }}
+            style={{ backgroundColor: '#EBF4FF', height: 200 }}
             className="rounded-3xl p-8 flex-row items-center justify-between overflow-hidden relative shadow-sm border border-blue-100"
           >
             <View className="flex-1 pr-4">
               <Text style={{ 
                 color: primaryNavy,
                 fontFamily: 'Poppins_800ExtraBold'
-              }} className="text-2xl mb-2">New Collection</Text>
+              }} className="text-3xl mb-3">New Collection</Text>
               <Text style={{ 
                 color: '#64748b',
                 fontFamily: 'Poppins_500Medium'
-              }} className="text-sm mb-4 leading-5">Discount 50% for{'\n'}the first transaction</Text>
+              }} className="text-base mb-6 leading-6">Discount 50% for{'\n'}the first transaction</Text>
               <Pressable 
                 style={{ backgroundColor: primaryNavy }}
-                className="px-8 py-4 rounded-2xl self-start shadow-lg"
+                className="px-10 py-5 rounded-2xl self-start shadow-lg"
               >
                 <Text style={{ 
                   color: 'white',
-                  fontFamily: 'Poppins_600SemiBold'
-                }} className="text-sm">Shop Now</Text>
+                  fontFamily: 'Poppins_700Bold'
+                }} className="text-lg">Shop Now</Text>
               </Pressable>
             </View>
-            <View className="w-36 h-36 rounded-2xl overflow-hidden shadow-lg">
+            <View className="w-40 h-40 rounded-2xl overflow-hidden shadow-lg">
               <Image 
                 source={{ uri: 'https://images.unsplash.com/photo-1469334031218-e382a71b716b?w=300&h=300&fit=crop' }}
                 style={{ width: '100%', height: '100%', resizeMode: 'cover' }}
@@ -183,11 +199,11 @@ export default function SalespersonDashboard() {
                 onPress={() => handleCategoryPress(category.name)}
                 className="items-center"
               >
-                <View 
-                  style={{ backgroundColor: `${accentBlue}15` }}
-                  className="w-20 h-20 rounded-3xl items-center justify-center mb-3 shadow-sm border border-blue-100"
-                >
-                  <category.icon size={32} color={category.color} />
+                <View className="w-20 h-20 rounded-full overflow-hidden mb-3 shadow-lg border-2 border-white">
+                  <Image 
+                    source={{ uri: category.image }}
+                    style={{ width: '100%', height: '100%', resizeMode: 'cover' }}
+                  />
                 </View>
                 <Text style={{ 
                   color: '#64748b',
