@@ -1,7 +1,7 @@
 import { View, Text, ScrollView, Pressable, SafeAreaView } from 'react-native';
 import { useState, useEffect } from 'react';
 import { useRouter } from 'expo-router';
-import { Maximize, Wifi, CheckCircle2, XCircle, ArrowLeft, ArrowRight, ShoppingCart } from 'lucide-react-native';
+import { Maximize, Wifi, CheckCircle2, XCircle, ArrowLeft, ArrowRight, ShoppingCart, Radio } from 'lucide-react-native';
 import Animated, { 
   useSharedValue, 
   useAnimatedStyle, 
@@ -222,84 +222,151 @@ export default function SalespersonPay() {
              disabled={status !== 'idle'}
              className="items-center justify-center relative"
            >
-              {/* Outer ripple effects */}
+              {/* Multiple ripple effects */}
               <Animated.View 
                 style={[
-                  { position: 'absolute', width: 200, height: 200, borderRadius: 100, backgroundColor: primaryNavy, opacity: 0.1 },
+                  { position: 'absolute', width: 300, height: 300, borderRadius: 150, backgroundColor: primaryNavy },
                   animatedPulseStyle
                 ]} 
               />
               <Animated.View 
                 style={[
-                  { position: 'absolute', width: 160, height: 160, borderRadius: 80, backgroundColor: primaryNavy, opacity: 0.2 },
+                  { position: 'absolute', width: 250, height: 250, borderRadius: 125, backgroundColor: '#3b82f6' },
                   animatedPulseStyle
                 ]} 
               />
               
-              {/* Main card scanning area */}
+              {/* Pulse effect */}
+              <Animated.View 
+                style={[
+                  { position: 'absolute', width: 200, height: 125, borderRadius: 16, backgroundColor: primaryNavy },
+                  animatedPulseStyle
+                ]} 
+              />
+              
+              {/* Card Visual - Blue Design */}
               <View 
                 style={{ 
+                  backgroundColor: status === 'scanning' ? '#1e40af' : primaryNavy,
                   width: 180,
-                  height: 120,
-                  borderRadius: 20,
-                  shadowColor: status === 'scanning' ? primaryNavy : '#000',
-                  shadowOffset: { width: 0, height: 8 },
-                  shadowOpacity: status === 'scanning' ? 0.3 : 0.1,
-                  shadowRadius: 16,
-                  elevation: 12,
-                  backgroundColor: status === 'scanning' ? primaryNavy : '#ffffff'
+                  height: 110,
+                  borderRadius: 12,
+                  shadowColor: '#000',
+                  shadowOffset: { width: 0, height: 6 },
+                  shadowOpacity: 0.15,
+                  shadowRadius: 12,
+                  elevation: 8
                 }}
-                className="items-center justify-center border-2 border-slate-100 relative overflow-hidden"
+                className="items-center justify-center relative overflow-hidden"
               >
-                 {/* Card background pattern with layered colors */}
-                 <View style={{ 
-                   position: 'absolute', 
-                   top: -20, 
-                   right: -20, 
-                   width: 80, 
-                   height: 80, 
-                   borderRadius: 40, 
-                   backgroundColor: status === 'scanning' ? 'rgba(255,255,255,0.15)' : 'rgba(59, 130, 246, 0.15)'
-                 }} />
-                 <View style={{ 
-                   position: 'absolute', 
-                   top: -10, 
-                   right: -30, 
-                   width: 60, 
-                   height: 60, 
-                   borderRadius: 30, 
-                   backgroundColor: status === 'scanning' ? 'rgba(255,255,255,0.05)' : 'rgba(147, 51, 234, 0.05)'
-                 }} />
-                 
-                 {/* RFID waves animation */}
-                 {status === 'scanning' ? (
-                   <View className="items-center">
-                      <View className="flex-row items-center mb-2">
-                         <View className="w-2 h-2 bg-white rounded-full mr-1" />
-                         <View className="w-2 h-2 bg-white rounded-full mr-1" />
-                         <View className="w-2 h-2 bg-white rounded-full" />
-                      </View>
-                      <Text className="text-white font-bold text-sm">Scanning...</Text>
-                      <Text className="text-white/80 text-xs mt-1">Keep card steady</Text>
-                   </View>
-                 ) : (
-                   <View className="items-center">
-                      <View className="w-16 h-16 rounded-2xl items-center justify-center mb-3" 
-                            style={{ backgroundColor: '#dbeafe' }}>
-                         <View style={{ 
-                           position: 'absolute', 
-                           inset: 0, 
-                           borderRadius: 16, 
-                           backgroundColor: '#bfdbfe' 
-                         }} />
-                         <Wifi size={32} color={primaryNavy} />
-                      </View>
-                      <Text style={{ color: primaryNavy }} className="font-bold text-base">Tap Here</Text>
-                      <Text className="text-slate-500 text-xs mt-1">RFID Enabled</Text>
-                   </View>
-                 )}
+                {/* Background gradient circles */}
+                <View 
+                  style={{ 
+                    backgroundColor: 'rgba(255,255,255,0.1)',
+                    width: 120,
+                    height: 120,
+                    borderRadius: 60,
+                    position: 'absolute',
+                    top: -30,
+                    right: -20
+                  }}
+                />
+                <View 
+                  style={{ 
+                    backgroundColor: 'rgba(255,255,255,0.05)',
+                    width: 80,
+                    height: 80,
+                    borderRadius: 40,
+                    position: 'absolute',
+                    bottom: -20,
+                    left: -10
+                  }}
+                />
+                
+                {/* Card chip */}
+                <View 
+                  style={{ 
+                    backgroundColor: '#FFD700',
+                    width: 28,
+                    height: 22,
+                    borderRadius: 4,
+                    position: 'absolute',
+                    top: 16,
+                    left: 16,
+                    shadowColor: '#000',
+                    shadowOffset: { width: 0, height: 2 },
+                    shadowOpacity: 0.2,
+                    shadowRadius: 3
+                  }}
+                >
+                  {/* Chip details */}
+                  <View className="absolute inset-1 border border-yellow-600/20 rounded-sm" />
+                </View>
+                
+                {/* VISA logo area */}
+                <View className="absolute top-4 right-4">
+                  <Text className="text-white font-bold text-xs opacity-80">VISA</Text>
+                </View>
+                
+                {/* Card number */}
+                <View className="absolute bottom-8 left-4">
+                  <Text className="text-white font-mono text-sm tracking-wider">
+                    7048 •••• •••• 0349
+                  </Text>
+                </View>
+                
+                {/* Cardholder name */}
+                <View className="absolute bottom-3 left-4">
+                  <Text className="text-white/80 text-xs font-medium uppercase tracking-wide">
+                    GERTRUDE AMELL KENT
+                  </Text>
+                </View>
+                
+                {/* Expiry */}
+                <View className="absolute bottom-3 right-4">
+                  <Text className="text-white/60 text-xs">12/28</Text>
+                </View>
+                
+                {/* RFID scanning indicator */}
+                {status === 'scanning' && (
+                  <View className="absolute inset-0 items-center justify-center">
+                    <View className="flex-row items-center">
+                      <Radio size={16} color="white" className="mr-2" />
+                      <View className="w-2 h-2 bg-white rounded-full mr-1" />
+                      <View className="w-2 h-2 bg-white rounded-full mr-1" />
+                      <View className="w-2 h-2 bg-white rounded-full" />
+                    </View>
+                  </View>
+                )}
               </View>
            </Pressable>
+           
+           <Text style={{ 
+             color: status === 'scanning' ? '#2563eb' : '#64748b',
+             fontFamily: 'Poppins_700Bold'
+           }} className="text-lg mt-6">
+             {status === 'scanning' ? 'Processing payment...' : 'Tap card to pay'}
+           </Text>
+           
+           {status === 'scanning' && (
+             <View className="items-center mt-3">
+               <Text style={{ 
+                 color: '#3b82f6',
+                 fontFamily: 'Poppins_500Medium'
+               }} className="text-sm mb-2">
+                 Hold card close to device
+               </Text>
+               <View className="flex-row items-center">
+                 <Radio size={14} color="#3b82f6" className="mr-2" />
+                 <Text style={{ 
+                   color: '#64748b',
+                   fontFamily: 'Poppins_400Regular'
+                 }} className="text-xs">
+                   RFID signal detected
+                 </Text>
+               </View>
+             </View>
+           )}
            
            {/* Status indicators */}
            <View className="flex-row items-center mt-8">
