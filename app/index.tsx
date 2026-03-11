@@ -24,14 +24,14 @@ export default function WelcomeScreen() {
           <View className="w-full space-y-4 mb-16">
             <Pressable 
               onPress={() => router.push('/signup')}
-              className="bg-white h-16 rounded-2xl items-center justify-center shadow-xl shadow-black/20 active:bg-slate-50"
+              className="bg-white h-20 rounded-2xl items-center justify-center shadow-xl shadow-black/20 active:bg-slate-50"
             >
               <Text style={{ color: primaryNavy, fontFamily: 'Poppins_700Bold' }} className="text-lg">Register</Text>
             </Pressable>
             
             <Pressable 
               onPress={() => router.push('/login')}
-              className="bg-white h-16 rounded-2xl items-center justify-center shadow-xl shadow-black/20 active:bg-slate-50 mt-4"
+              className="bg-white h-20 rounded-2xl items-center justify-center shadow-xl shadow-black/20 active:bg-slate-50 mt-4"
             >
               <Text style={{ color: primaryNavy, fontFamily: 'Poppins_700Bold' }} className="text-lg">Login</Text>
             </Pressable>

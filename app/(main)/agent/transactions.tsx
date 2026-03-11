@@ -1,6 +1,6 @@
 import { View, Text, ScrollView, SafeAreaView, Pressable, Image } from 'react-native';
 import { History, Filter, CheckCircle, XCircle, TrendingUp, Calendar, Clock, ArrowUpRight, ArrowDownRight, Search } from 'lucide-react-native';
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import { AgentTopbar } from '../../../components/AgentTopbar';
 import { AgentBottomNav } from '../../../components/AgentBottomNav';
 
@@ -8,29 +8,40 @@ export default function AgentTransactionsScreen() {
   const primaryNavy = "#002B5B";
   const [activeFilter, setActiveFilter] = useState<'all' | 'success' | 'failed'>('all');
 
-  const allTransactions = [
+  const allTransactions = useMemo(() => [
     { id: '1', name: 'Alex Nexa', uid: '70:77:88:99', amt: '+$50.00', date: 'Oct 24, 09:41 AM', status: 'SUCCESS', type: 'topup', time: '09:41 AM' },
     { id: '2', name: 'John Peterson', uid: 'EEFF-1122', amt: '+$100.00', date: 'Oct 23, 08:20 AM', status: 'SUCCESS', type: 'topup', time: '08:20 AM' },
     { id: '3', name: 'Sarah Miller', uid: '4455-6677', amt: '+$20.00', date: 'Oct 23, 02:15 PM', status: 'FAILED', type: 'payment', time: '02:15 PM' },
     { id: '4', name: 'David Wilson', uid: '9900-3321', amt: '+$150.00', date: 'Oct 22, 11:30 AM', status: 'SUCCESS', type: 'topup', time: '11:30 AM' },
     { id: '5', name: 'Emma Johnson', uid: '1234-5678', amt: '+$75.00', date: 'Oct 21, 03:45 PM', status: 'FAILED', type: 'payment', time: '03:45 PM' },
-  ];
+  ], []);
 
-  const filteredTransactions = allTransactions.filter(transaction => {
-    if (activeFilter === 'success') return transaction.status === 'SUCCESS';
-    if (activeFilter === 'failed') return transaction.status === 'FAILED';
-    return true; // 'all' filter
-  });
+  const filteredTransactions = useMemo(() => {
+    return allTransactions.filter(transaction => {
+      if (activeFilter === 'success') return transaction.status === 'SUCCESS';
+      if (activeFilter === 'failed') return transaction.status === 'FAILED';
+      return true; // 'all' filter
+    });
+  }, [allTransactions, activeFilter]);
 
-  const todayTotal = allTransactions
-    .filter(t => t.date.includes('Oct 24'))
-    .reduce((sum, t) => sum + parseFloat(t.amt.replace(/[+$]/g, '')), 0);
+  const todayTotal = useMemo(() => {
+    return allTransactions
+      .filter(t => t.date.includes('Oct 24'))
+      .reduce((sum, t) => sum + parseFloat(t.amt.replace(/[+$]/g, '')), 0);
+  }, [allTransactions]);
+
+  const successCount = useMemo(() => allTransactions.filter(t => t.status === 'SUCCESS').length, [allTransactions]);
+  const failedCount = useMemo(() => allTransactions.filter(t => t.status === 'FAILED').length, [allTransactions]);
 
   return (
     <SafeAreaView className="flex-1 bg-slate-50">
       <AgentTopbar name="Alex Nexa" role="Nexa Pro Agent" primaryNavy={primaryNavy} />
       
-      <ScrollView className="flex-1" showsVerticalScrollIndicator={false}>
+      <ScrollView 
+        className="flex-1" 
+        showsVerticalScrollIndicator={false}
+        keyboardShouldPersistTaps="handled"
+      >
         <View className="px-6 mt-6">
           {/* Enhanced Header */}
           <View className="flex-row justify-between items-center mb-8">
@@ -154,7 +165,7 @@ export default function AgentTransactionsScreen() {
               <Text style={{ 
                 color: activeFilter === 'success' ? primaryNavy : '#64748b',
                 fontFamily: 'Poppins_600SemiBold'
-              }} className="text-sm">Success ({allTransactions.filter(t => t.status === 'SUCCESS').length})</Text>
+              }} className="text-sm">Success ({successCount})</Text>
             </Pressable>
             <Pressable 
               onPress={() => setActiveFilter('failed')}
@@ -165,7 +176,7 @@ export default function AgentTransactionsScreen() {
               <Text style={{ 
                 color: activeFilter === 'failed' ? primaryNavy : '#64748b',
                 fontFamily: 'Poppins_600SemiBold'
-              }} className="text-sm">Failed ({allTransactions.filter(t => t.status === 'FAILED').length})</Text>
+              }} className="text-sm">Failed ({failedCount})</Text>
             </Pressable>
           </View>
 

@@ -104,10 +104,12 @@ export default function LoginScreen() {
                     router.replace('/(main)/salesperson/dashboard');
                   }
                 }} 
-                className="bg-white h-20 rounded-2xl items-center justify-center flex-row shadow-2xl shadow-black/30 active:bg-slate-50 mt-10"
+                className="bg-white h-20 rounded-2xl items-center justify-center shadow-2xl shadow-black/30 active:bg-slate-50 mt-10"
               >
-                <Text style={{ color: primaryNavy }} className="text-xl font-bold mr-2">Login</Text>
-                <ArrowRight size={20} color={primaryNavy} />
+                <Text style={{ 
+                  color: primaryNavy,
+                  fontFamily: 'Poppins_800ExtraBold'
+                }} className="text-xl uppercase tracking-widest">Login</Text>
               </Pressable>
 
               <View className="flex-row justify-center items-center mt-10 mb-10">
