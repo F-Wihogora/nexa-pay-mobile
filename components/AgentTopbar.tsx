@@ -49,17 +49,13 @@ export const AgentTopbar = ({ name, role, primaryNavy }: AgentTopbarProps) => (
     {/* Welcome message */}
     <View>
       <Text style={{ 
-        color: '#64748b',
-        fontFamily: 'Poppins_500Medium'
-      }} className="text-sm">Welcome back,</Text>
-      <Text style={{ 
         color: primaryNavy,
         fontFamily: 'Poppins_800ExtraBold'
-      }} className="text-2xl tracking-tighter">{name}</Text>
+      }} className="text-3xl tracking-tight">Welcome back, {name}!</Text>
       <Text style={{ 
         color: '#94a3b8',
         fontFamily: 'Poppins_600SemiBold'
-      }} className="text-xs uppercase tracking-widest mt-1">{role}</Text>
+      }} className="text-sm uppercase tracking-widest mt-1">{role}</Text>
     </View>
   </View>
 );

@@ -7,12 +7,26 @@ export const Logo = ({ size = 120, showText = true, inverted = false }: { size?:
   
   return (
     <View className="items-center justify-center">
-      <View style={{ width: size, height: size }}>
+      <View 
+        style={{ 
+          width: size, 
+          height: size,
+          borderRadius: size / 2,
+          backgroundColor: inverted ? 'rgba(255,255,255,0.1)' : 'white',
+          padding: size * 0.1,
+          shadowColor: '#000',
+          shadowOffset: { width: 0, height: 4 },
+          shadowOpacity: inverted ? 0.3 : 0.1,
+          shadowRadius: 8,
+          elevation: 4
+        }}
+        className={`items-center justify-center ${!inverted ? 'border border-slate-100' : ''}`}
+      >
         <Image 
           source={require('../assets/nexa.png')}
           style={{ 
-            width: size, 
-            height: size,
+            width: size * 0.8, 
+            height: size * 0.8,
             resizeMode: 'contain'
           }}
         />
