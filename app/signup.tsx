@@ -18,7 +18,7 @@ export default function SignupScreen() {
         className="flex-1"
       >
         <ScrollView contentContainerStyle={{ flexGrow: 1 }} showsVerticalScrollIndicator={false}>
-          <View className="px-8 pt-16 pb-10">
+          <View className="px-8 pt-16 pb-10 justify-center flex-1">
             {/* Back Button */}
             <Pressable 
               onPress={() => router.back()}
@@ -38,7 +38,7 @@ export default function SignupScreen() {
             <View className="space-y-4">
               <View>
                 <Text className="text-white/40 text-[10px] font-black mb-3 ml-1 uppercase tracking-[2px]">Full Name</Text>
-                <View className="flex-row items-center bg-white rounded-3xl px-6 h-14 shadow-lg shadow-black/20">
+                <View className="flex-row items-center bg-white rounded-2xl px-6 h-20 shadow-lg shadow-black/20">
                   <User size={18} color={primaryNavy} opacity={0.4} className="mr-3" />
                   <TextInput 
                     placeholder="John Doe"
@@ -50,7 +50,7 @@ export default function SignupScreen() {
 
               <View className="mt-4">
                 <Text className="text-white/40 text-[10px] font-black mb-3 ml-1 uppercase tracking-[2px]">Email Address</Text>
-                <View className="flex-row items-center bg-white rounded-3xl px-6 h-14 shadow-lg shadow-black/20">
+                <View className="flex-row items-center bg-white rounded-2xl px-6 h-20 shadow-lg shadow-black/20">
                   <Mail size={18} color={primaryNavy} opacity={0.4} className="mr-3" />
                   <TextInput 
                     placeholder="name@example.com"
@@ -64,7 +64,7 @@ export default function SignupScreen() {
 
               <View className="mt-4">
                 <Text className="text-white/40 text-[10px] font-black mb-3 ml-1 uppercase tracking-[2px]">Password</Text>
-                <View className="flex-row items-center bg-white rounded-3xl px-6 h-14 shadow-lg shadow-black/20">
+                <View className="flex-row items-center bg-white rounded-2xl px-6 h-20 shadow-lg shadow-black/20">
                   <Lock size={18} color={primaryNavy} opacity={0.4} className="mr-3" />
                   <TextInput 
                     placeholder="••••••••"
@@ -81,14 +81,14 @@ export default function SignupScreen() {
                 <View className="flex-row space-x-4">
                   <Pressable 
                     onPress={() => setRole('agent')}
-                    className={`flex-1 h-14 rounded-2xl border-2 items-center justify-center flex-row ${role === 'agent' ? 'border-white bg-white/10' : 'bg-transparent border-white/10'}`}
+                    className={`flex-1 h-16 rounded-xl border-2 items-center justify-center flex-row ${role === 'agent' ? 'border-white bg-white/10' : 'bg-transparent border-white/10'}`}
                   >
                     <Wallet size={16} color="white" className="mr-2" opacity={role === 'agent' ? 1 : 0.4} />
                     <Text className={`text-white ${role === 'agent' ? 'font-black' : 'font-bold opacity-40'}`}>Agent</Text>
                   </Pressable>
                   <Pressable 
                     onPress={() => setRole('salesperson')}
-                    className={`flex-1 h-14 rounded-2xl border-2 items-center justify-center flex-row ${role === 'salesperson' ? 'border-white bg-white/10' : 'bg-transparent border-white/10'} ml-4`}
+                    className={`flex-1 h-16 rounded-xl border-2 items-center justify-center flex-row ${role === 'salesperson' ? 'border-white bg-white/10' : 'bg-transparent border-white/10'} ml-4`}
                   >
                     <Briefcase size={16} color="white" className="mr-2" opacity={role === 'salesperson' ? 1 : 0.4} />
                     <Text className={`text-white ${role === 'salesperson' ? 'font-black' : 'font-bold opacity-40'}`}>Sales</Text>
@@ -105,7 +105,7 @@ export default function SignupScreen() {
                     router.replace('/(main)/salesperson/dashboard');
                   }
                 }} 
-                className="bg-white h-16 rounded-full items-center justify-center flex-row shadow-2xl shadow-black/30 active:bg-slate-50 mt-10"
+                className="bg-white h-20 rounded-2xl items-center justify-center flex-row shadow-2xl shadow-black/30 active:bg-slate-50 mt-10"
               >
                 <Text style={{ color: primaryNavy }} className="text-xl font-bold mr-2">Create Account</Text>
                 <ArrowRight size={20} color={primaryNavy} />
