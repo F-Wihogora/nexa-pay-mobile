@@ -1,9 +1,11 @@
-import { View, Text, ScrollView, Pressable, SafeAreaView, Switch } from 'react-native';
+import { View, Text, ScrollView, Pressable, SafeAreaView, Switch, Alert } from 'react-native';
 import { useRouter } from 'expo-router';
 import { User, ShieldCheck, History, ChevronRight, LogOut, Bell } from 'lucide-react-native';
 import { useState } from 'react';
 import { AgentTopbar } from '../../../components/AgentTopbar';
 import { SalespersonBottomNav } from '../../../components/SalespersonBottomNav';
+import { apiService } from '../../../services/api';
+import { StorageService } from '../../../services/storage';
 
 export default function SalespersonSettings() {
   const router = useRouter();
@@ -60,11 +62,54 @@ export default function SalespersonSettings() {
             ))}
             
             <Pressable 
-              onPress={() => router.replace('/login')}
-              className="flex-row items-center justify-center bg-red-50 border border-red-100 p-6 rounded-3xl mt-10 shadow-sm shadow-red-200/50 active:bg-red-100"
+              onPress={() => {
+                Alert.alert(
+                  "Sign Out",
+                  "Are you sure you want to sign out?",
+                  [
+                    { text: "Cancel", style: "cancel" },
+                    { 
+                      text: "Sign Out", 
+                      style: "destructive",
+                      onPress: async () => {
+                        try {
+                          // Clear API token
+                          apiService.logout();
+                          
+                          // Clear storage
+                          await StorageService.clearAuthData();
+                          
+                          // Navigate to login
+                          router.replace('/login');
+                        } catch (error) {
+                          console.error('Logout error:', error);
+                          Alert.alert('Error', 'Failed to sign out. Please try again.');
+                        }
+                      }
+                    }
+                  ]
+                );
+              }}
+              className="flex-row items-center justify-center bg-white border-2 border-red-200 p-6 rounded-2xl mt-10 shadow-sm active:bg-red-50"
+              style={{ 
+                height: 80,
+                borderColor: '#fecaca'
+              }}
             >
-              <LogOut size={20} color="#ef4444" />
-              <Text className="ml-3 text-red-500 font-black text-base uppercase tracking-widest">Execute Logout</Text>
+              <View className="bg-red-100 p-3 rounded-xl mr-4">
+                <LogOut size={24} color="#dc2626" />
+              </View>
+              <View className="flex-1">
+                <Text style={{ 
+                  color: '#dc2626',
+                  fontFamily: 'Poppins_800ExtraBold'
+                }} className="text-lg">Sign Out</Text>
+                <Text style={{ 
+                  color: '#ef4444',
+                  fontFamily: 'Poppins_500Medium'
+                }} className="text-sm">End your current session</Text>
+              </View>
+              <ChevronRight size={20} color="#dc2626" />
             </Pressable>
           </View>
         </View>
