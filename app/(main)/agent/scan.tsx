@@ -1,4 +1,5 @@
-import { View, Text, ScrollView, Pressable, SafeAreaView } from 'react-native';
+import { View, Text, ScrollView, Pressable } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
 import { Maximize, Wifi, Cpu, ShieldCheck, CheckCircle, ChevronRight, TrendingUp, Users, Zap, Clock, BarChart3, Activity, DollarSign, CreditCard, ArrowUpRight, ArrowDownRight, Radio } from 'lucide-react-native';
 import { useState, useEffect } from 'react';
@@ -13,6 +14,8 @@ import Animated, {
 } from 'react-native-reanimated';
 import { AgentTopbar } from '../../../components/AgentTopbar';
 import { AgentBottomNav } from '../../../components/AgentBottomNav';
+import { StorageService } from '../../../services/storage';
+import { User } from '../../../services/api';
 
 export default function AgentScanScreen() {
   const router = useRouter();
@@ -20,6 +23,20 @@ export default function AgentScanScreen() {
   const [isScanning, setIsScanning] = useState(false);
   const [selectedCurrency, setSelectedCurrency] = useState<'NGN' | 'USD' | 'EUR'>('NGN');
   const [scanResult, setScanResult] = useState<{id: string, name: string, balance: number} | null>(null);
+  const [currentUser, setCurrentUser] = useState<User | null>(null);
+
+  // Load current user data
+  useEffect(() => {
+    const loadUserData = async () => {
+      try {
+        const user = await StorageService.getUser();
+        setCurrentUser(user);
+      } catch (error) {
+        console.error('Failed to load user data:', error);
+      }
+    };
+    loadUserData();
+  }, []);
 
   // Animation values
   const pulseScale = useSharedValue(1);
@@ -178,7 +195,11 @@ export default function AgentScanScreen() {
 
   return (
     <SafeAreaView className="flex-1 bg-white">
-      <AgentTopbar name="Alex Nexa" role="Nexa Pro Agent" primaryNavy={primaryNavy} />
+      <AgentTopbar 
+        name={currentUser?.username || 'Agent'} 
+        role={currentUser?.role === 'admin' ? 'Nexa Pro Agent' : 'Nexa Sales Pro'} 
+        primaryNavy={primaryNavy} 
+      />
       
       <ScrollView className="flex-1" showsVerticalScrollIndicator={false}>
         <NexaCard />

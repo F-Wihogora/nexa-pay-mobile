@@ -1,4 +1,15 @@
-const API_BASE_URL = 'http://localhost:9210';
+import { Platform } from 'react-native';
+
+// Network configuration for different environments
+// For Android emulator: 10.0.2.2:9210
+// For iOS simulator: localhost:9210  
+// For physical device: use your machine's IP address (found with ipconfig/ifconfig)
+// Current machine IP: 10.12.72.161
+const API_BASE_URL = __DEV__
+    ? Platform.OS === 'android'
+        ? 'http://10.12.72.161:9210'  // Use host machine IP for Android
+        : 'http://localhost:9210'     // iOS simulator
+    : 'http://localhost:9210';       // Production (update with actual server URL)
 
 export interface User {
     username: string;
@@ -54,6 +65,9 @@ class ApiService {
     private async makeRequest(endpoint: string, options: RequestInit = {}): Promise<any> {
         const url = `${API_BASE_URL}${endpoint}`;
 
+        // Debug logging
+        console.log(`🌐 API Request: ${options.method || 'GET'} ${url}`);
+
         const defaultHeaders: HeadersInit = {
             'Content-Type': 'application/json',
         };
@@ -74,15 +88,57 @@ class ApiService {
             const response = await fetch(url, config);
             const data = await response.json();
 
+            console.log(`✅ API Response: ${response.status}`, data);
+
             if (!response.ok) {
                 throw new Error(data.error || `HTTP error! status: ${response.status}`);
             }
 
             return data;
         } catch (error) {
-            console.error('API request failed:', error);
+            console.error('❌ API request failed:', error);
+            console.error('🔍 Request details:', { url, config });
             throw error;
         }
+    }
+
+    // Test connectivity with multiple URLs
+    async testConnection(): Promise<{ success: boolean; message: string; url?: string }> {
+        const urlsToTry = [
+            API_BASE_URL,
+            'http://10.0.2.2:9210',      // Android emulator standard
+            'http://10.12.72.161:9210',  // Host machine IP
+            'http://localhost:9210'       // Localhost fallback
+        ];
+
+        for (const url of urlsToTry) {
+            try {
+                console.log(`🔍 Testing connection to: ${url}`);
+                const response = await fetch(`${url}/health`, {
+                    method: 'GET',
+                    headers: { 'Content-Type': 'application/json' },
+                    timeout: 5000
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    console.log(`✅ Connection successful to: ${url}`);
+                    return {
+                        success: true,
+                        message: `Connected successfully to ${url}`,
+                        url
+                    };
+                }
+            } catch (error) {
+                console.log(`❌ Failed to connect to: ${url}`, error);
+                continue;
+            }
+        }
+
+        return {
+            success: false,
+            message: 'Could not connect to any backend URL. Please check if the backend server is running and firewall settings.'
+        };
     }
 
     // Authentication endpoints

@@ -1,4 +1,5 @@
-import { View, Text, ScrollView, Pressable, TextInput, Platform, SafeAreaView } from 'react-native';
+import { View, Text, ScrollView, Pressable, TextInput, Platform } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
 import { 
   ArrowLeft, 
@@ -8,7 +9,7 @@ import {
   DollarSign,
   ShieldCheck
 } from 'lucide-react-native';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Animated, { 
   useSharedValue, 
   useAnimatedStyle, 
@@ -19,11 +20,27 @@ import Animated, {
 } from 'react-native-reanimated';
 import { AgentTopbar } from '../../../components/AgentTopbar';
 import { AgentBottomNav } from '../../../components/AgentBottomNav';
+import { StorageService } from '../../../services/storage';
+import { User } from '../../../services/api';
 
 export default function AgentTopupScreen() {
   const router = useRouter();
   const primaryNavy = "#002B5B";
   const [amount, setAmount] = useState('');
+  const [currentUser, setCurrentUser] = useState<User | null>(null);
+
+  // Load current user data
+  useEffect(() => {
+    const loadUserData = async () => {
+      try {
+        const user = await StorageService.getUser();
+        setCurrentUser(user);
+      } catch (error) {
+        console.error('Failed to load user data:', error);
+      }
+    };
+    loadUserData();
+  }, []);
   const [isSuccess, setIsSuccess] = useState(false);
   const [balance, setBalance] = useState(1250.00);
 
@@ -119,7 +136,11 @@ export default function AgentTopupScreen() {
 
   return (
     <SafeAreaView className="flex-1 bg-white">
-      <AgentTopbar name="Alex Nexa" role="Nexa Pro Agent" primaryNavy={primaryNavy} />
+      <AgentTopbar 
+        name={currentUser?.username || 'Agent'} 
+        role={currentUser?.role === 'admin' ? 'Nexa Pro Agent' : 'Nexa Sales Pro'} 
+        primaryNavy={primaryNavy} 
+      />
       
       <ScrollView className="flex-1 px-6" showsVerticalScrollIndicator={false}>
         {/* Header Section */}

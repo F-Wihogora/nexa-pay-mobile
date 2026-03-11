@@ -1,13 +1,30 @@
-import { View, Text, ScrollView, SafeAreaView, Pressable, TextInput, Platform, Image } from 'react-native';
+import { View, Text, ScrollView, Pressable, TextInput, Platform, Image } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { ShoppingBag, Zap, History, LayoutGrid, Bell, Search, MoreVertical, Layers, PieChart, BarChart3, Target, MapPin, Filter, Clock, Shirt, Package, Gem, Briefcase, ChevronDown } from 'lucide-react-native';
 import { useRouter } from 'expo-router';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { SalespersonBottomNav } from '../../../components/SalespersonBottomNav';
+import { StorageService } from '../../../services/storage';
+import { User } from '../../../services/api';
 
 export default function SalespersonDashboard() {
   const router = useRouter();
   const primaryNavy = "#002B5B";
   const accentBlue = "#3b82f6";
+  const [currentUser, setCurrentUser] = useState<User | null>(null);
+
+  // Load current user data
+  useEffect(() => {
+    const loadUserData = async () => {
+      try {
+        const user = await StorageService.getUser();
+        setCurrentUser(user);
+      } catch (error) {
+        console.error('Failed to load user data:', error);
+      }
+    };
+    loadUserData();
+  }, []);
   const [selectedFilter, setSelectedFilter] = useState('Newest');
   const [selectedLocation, setSelectedLocation] = useState('New York, USA');
 
@@ -101,7 +118,7 @@ export default function SalespersonDashboard() {
               <Text style={{ 
                 color: 'white',
                 fontFamily: 'Poppins_900Black'
-              }} className="text-sm">SN</Text>
+              }} className="text-sm">{currentUser?.username ? currentUser.username.split(' ').map(n => n[0]).join('').toUpperCase() : 'SP'}</Text>
             </View>
           </View>
         </View>

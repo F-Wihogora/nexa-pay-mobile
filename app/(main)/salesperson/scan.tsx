@@ -1,4 +1,5 @@
-import { View, Text, ScrollView, Pressable, TextInput, SafeAreaView, Alert } from 'react-native';
+import { View, Text, ScrollView, Pressable, TextInput, Alert } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { Maximize, Search, Wifi, Cpu, ShieldCheck, CheckCircle, ChevronRight, Radio } from 'lucide-react-native';
 import { useState, useEffect } from 'react';
 import Animated, { 
@@ -12,11 +13,27 @@ import Animated, {
 } from 'react-native-reanimated';
 import { AgentTopbar } from '../../../components/AgentTopbar';
 import { AgentBottomNav } from '../../../components/AgentBottomNav';
+import { StorageService } from '../../../services/storage';
+import { User } from '../../../services/api';
 
 export default function SalespersonScanScreen() {
   const primaryNavy = "#002B5B";
   const [isScanning, setIsScanning] = useState(false);
   const [scanResult, setScanResult] = useState<{id: string, name: string, balance: number} | null>(null);
+  const [currentUser, setCurrentUser] = useState<User | null>(null);
+
+  // Load current user data
+  useEffect(() => {
+    const loadUserData = async () => {
+      try {
+        const user = await StorageService.getUser();
+        setCurrentUser(user);
+      } catch (error) {
+        console.error('Failed to load user data:', error);
+      }
+    };
+    loadUserData();
+  }, []);
 
   // Animation values
   const pulseScale = useSharedValue(1);
@@ -160,7 +177,11 @@ export default function SalespersonScanScreen() {
 
   return (
     <SafeAreaView className="flex-1 bg-white">
-      <AgentTopbar name="Sarah Sales" role="Nexa Sales Pro" primaryNavy={primaryNavy} />
+      <AgentTopbar 
+        name={currentUser?.username || 'Sales Pro'} 
+        role={currentUser?.role === 'admin' ? 'Nexa Pro Agent' : 'Nexa Sales Pro'} 
+        primaryNavy={primaryNavy} 
+      />
       
       <ScrollView className="flex-1" showsVerticalScrollIndicator={false}>
         <NexaCard />

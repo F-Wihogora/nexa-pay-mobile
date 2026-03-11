@@ -1,16 +1,32 @@
-import { View, Text, ScrollView, Pressable, SafeAreaView, Switch, Alert } from 'react-native';
+import { View, Text, ScrollView, Pressable, Switch, Alert } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
 import { User, ShieldCheck, History, ChevronRight, LogOut, Bell } from 'lucide-react-native';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { AgentTopbar } from '../../../components/AgentTopbar';
 import { SalespersonBottomNav } from '../../../components/SalespersonBottomNav';
 import { apiService } from '../../../services/api';
 import { StorageService } from '../../../services/storage';
+import { User as UserType } from '../../../services/api';
 
 export default function SalespersonSettings() {
   const router = useRouter();
   const primaryNavy = "#002B5B";
   const [notifications, setNotifications] = useState(true);
+  const [currentUser, setCurrentUser] = useState<UserType | null>(null);
+
+  // Load current user data
+  useEffect(() => {
+    const loadUserData = async () => {
+      try {
+        const user = await StorageService.getUser();
+        setCurrentUser(user);
+      } catch (error) {
+        console.error('Failed to load user data:', error);
+      }
+    };
+    loadUserData();
+  }, []);
 
   const settingsItems = [
     { icon: User, label: 'Account Profile', sub: 'ID: Sales_Pro_Sarah' },
@@ -20,7 +36,11 @@ export default function SalespersonSettings() {
 
   return (
     <SafeAreaView className="flex-1 bg-white">
-      <AgentTopbar name="Sarah Sales" role="Nexa Sales Pro" primaryNavy={primaryNavy} />
+      <AgentTopbar 
+        name={currentUser?.username || 'Sales Pro'} 
+        role={currentUser?.role === 'admin' ? 'Nexa Pro Agent' : 'Nexa Sales Pro'} 
+        primaryNavy={primaryNavy} 
+      />
       
       <ScrollView className="flex-1" showsVerticalScrollIndicator={false}>
         <View className="px-6 mt-6">

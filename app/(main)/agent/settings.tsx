@@ -1,11 +1,13 @@
-import { View, Text, ScrollView, Pressable, SafeAreaView, Image, Switch, Alert } from 'react-native';
+import { View, Text, ScrollView, Pressable, Image, Switch, Alert } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
 import { User, Bell, Shield, Globe, Moon, Smartphone, LogOut, ChevronRight, Settings as SettingsIcon, MoreHorizontal } from 'lucide-react-native';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { AgentBottomNav } from '../../../components/AgentBottomNav';
 import { AgentTopbar } from '../../../components/AgentTopbar';
 import { apiService } from '../../../services/api';
 import { StorageService } from '../../../services/storage';
+import { User as UserType } from '../../../services/api';
 
 const AgentSettingsScreen = () => {
   const router = useRouter();
@@ -13,6 +15,20 @@ const AgentSettingsScreen = () => {
   const [notifications, setNotifications] = useState(true);
   const [biometrics, setBiometrics] = useState(true);
   const [darkMode, setDarkMode] = useState(false);
+  const [currentUser, setCurrentUser] = useState<UserType | null>(null);
+
+  // Load current user data
+  useEffect(() => {
+    const loadUserData = async () => {
+      try {
+        const user = await StorageService.getUser();
+        setCurrentUser(user);
+      } catch (error) {
+        console.error('Failed to load user data:', error);
+      }
+    };
+    loadUserData();
+  }, []);
 
   const handleEditProfile = () => {
     Alert.alert(
@@ -165,7 +181,12 @@ const AgentSettingsScreen = () => {
 
   return (
     <SafeAreaView className="flex-1 bg-slate-50">
-      <AgentTopbar name="Alex Nexa" role="Nexa Pro Agent" primaryNavy={primaryNavy} showWelcome={false} />
+      <AgentTopbar 
+        name={currentUser?.username || 'Agent'} 
+        role={currentUser?.role === 'admin' ? 'Nexa Pro Agent' : 'Nexa Sales Pro'} 
+        primaryNavy={primaryNavy} 
+        showWelcome={false} 
+      />
       
       <ScrollView className="flex-1" showsVerticalScrollIndicator={false}>
         <View className="px-6">
@@ -195,7 +216,7 @@ const AgentSettingsScreen = () => {
                     <Text style={{ 
                       color: 'white',
                       fontFamily: 'Poppins_900Black'
-                    }} className="text-2xl">AN</Text>
+                    }} className="text-2xl">{currentUser?.username ? currentUser.username.split(' ').map(n => n[0]).join('').toUpperCase() : 'A'}</Text>
                   </View>
                 </View>
                 <View className="absolute bottom-1 right-1 w-7 h-7 bg-green-500 rounded-full border-3 border-white shadow-md" />
@@ -208,15 +229,15 @@ const AgentSettingsScreen = () => {
               <Text style={{ 
                 color: primaryNavy,
                 fontFamily: 'Poppins_800ExtraBold'
-              }} className="text-2xl mb-1">Alex Nexa</Text>
+              }} className="text-2xl mb-1">{currentUser?.username || 'Agent'}</Text>
               <Text style={{ 
                 color: '#64748b',
                 fontFamily: 'Poppins_600SemiBold'
-              }} className="text-sm mb-1">Nexa Pro Agent</Text>
+              }} className="text-sm mb-1">{currentUser?.role === 'admin' ? 'Nexa Pro Agent' : 'Nexa Sales Pro'}</Text>
               <Text style={{ 
                 color: '#94a3b8',
                 fontFamily: 'Poppins_500Medium'
-              }} className="text-xs mb-6">ID: NXA-2024-7048</Text>
+              }} className="text-xs mb-6">Email: {currentUser?.email || 'Not available'}</Text>
               
               {/* Stats Row */}
               <View className="flex-row justify-between w-full mb-6">

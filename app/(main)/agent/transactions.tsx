@@ -1,12 +1,29 @@
-import { View, Text, ScrollView, SafeAreaView, Pressable, Image } from 'react-native';
+import { View, Text, ScrollView, Pressable, Image } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { History, Filter, CheckCircle, XCircle, TrendingUp, Calendar, Clock, ArrowUpRight, ArrowDownRight, Search } from 'lucide-react-native';
-import { useState, useMemo, useCallback } from 'react';
+import { useState, useMemo, useCallback, useEffect } from 'react';
 import { AgentTopbar } from '../../../components/AgentTopbar';
 import { AgentBottomNav } from '../../../components/AgentBottomNav';
+import { StorageService } from '../../../services/storage';
+import { User } from '../../../services/api';
 
 const AgentTransactionsScreen = () => {
   const primaryNavy = "#002B5B";
   const [activeFilter, setActiveFilter] = useState<'all' | 'success' | 'failed'>('all');
+  const [currentUser, setCurrentUser] = useState<User | null>(null);
+
+  // Load current user data
+  useEffect(() => {
+    const loadUserData = async () => {
+      try {
+        const user = await StorageService.getUser();
+        setCurrentUser(user);
+      } catch (error) {
+        console.error('Failed to load user data:', error);
+      }
+    };
+    loadUserData();
+  }, []);
 
   const allTransactions = useMemo(() => [
     { id: '1', name: 'Alex Nexa', uid: '70:77:88:99', amt: '+$50.00', date: 'Oct 24, 09:41 AM', status: 'SUCCESS', type: 'topup', time: '09:41 AM' },
@@ -39,7 +56,11 @@ const AgentTransactionsScreen = () => {
 
   return (
     <SafeAreaView className="flex-1 bg-slate-50">
-      <AgentTopbar name="Alex Nexa" role="Nexa Pro Agent" primaryNavy={primaryNavy} />
+      <AgentTopbar 
+        name={currentUser?.username || 'Agent'} 
+        role={currentUser?.role === 'admin' ? 'Nexa Pro Agent' : 'Nexa Sales Pro'} 
+        primaryNavy={primaryNavy} 
+      />
       
       <ScrollView 
         className="flex-1" 

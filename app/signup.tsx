@@ -26,6 +26,7 @@ export default function SignupScreen() {
       return;
     }
 
+    console.log('🚀 Starting signup process...');
     setIsLoading(true);
     try {
       const response = await apiService.signup({
@@ -34,6 +35,8 @@ export default function SignupScreen() {
         password,
         role
       });
+      
+      console.log('✅ Signup response:', response);
       
       if (response.success) {
         // Save auth data to storage
@@ -56,8 +59,9 @@ export default function SignupScreen() {
         Alert.alert('Signup Failed', response.error || 'Failed to create account');
       }
     } catch (error) {
-      console.error('Signup error:', error);
-      Alert.alert('Error', 'Network error. Please check your connection and try again.');
+      console.error('❌ Signup error:', error);
+      const errorMessage = error instanceof Error ? error.message : 'Unknown error occurred';
+      Alert.alert('Error', `Network error: ${errorMessage}. Please check your connection and try again.`);
     } finally {
       setIsLoading(false);
     }

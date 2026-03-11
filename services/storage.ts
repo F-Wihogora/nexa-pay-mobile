@@ -7,12 +7,45 @@ const STORAGE_KEYS = {
     IS_LOGGED_IN: 'is_logged_in',
 };
 
+// Fallback storage for when AsyncStorage fails
+let memoryStorage: { [key: string]: string } = {};
+
+const safeAsyncStorage = {
+    async setItem(key: string, value: string): Promise<void> {
+        try {
+            await AsyncStorage.setItem(key, value);
+        } catch (error) {
+            console.warn('AsyncStorage setItem failed, using memory storage:', error);
+            memoryStorage[key] = value;
+        }
+    },
+
+    async getItem(key: string): Promise<string | null> {
+        try {
+            return await AsyncStorage.getItem(key);
+        } catch (error) {
+            console.warn('AsyncStorage getItem failed, using memory storage:', error);
+            return memoryStorage[key] || null;
+        }
+    },
+
+    async removeItem(key: string): Promise<void> {
+        try {
+            await AsyncStorage.removeItem(key);
+        } catch (error) {
+            console.warn('AsyncStorage removeItem failed, using memory storage:', error);
+            delete memoryStorage[key];
+        }
+    }
+};
+
 export class StorageService {
     static async saveAuthData(token: string, user: User): Promise<void> {
         try {
-            await AsyncStorage.setItem(STORAGE_KEYS.TOKEN, token);
-            await AsyncStorage.setItem(STORAGE_KEYS.USER, JSON.stringify(user));
-            await AsyncStorage.setItem(STORAGE_KEYS.IS_LOGGED_IN, 'true');
+            await safeAsyncStorage.setItem(STORAGE_KEYS.TOKEN, token);
+            await safeAsyncStorage.setItem(STORAGE_KEYS.USER, JSON.stringify(user));
+            await safeAsyncStorage.setItem(STORAGE_KEYS.IS_LOGGED_IN, 'true');
+            console.log('✅ Auth data saved successfully');
         } catch (error) {
             console.error('Failed to save auth data:', error);
             throw error;
@@ -21,7 +54,7 @@ export class StorageService {
 
     static async getToken(): Promise<string | null> {
         try {
-            return await AsyncStorage.getItem(STORAGE_KEYS.TOKEN);
+            return await safeAsyncStorage.getItem(STORAGE_KEYS.TOKEN);
         } catch (error) {
             console.error('Failed to get token:', error);
             return null;
@@ -30,7 +63,7 @@ export class StorageService {
 
     static async getUser(): Promise<User | null> {
         try {
-            const userData = await AsyncStorage.getItem(STORAGE_KEYS.USER);
+            const userData = await safeAsyncStorage.getItem(STORAGE_KEYS.USER);
             return userData ? JSON.parse(userData) : null;
         } catch (error) {
             console.error('Failed to get user data:', error);
@@ -40,7 +73,7 @@ export class StorageService {
 
     static async isLoggedIn(): Promise<boolean> {
         try {
-            const isLoggedIn = await AsyncStorage.getItem(STORAGE_KEYS.IS_LOGGED_IN);
+            const isLoggedIn = await safeAsyncStorage.getItem(STORAGE_KEYS.IS_LOGGED_IN);
             return isLoggedIn === 'true';
         } catch (error) {
             console.error('Failed to check login status:', error);
@@ -50,9 +83,10 @@ export class StorageService {
 
     static async clearAuthData(): Promise<void> {
         try {
-            await AsyncStorage.removeItem(STORAGE_KEYS.TOKEN);
-            await AsyncStorage.removeItem(STORAGE_KEYS.USER);
-            await AsyncStorage.removeItem(STORAGE_KEYS.IS_LOGGED_IN);
+            await safeAsyncStorage.removeItem(STORAGE_KEYS.TOKEN);
+            await safeAsyncStorage.removeItem(STORAGE_KEYS.USER);
+            await safeAsyncStorage.removeItem(STORAGE_KEYS.IS_LOGGED_IN);
+            console.log('✅ Auth data cleared successfully');
         } catch (error) {
             console.error('Failed to clear auth data:', error);
             throw error;

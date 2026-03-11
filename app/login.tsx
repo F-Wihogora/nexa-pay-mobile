@@ -12,7 +12,24 @@ export default function LoginScreen() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [isTestingConnection, setIsTestingConnection] = useState(false);
   const primaryNavy = "#002B5B";
+
+  const testConnection = async () => {
+    setIsTestingConnection(true);
+    try {
+      const result = await apiService.testConnection();
+      Alert.alert(
+        result.success ? 'Connection Test' : 'Connection Failed',
+        result.message,
+        [{ text: 'OK' }]
+      );
+    } catch (error) {
+      Alert.alert('Connection Test', 'Failed to test connection', [{ text: 'OK' }]);
+    } finally {
+      setIsTestingConnection(false);
+    }
+  };
 
   const handleLogin = async () => {
     if (!email || !password) {
@@ -20,9 +37,12 @@ export default function LoginScreen() {
       return;
     }
 
+    console.log('🚀 Starting login process...');
     setIsLoading(true);
     try {
       const response = await apiService.login({ email, password });
+      
+      console.log('✅ Login response:', response);
       
       if (response.success) {
         // Save auth data to storage
@@ -38,8 +58,9 @@ export default function LoginScreen() {
         Alert.alert('Login Failed', response.error || 'Invalid credentials');
       }
     } catch (error) {
-      console.error('Login error:', error);
-      Alert.alert('Error', 'Network error. Please check your connection and try again.');
+      console.error('❌ Login error:', error);
+      const errorMessage = error instanceof Error ? error.message : 'Unknown error occurred';
+      Alert.alert('Error', `Network error: ${errorMessage}. Please check your connection and try again.`);
     } finally {
       setIsLoading(false);
     }
@@ -155,6 +176,19 @@ export default function LoginScreen() {
                   <Text className="text-white text-base font-bold underline">Create account</Text>
                 </Pressable>
               </View>
+
+              {/* Connection Test Button (Development only) */}
+              {__DEV__ && (
+                <Pressable 
+                  onPress={testConnection}
+                  disabled={isTestingConnection}
+                  className="bg-white/10 border border-white/20 h-12 rounded-xl items-center justify-center mt-4"
+                >
+                  <Text className="text-white/80 text-sm font-medium">
+                    {isTestingConnection ? 'Testing...' : 'Test Connection'}
+                  </Text>
+                </Pressable>
+              )}
             </View>
           </View>
         </ScrollView>
