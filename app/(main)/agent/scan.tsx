@@ -108,23 +108,23 @@ export default function AgentScanScreen() {
         <View className="px-6 mt-10">
           {/* Currency Selection Section */}
           <View className="mb-8">
-            <Text style={{ color: primaryNavy }} className="text-xl font-black mb-4">Currency</Text>
-            <View className="flex-row space-x-3">
-              <Pressable className="bg-emerald-600 px-6 py-3 rounded-2xl">
-                <Text className="text-white font-bold text-sm">NGN</Text>
+            <Text style={{ color: primaryNavy }} className="text-2xl font-black mb-6">Currency</Text>
+            <View className="flex-row space-x-4">
+              <Pressable className="bg-emerald-600 px-10 py-5 rounded-2xl shadow-lg">
+                <Text className="text-white font-bold text-lg">NGN</Text>
               </Pressable>
-              <Pressable className="bg-slate-100 px-6 py-3 rounded-2xl border border-slate-200">
-                <Text className="text-slate-600 font-bold text-sm">USD</Text>
+              <Pressable className="bg-slate-100 px-10 py-5 rounded-2xl border border-slate-200 shadow-sm">
+                <Text className="text-slate-600 font-bold text-lg">USD</Text>
               </Pressable>
-              <Pressable className="bg-slate-100 px-6 py-3 rounded-2xl border border-slate-200">
-                <Text className="text-slate-600 font-bold text-sm">EUR</Text>
+              <Pressable className="bg-slate-100 px-10 py-5 rounded-2xl border border-slate-200 shadow-sm">
+                <Text className="text-slate-600 font-bold text-lg">EUR</Text>
               </Pressable>
             </View>
           </View>
 
           {/* Nexa Reader Section */}
           <View className="mb-8">
-            <Text style={{ color: primaryNavy }} className="text-xl font-black mb-6">Nexa Reader</Text>
+            <Text style={{ color: primaryNavy }} className="text-2xl font-black mb-6">Nexa Reader</Text>
             
             <View className="bg-slate-50 rounded-3xl p-8 border border-slate-100">
               <View className="flex-row justify-between items-start mb-6">
@@ -139,60 +139,109 @@ export default function AgentScanScreen() {
                       {/* Pulse effect */}
                       <Animated.View 
                         style={[
-                          { position: 'absolute', width: 160, height: 100, borderRadius: 16, backgroundColor: primaryNavy },
+                          { position: 'absolute', width: 200, height: 125, borderRadius: 16, backgroundColor: '#059669' },
                           animatedPulseStyle
                         ]} 
                       />
                       
-                      {/* Card Visual */}
+                      {/* Card Visual - Green Design */}
                       <View 
                         style={{ 
-                          backgroundColor: isScanning ? primaryNavy : 'white',
-                          width: 140,
-                          height: 88,
+                          backgroundColor: isScanning ? '#059669' : '#10b981',
+                          width: 180,
+                          height: 110,
                           borderRadius: 12,
                           shadowColor: '#000',
-                          shadowOffset: { width: 0, height: 4 },
-                          shadowOpacity: 0.1,
-                          shadowRadius: 8,
-                          elevation: 4
+                          shadowOffset: { width: 0, height: 6 },
+                          shadowOpacity: 0.15,
+                          shadowRadius: 12,
+                          elevation: 8
                         }}
-                        className={`items-center justify-center border-2 ${isScanning ? 'border-blue-400' : 'border-slate-200'} relative`}
+                        className="items-center justify-center relative overflow-hidden"
                       >
-                        {/* Card chip */}
+                        {/* Background gradient circles */}
                         <View 
                           style={{ 
-                            backgroundColor: isScanning ? '#FFD700' : '#E5E7EB',
-                            width: 24,
-                            height: 18,
-                            borderRadius: 4,
+                            backgroundColor: 'rgba(255,255,255,0.1)',
+                            width: 120,
+                            height: 120,
+                            borderRadius: 60,
                             position: 'absolute',
-                            top: 12,
-                            left: 12
+                            top: -30,
+                            right: -20
+                          }}
+                        />
+                        <View 
+                          style={{ 
+                            backgroundColor: 'rgba(255,255,255,0.05)',
+                            width: 80,
+                            height: 80,
+                            borderRadius: 40,
+                            position: 'absolute',
+                            bottom: -20,
+                            left: -10
                           }}
                         />
                         
-                        {/* Card lines */}
-                        <View className="absolute bottom-3 left-3 right-3">
-                          <View className={`h-1 rounded-full mb-1 ${isScanning ? 'bg-white/30' : 'bg-slate-300'}`} />
-                          <View className={`h-1 rounded-full w-3/4 ${isScanning ? 'bg-white/20' : 'bg-slate-200'}`} />
+                        {/* Card chip */}
+                        <View 
+                          style={{ 
+                            backgroundColor: '#FFD700',
+                            width: 28,
+                            height: 22,
+                            borderRadius: 4,
+                            position: 'absolute',
+                            top: 16,
+                            left: 16,
+                            shadowColor: '#000',
+                            shadowOffset: { width: 0, height: 2 },
+                            shadowOpacity: 0.2,
+                            shadowRadius: 3
+                          }}
+                        >
+                          {/* Chip details */}
+                          <View className="absolute inset-1 border border-yellow-600/20 rounded-sm" />
+                        </View>
+                        
+                        {/* VISA logo area */}
+                        <View className="absolute top-4 right-4">
+                          <Text className="text-white font-bold text-xs opacity-80">VISA</Text>
+                        </View>
+                        
+                        {/* Card number */}
+                        <View className="absolute bottom-8 left-4">
+                          <Text className="text-white font-mono text-sm tracking-wider">
+                            7048 •••• •••• 0349
+                          </Text>
+                        </View>
+                        
+                        {/* Cardholder name */}
+                        <View className="absolute bottom-3 left-4">
+                          <Text className="text-white/80 text-xs font-medium uppercase tracking-wide">
+                            GERTRUDE AMELL KENT
+                          </Text>
+                        </View>
+                        
+                        {/* Expiry */}
+                        <View className="absolute bottom-3 right-4">
+                          <Text className="text-white/60 text-xs">12/28</Text>
                         </View>
                         
                         {/* Scanning indicator */}
                         {isScanning && (
                           <View className="absolute inset-0 items-center justify-center">
-                            <View className="w-2 h-2 bg-white rounded-full animate-pulse" />
+                            <View className="w-3 h-3 bg-white rounded-full animate-pulse" />
                           </View>
                         )}
                       </View>
                     </Pressable>
                     
-                    <Text className={`font-bold text-sm mt-4 ${isScanning ? 'text-blue-600' : 'text-slate-500'}`}>
+                    <Text className={`font-bold text-lg mt-6 ${isScanning ? 'text-emerald-600' : 'text-slate-500'}`}>
                       {isScanning ? 'Scanning the card...' : 'Tap to scan card'}
                     </Text>
                     
                     {isScanning && (
-                      <Text className="text-blue-500 text-xs mt-1 animate-pulse">
+                      <Text className="text-emerald-500 text-sm mt-2 animate-pulse">
                         Hold card steady
                       </Text>
                     )}
@@ -200,8 +249,8 @@ export default function AgentScanScreen() {
                 </View>
                 
                 {/* Copy QR Code Button (styled as scan card button) */}
-                <Pressable className="bg-slate-100 px-4 py-2 rounded-xl border border-slate-200">
-                  <Text className="text-slate-600 font-medium text-sm">Scan card</Text>
+                <Pressable className="bg-slate-100 px-6 py-3 rounded-xl border border-slate-200 shadow-sm">
+                  <Text className="text-slate-600 font-medium text-base">Scan card</Text>
                 </Pressable>
               </View>
             </View>
