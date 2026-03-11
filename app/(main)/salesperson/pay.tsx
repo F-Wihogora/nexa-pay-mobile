@@ -96,54 +96,143 @@ export default function SalespersonPay() {
         </View>
 
         {/* Selected Items Summary */}
-        <View className="bg-slate-900 rounded-3xl p-8 mb-10 shadow-2xl shadow-blue-900/40 relative overflow-hidden">
-           <View style={{ position: 'absolute', top: -10, right: -10, width: 80, height: 80, borderRadius: 40, backgroundColor: 'white', opacity: 0.05 }} />
+        <View className="bg-gradient-to-br from-slate-900 to-slate-800 rounded-3xl p-8 mb-10 shadow-2xl shadow-slate-900/40 relative overflow-hidden">
+           {/* Background decorative elements */}
+           <View style={{ position: 'absolute', top: -20, right: -20, width: 100, height: 100, borderRadius: 50, backgroundColor: 'rgba(59, 130, 246, 0.1)' }} />
+           <View style={{ position: 'absolute', bottom: -10, left: -10, width: 60, height: 60, borderRadius: 30, backgroundColor: 'rgba(255, 255, 255, 0.05)' }} />
            
-           <View className="flex-row items-center mb-8 pb-4 border-b border-white/5">
-              <View className="bg-white/10 p-3 rounded-2xl mr-4">
-                 <ShoppingCart size={24} color="white" />
+           {/* Card Header */}
+           <View className="flex-row items-center justify-between mb-6">
+              <View className="flex-row items-center">
+                 <View className="bg-blue-500/20 p-3 rounded-2xl mr-4">
+                    <ShoppingCart size={24} color="#3b82f6" />
+                 </View>
+                 <View>
+                    <Text className="text-white/60 text-xs font-bold uppercase tracking-widest mb-1">Transaction Summary</Text>
+                    <Text className="text-white font-black text-xl tracking-tight">3 Items Selected</Text>
+                 </View>
               </View>
-              <View>
-                 <Text className="text-white/40 text-[10px] font-black uppercase tracking-widest mb-1">Items Summary</Text>
-                 <Text className="text-white font-black text-lg tracking-tight">3 Items Selected</Text>
+              <View className="bg-green-500/20 px-4 py-2 rounded-full border border-green-500/30">
+                 <Text className="text-green-400 text-xs font-black uppercase tracking-wide">Ready to Pay</Text>
               </View>
            </View>
 
+           {/* Items Preview */}
+           <View className="bg-white/5 rounded-2xl p-4 mb-6 border border-white/10">
+              <View className="flex-row justify-between items-center mb-2">
+                 <Text className="text-white/80 text-sm font-semibold">Summer Collection Dress</Text>
+                 <Text className="text-white font-bold">$89.99</Text>
+              </View>
+              <View className="flex-row justify-between items-center mb-2">
+                 <Text className="text-white/80 text-sm font-semibold">Casual Men's Shirt</Text>
+                 <Text className="text-white font-bold">$45.99</Text>
+              </View>
+              <View className="flex-row justify-between items-center">
+                 <Text className="text-white/80 text-sm font-semibold">Classic Cotton T-Shirt</Text>
+                 <Text className="text-white font-bold">$29.99</Text>
+              </View>
+           </View>
+
+           {/* Total Amount */}
            <View className="flex-row justify-between items-end">
               <View>
-                 <Text className="text-white/40 text-[10px] font-black uppercase tracking-widest mb-1">Total Payable</Text>
-                 <Text className="text-white text-4xl font-black">$60.99</Text>
+                 <Text className="text-white/60 text-xs font-black uppercase tracking-widest mb-2">Total Amount</Text>
+                 <Text className="text-white text-4xl font-black tracking-tight">$165.97</Text>
+                 <Text className="text-blue-400 text-sm font-semibold mt-1">Including tax & fees</Text>
               </View>
-              <View className="bg-blue-500 px-3 py-1 rounded-lg">
-                 <Text className="text-white text-[10px] font-black uppercase">Ready</Text>
+              <View className="items-end">
+                 <View className="bg-blue-500 w-12 h-12 rounded-2xl items-center justify-center mb-2">
+                    <Text className="text-white text-lg font-black">💳</Text>
+                 </View>
+                 <Text className="text-white/60 text-xs font-semibold">RFID Ready</Text>
               </View>
            </View>
         </View>
 
-        {/* Central Tap Area */}
+        {/* RFID Payment Interface */}
         <View className="items-center justify-center pt-4 mb-20">
+           <Text style={{ color: primaryNavy }} className="text-2xl font-black mb-2 text-center">Tap Your Card</Text>
+           <Text className="text-slate-500 text-base font-medium mb-8 text-center">Hold your RFID card near the device</Text>
+           
            <Pressable 
              onPress={handleStartPay}
              disabled={status !== 'idle'}
-             className="items-center justify-center"
+             className="items-center justify-center relative"
            >
+              {/* Outer ripple effects */}
               <Animated.View 
                 style={[
-                  { position: 'absolute', width: 160, height: 160, borderRadius: 80, backgroundColor: primaryNavy },
+                  { position: 'absolute', width: 200, height: 200, borderRadius: 100, backgroundColor: primaryNavy, opacity: 0.1 },
+                  animatedPulseStyle
+                ]} 
+              />
+              <Animated.View 
+                style={[
+                  { position: 'absolute', width: 160, height: 160, borderRadius: 80, backgroundColor: primaryNavy, opacity: 0.2 },
                   animatedPulseStyle
                 ]} 
               />
               
+              {/* Main card scanning area */}
               <View 
-                style={{ backgroundColor: status === 'scanning' ? primaryNavy : 'white' }}
-                className={`w-40 h-40 rounded-[40px] items-center justify-center border-2 ${status === 'scanning' ? 'border-primaryNavy shadow-2xl shadow-blue-900/40' : 'border-slate-100 shadow-xl shadow-blue-900/5'}`}
+                style={{ 
+                  backgroundColor: status === 'scanning' ? primaryNavy : 'white',
+                  width: 180,
+                  height: 120,
+                  borderRadius: 20,
+                  shadowColor: status === 'scanning' ? primaryNavy : '#000',
+                  shadowOffset: { width: 0, height: 8 },
+                  shadowOpacity: status === 'scanning' ? 0.3 : 0.1,
+                  shadowRadius: 16,
+                  elevation: 12
+                }}
+                className="items-center justify-center border-2 border-slate-100 relative overflow-hidden"
               >
-                 <Wifi size={48} color={status === 'scanning' ? 'white' : primaryNavy} />
-                 <Text className={`font-black text-[10px] mt-3 uppercase tracking-widest text-center px-4 ${status === 'scanning' ? 'text-white' : 'text-slate-400'}`}>
-                    {status === 'scanning' ? 'Processing...' : 'Tap to sync'}
-                 </Text>
+                 {/* Card background pattern */}
+                 <View style={{ 
+                   position: 'absolute', 
+                   top: -20, 
+                   right: -20, 
+                   width: 80, 
+                   height: 80, 
+                   borderRadius: 40, 
+                   backgroundColor: status === 'scanning' ? 'rgba(255,255,255,0.1)' : 'rgba(59, 130, 246, 0.1)' 
+                 }} />
+                 
+                 {/* RFID waves animation */}
+                 {status === 'scanning' ? (
+                   <View className="items-center">
+                      <View className="flex-row items-center mb-2">
+                         <View className="w-2 h-2 bg-white rounded-full mr-1" />
+                         <View className="w-2 h-2 bg-white rounded-full mr-1" />
+                         <View className="w-2 h-2 bg-white rounded-full" />
+                      </View>
+                      <Text className="text-white font-bold text-sm">Scanning...</Text>
+                      <Text className="text-white/80 text-xs mt-1">Keep card steady</Text>
+                   </View>
+                 ) : (
+                   <View className="items-center">
+                      <View className="w-16 h-16 bg-blue-50 rounded-2xl items-center justify-center mb-3">
+                         <Wifi size={32} color={primaryNavy} />
+                      </View>
+                      <Text style={{ color: primaryNavy }} className="font-bold text-base">Tap Here</Text>
+                      <Text className="text-slate-500 text-xs mt-1">RFID Enabled</Text>
+                   </View>
+                 )}
               </View>
            </Pressable>
+           
+           {/* Status indicators */}
+           <View className="flex-row items-center mt-8">
+              <View className="flex-row items-center mr-6">
+                 <View className={`w-3 h-3 rounded-full mr-2 ${status === 'scanning' ? 'bg-blue-500' : 'bg-slate-300'}`} />
+                 <Text className="text-slate-600 text-sm font-medium">NFC Active</Text>
+              </View>
+              <View className="flex-row items-center">
+                 <View className="w-3 h-3 rounded-full bg-green-500 mr-2" />
+                 <Text className="text-slate-600 text-sm font-medium">Secure Connection</Text>
+              </View>
+           </View>
         </View>
 
         <Pressable 
