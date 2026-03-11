@@ -4,6 +4,8 @@ import { User, Bell, Shield, Globe, Moon, Smartphone, LogOut, ChevronRight, Sett
 import { useState } from 'react';
 import { AgentBottomNav } from '../../../components/AgentBottomNav';
 import { AgentTopbar } from '../../../components/AgentTopbar';
+import { apiService } from '../../../services/api';
+import { StorageService } from '../../../services/storage';
 
 const AgentSettingsScreen = () => {
   const router = useRouter();
@@ -385,7 +387,34 @@ const AgentSettingsScreen = () => {
 
           {/* Logout Button */}
           <Pressable 
-            onPress={() => router.replace('/login')}
+            onPress={() => {
+              Alert.alert(
+                "Sign Out",
+                "Are you sure you want to sign out?",
+                [
+                  { text: "Cancel", style: "cancel" },
+                  { 
+                    text: "Sign Out", 
+                    style: "destructive",
+                    onPress: async () => {
+                      try {
+                        // Clear API token
+                        apiService.logout();
+                        
+                        // Clear storage
+                        await StorageService.clearAuthData();
+                        
+                        // Navigate to login
+                        router.replace('/login');
+                      } catch (error) {
+                        console.error('Logout error:', error);
+                        Alert.alert('Error', 'Failed to sign out. Please try again.');
+                      }
+                    }
+                  }
+                ]
+              );
+            }}
             className="flex-row items-center justify-center bg-gradient-to-r from-red-500 to-red-600 p-6 rounded-2xl mt-8 shadow-lg active:from-red-600 active:to-red-700"
             style={{ 
               backgroundColor: '#dc2626',

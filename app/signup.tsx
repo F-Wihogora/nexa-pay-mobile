@@ -1,13 +1,67 @@
-import { View, Text, TextInput, Pressable, KeyboardAvoidingView, Platform, ScrollView, StatusBar } from 'react-native';
+import { View, Text, TextInput, Pressable, KeyboardAvoidingView, Platform, ScrollView, StatusBar, Alert } from 'react-native';
 import { useRouter } from 'expo-router';
 import { Logo } from '../components/Logo';
-import { Mail, Lock, User, ChevronLeft, ArrowRight, Wallet, Briefcase } from 'lucide-react-native';
+import { Mail, Lock, User, ChevronLeft, Wallet, Briefcase } from 'lucide-react-native';
 import { useState } from 'react';
+import { apiService } from '../services/api';
+import { StorageService } from '../services/storage';
 
 export default function SignupScreen() {
   const router = useRouter();
-  const [role, setRole] = useState<'agent' | 'salesperson'>('agent');
+  const [role, setRole] = useState<'admin' | 'cashier'>('admin');
+  const [username, setUsername] = useState('');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
   const primaryNavy = "#002B5B";
+
+  const handleSignup = async () => {
+    if (!username || !email || !password) {
+      Alert.alert('Error', 'Please fill in all fields');
+      return;
+    }
+
+    if (password.length < 6) {
+      Alert.alert('Error', 'Password must be at least 6 characters long');
+      return;
+    }
+
+    setIsLoading(true);
+    try {
+      const response = await apiService.signup({
+        username,
+        email,
+        password,
+        role
+      });
+      
+      if (response.success) {
+        // Save auth data to storage
+        await StorageService.saveAuthData(response.token, response.user);
+        
+        Alert.alert('Success', 'Account created successfully!', [
+          {
+            text: 'OK',
+            onPress: () => {
+              // Navigate based on role
+              if (role === 'admin') {
+                router.replace('/(main)/agent/scan');
+              } else {
+                router.replace('/(main)/salesperson/dashboard');
+              }
+            }
+          }
+        ]);
+      } else {
+        Alert.alert('Signup Failed', response.error || 'Failed to create account');
+      }
+    } catch (error) {
+      console.error('Signup error:', error);
+      Alert.alert('Error', 'Network error. Please check your connection and try again.');
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   return (
     <View style={{ backgroundColor: primaryNavy }} className="flex-1">
@@ -44,6 +98,8 @@ export default function SignupScreen() {
                     placeholder="John Doe"
                     placeholderTextColor="#94a3b8"
                     className="flex-1 text-slate-900 text-base font-bold h-full"
+                    value={username}
+                    onChangeText={setUsername}
                   />
                 </View>
               </View>
@@ -58,6 +114,8 @@ export default function SignupScreen() {
                     className="flex-1 text-slate-900 text-base font-bold h-full"
                     keyboardType="email-address"
                     autoCapitalize="none"
+                    value={email}
+                    onChangeText={setEmail}
                   />
                 </View>
               </View>
@@ -71,6 +129,8 @@ export default function SignupScreen() {
                     placeholderTextColor="#94a3b8"
                     className="flex-1 text-slate-900 text-base font-bold h-full"
                     secureTextEntry
+                    value={password}
+                    onChangeText={setPassword}
                   />
                 </View>
               </View>
@@ -80,37 +140,34 @@ export default function SignupScreen() {
                 <Text className="text-white/40 text-[10px] font-black mb-3 ml-1 uppercase tracking-[2px]">Account Type</Text>
                 <View className="flex-row space-x-4">
                   <Pressable 
-                    onPress={() => setRole('agent')}
-                    className={`flex-1 h-16 rounded-xl border-2 items-center justify-center flex-row ${role === 'agent' ? 'border-white bg-white/10' : 'bg-transparent border-white/10'}`}
+                    onPress={() => setRole('admin')}
+                    className={`flex-1 h-16 rounded-xl border-2 items-center justify-center flex-row ${role === 'admin' ? 'border-white bg-white/10' : 'bg-transparent border-white/10'}`}
                   >
-                    <Wallet size={16} color="white" className="mr-2" opacity={role === 'agent' ? 1 : 0.4} />
-                    <Text className={`text-white ${role === 'agent' ? 'font-black' : 'font-bold opacity-40'}`}>Agent</Text>
+                    <Wallet size={16} color="white" className="mr-2" opacity={role === 'admin' ? 1 : 0.4} />
+                    <Text className={`text-white ${role === 'admin' ? 'font-black' : 'font-bold opacity-40'}`}>Agent</Text>
                   </Pressable>
                   <Pressable 
-                    onPress={() => setRole('salesperson')}
-                    className={`flex-1 h-16 rounded-xl border-2 items-center justify-center flex-row ${role === 'salesperson' ? 'border-white bg-white/10' : 'bg-transparent border-white/10'} ml-4`}
+                    onPress={() => setRole('cashier')}
+                    className={`flex-1 h-16 rounded-xl border-2 items-center justify-center flex-row ${role === 'cashier' ? 'border-white bg-white/10' : 'bg-transparent border-white/10'} ml-4`}
                   >
-                    <Briefcase size={16} color="white" className="mr-2" opacity={role === 'salesperson' ? 1 : 0.4} />
-                    <Text className={`text-white ${role === 'salesperson' ? 'font-black' : 'font-bold opacity-40'}`}>Sales</Text>
+                    <Briefcase size={16} color="white" className="mr-2" opacity={role === 'cashier' ? 1 : 0.4} />
+                    <Text className={`text-white ${role === 'cashier' ? 'font-black' : 'font-bold opacity-40'}`}>Sales</Text>
                   </Pressable>
                 </View>
               </View>
 
               {/* Main Action Button */}
               <Pressable 
-                onPress={() => {
-                  if (role === 'agent') {
-                    router.replace('/(main)/agent/scan');
-                  } else {
-                    router.replace('/(main)/salesperson/dashboard');
-                  }
-                }} 
-                className="bg-white h-20 rounded-2xl items-center justify-center shadow-2xl shadow-black/30 active:bg-slate-50 mt-10"
+                onPress={handleSignup}
+                disabled={isLoading}
+                className={`bg-white h-20 rounded-2xl items-center justify-center shadow-2xl shadow-black/30 mt-10 ${isLoading ? 'opacity-70' : 'active:bg-slate-50'}`}
               >
                 <Text style={{ 
                   color: primaryNavy,
                   fontFamily: 'Poppins_800ExtraBold'
-                }} className="text-xl uppercase tracking-widest">Create Account</Text>
+                }} className="text-xl uppercase tracking-widest">
+                  {isLoading ? 'Creating...' : 'Create Account'}
+                </Text>
               </Pressable>
 
               <View className="flex-row justify-center items-center mt-8 mb-10">

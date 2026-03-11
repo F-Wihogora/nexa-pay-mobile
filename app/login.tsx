@@ -1,13 +1,49 @@
-import { View, Text, TextInput, Pressable, KeyboardAvoidingView, Platform, ScrollView, StatusBar } from 'react-native';
+import { View, Text, TextInput, Pressable, KeyboardAvoidingView, Platform, ScrollView, StatusBar, Alert } from 'react-native';
 import { useRouter } from 'expo-router';
 import { Logo } from '../components/Logo';
-import { Mail, Lock, ChevronLeft, ArrowRight } from 'lucide-react-native';
+import { Mail, Lock, ChevronLeft } from 'lucide-react-native';
 import { useState } from 'react';
+import { apiService } from '../services/api';
+import { StorageService } from '../services/storage';
 
 export default function LoginScreen() {
   const router = useRouter();
   const [role, setRole] = useState<'agent' | 'salesperson'>('agent');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
   const primaryNavy = "#002B5B";
+
+  const handleLogin = async () => {
+    if (!email || !password) {
+      Alert.alert('Error', 'Please fill in all fields');
+      return;
+    }
+
+    setIsLoading(true);
+    try {
+      const response = await apiService.login({ email, password });
+      
+      if (response.success) {
+        // Save auth data to storage
+        await StorageService.saveAuthData(response.token, response.user);
+        
+        // Navigate based on role
+        if (role === 'agent') {
+          router.replace('/(main)/agent/scan');
+        } else {
+          router.replace('/(main)/salesperson/dashboard');
+        }
+      } else {
+        Alert.alert('Login Failed', response.error || 'Invalid credentials');
+      }
+    } catch (error) {
+      console.error('Login error:', error);
+      Alert.alert('Error', 'Network error. Please check your connection and try again.');
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   return (
     <View style={{ backgroundColor: primaryNavy }} className="flex-1">
@@ -56,6 +92,8 @@ export default function LoginScreen() {
                     className="flex-1 text-slate-900 text-lg h-full"
                     keyboardType="email-address"
                     autoCapitalize="none"
+                    value={email}
+                    onChangeText={setEmail}
                   />
                 </View>
               </View>
@@ -69,6 +107,8 @@ export default function LoginScreen() {
                     placeholderTextColor="#94a3b8"
                     className="flex-1 text-slate-900 text-lg font-bold h-full"
                     secureTextEntry
+                    value={password}
+                    onChangeText={setPassword}
                   />
                 </View>
                 <Pressable className="mt-4 self-end">
@@ -97,19 +137,16 @@ export default function LoginScreen() {
 
               {/* Main Login Button (White) */}
               <Pressable 
-                onPress={() => {
-                  if (role === 'agent') {
-                    router.replace('/(main)/agent/scan');
-                  } else {
-                    router.replace('/(main)/salesperson/dashboard');
-                  }
-                }} 
-                className="bg-white h-20 rounded-2xl items-center justify-center shadow-2xl shadow-black/30 active:bg-slate-50 mt-10"
+                onPress={handleLogin}
+                disabled={isLoading}
+                className={`bg-white h-20 rounded-2xl items-center justify-center shadow-2xl shadow-black/30 mt-10 ${isLoading ? 'opacity-70' : 'active:bg-slate-50'}`}
               >
                 <Text style={{ 
                   color: primaryNavy,
                   fontFamily: 'Poppins_800ExtraBold'
-                }} className="text-xl uppercase tracking-widest">Login</Text>
+                }} className="text-xl uppercase tracking-widest">
+                  {isLoading ? 'Signing In...' : 'Login'}
+                </Text>
               </Pressable>
 
               <View className="flex-row justify-center items-center mt-10 mb-10">
