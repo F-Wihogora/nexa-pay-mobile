@@ -30,25 +30,21 @@ export default function AgentTransactionsScreen() {
           </View>
 
           {transactions.map((item) => (
-            <View key={item.id} className="bg-white border border-slate-100 p-6 rounded-3xl mb-4 shadow-sm shadow-blue-900/5">
-              <View className="flex-row justify-between items-start mb-4">
-                 <View className="flex-row items-center">
-                    <View className={`w-8 h-8 rounded-full items-center justify-center mr-3 ${item.status === 'SUCCESS' ? 'bg-green-50' : 'bg-red-50'}`}>
-                       {item.status === 'SUCCESS' ? <CheckCircle size={16} color="#10b981" /> : <XCircle size={16} color="#ef4444" />}
-                    </View>
-                    <Text style={{ color: item.status === 'SUCCESS' ? '#10b981' : '#ef4444' }} className="text-[10px] font-black uppercase tracking-widest">{item.status}</Text>
-                 </View>
-                 <Text className="text-slate-400 text-[10px] font-bold">{item.date}</Text>
-              </View>
-              
+            <View key={item.id} className="bg-white border border-slate-100 p-4 rounded-3xl mb-3 shadow-sm shadow-blue-900/5">
               <View className="flex-row justify-between items-center">
-                 <View>
-                    <Text style={{ color: primaryNavy }} className="font-black text-base">{item.name}</Text>
-                    <Text className="text-slate-400 text-xs font-mono mt-1">{item.uid}</Text>
+                 <View className="flex-row items-center flex-1">
+                    <View className={`w-10 h-10 rounded-2xl items-center justify-center mr-4 ${item.status === 'SUCCESS' ? 'bg-green-50' : 'bg-red-50'}`}>
+                       {item.status === 'SUCCESS' ? <CheckCircle size={20} color="#10b981" /> : <XCircle size={20} color="#ef4444" />}
+                    </View>
+                    <View>
+                       <Text style={{ color: primaryNavy }} className="font-black text-base leading-tight">{item.name}</Text>
+                       <Text className="text-slate-400 text-[10px] font-mono mt-0.5">{item.uid} • {item.date}</Text>
+                    </View>
                  </View>
-                 <Text style={{ color: item.status === 'SUCCESS' ? '#10b981' : primaryNavy }} className="text-xl font-black">
-                    {item.amt}
-                 </Text>
+                 <View className="items-end">
+                    <Text style={{ color: item.status === 'SUCCESS' ? '#10b981' : primaryNavy }} className="text-lg font-black">{item.amt}</Text>
+                    <Text style={{ color: item.status === 'SUCCESS' ? '#10b981' : '#ef4444' }} className="text-[8px] font-black uppercase tracking-widest mt-0.5">{item.status}</Text>
+                 </View>
               </View>
             </View>
           ))}
