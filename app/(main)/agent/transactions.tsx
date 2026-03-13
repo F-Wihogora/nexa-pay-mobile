@@ -90,7 +90,7 @@ const AgentTransactionsScreen = () => {
     <SafeAreaView className="flex-1 bg-slate-50">
       <AgentTopbar 
         name={currentUser?.username || 'Agent'} 
-        role={currentUser?.role === 'admin' ? 'Nexa Pro Agent' : 'Nexa Sales Pro'} 
+        role={currentUser?.role === 'admin' ? 'Nexa Agent' : 'Nexa Salesman'} 
         primaryNavy={primaryNavy} 
       />
       

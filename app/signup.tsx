@@ -186,7 +186,7 @@ export default function SignupScreen() {
                     className={`flex-1 h-16 rounded-xl border-2 items-center justify-center flex-row ${role === 'cashier' ? 'border-white bg-white/10' : 'bg-transparent border-white/10'} ml-4`}
                   >
                     <Briefcase size={16} color="white" className="mr-2" opacity={role === 'cashier' ? 1 : 0.4} />
-                    <Text className={`text-white ${role === 'cashier' ? 'font-black' : 'font-bold opacity-40'}`}>Sales</Text>
+                    <Text className={`text-white ${role === 'cashier' ? 'font-black' : 'font-bold opacity-40'}`}>Salesman</Text>
                   </Pressable>
                 </View>
               </View>

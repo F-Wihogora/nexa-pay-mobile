@@ -16,7 +16,7 @@ export default function SalespersonHistory() {
 
   return (
     <SafeAreaView className="flex-1 bg-white">
-      <AgentTopbar name="Sarah Sales" role="Nexa Sales Pro" primaryNavy={primaryNavy} />
+      <AgentTopbar name="Sarah Sales" role="Nexa Salesman" primaryNavy={primaryNavy} />
       
       <ScrollView className="flex-1" showsVerticalScrollIndicator={false}>
         <View className="px-6 mt-6">

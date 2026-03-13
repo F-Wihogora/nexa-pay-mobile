@@ -8,7 +8,7 @@ import { StorageService } from '../services/storage';
 
 export default function LoginScreen() {
   const router = useRouter();
-  const [role, setRole] = useState<'agent' | 'salesperson'>('agent');
+  const [role, setRole] = useState<'admin' | 'cashier'>('admin');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [isLoading, setIsLoading] = useState(false);
@@ -66,11 +66,23 @@ export default function LoginScreen() {
       console.log('✅ Login response:', response);
       
       if (response.success) {
+        // Validate that the user's role matches the selected role
+        if (response.user.role !== role) {
+          const userRoleText = response.user.role === 'admin' ? 'Agent' : 'Salesman';
+          const selectedRoleText = role === 'admin' ? 'Agent' : 'Salesman';
+          Alert.alert(
+            'Role Mismatch', 
+            `You are registered as ${userRoleText} but trying to login as ${selectedRoleText}. Please select the correct role.`
+          );
+          setIsLoading(false);
+          return;
+        }
+
         // Save auth data to storage
         await StorageService.saveAuthData(response.token, response.user);
         
-        // Navigate based on role
-        if (role === 'agent') {
+        // Navigate based on user's actual role (not selected role)
+        if (response.user.role === 'admin') {
           router.replace('/(main)/agent/scan');
         } else {
           router.replace('/(main)/salesperson/dashboard');
@@ -173,16 +185,16 @@ export default function LoginScreen() {
                 <Text className="text-white/40 text-[10px] font-black mb-3 ml-1 uppercase tracking-[2px]">Select Portal</Text>
                 <View className="flex-row space-x-4">
                   <Pressable 
-                    onPress={() => setRole('agent')}
-                    className={`flex-1 h-16 rounded-xl border-2 items-center justify-center flex-row ${role === 'agent' ? 'border-white bg-white/10' : 'bg-transparent border-white/10'}`}
+                    onPress={() => setRole('admin')}
+                    className={`flex-1 h-16 rounded-xl border-2 items-center justify-center flex-row ${role === 'admin' ? 'border-white bg-white/10' : 'bg-transparent border-white/10'}`}
                   >
-                    <Text className={`text-white ${role === 'agent' ? 'font-black' : 'font-bold opacity-40'}`}>Agent</Text>
+                    <Text className={`text-white ${role === 'admin' ? 'font-black' : 'font-bold opacity-40'}`}>Agent</Text>
                   </Pressable>
                   <Pressable 
-                    onPress={() => setRole('salesperson')}
-                    className={`flex-1 h-16 rounded-xl border-2 items-center justify-center flex-row ${role === 'salesperson' ? 'border-white bg-white/10' : 'bg-transparent border-white/10'} ml-4`}
+                    onPress={() => setRole('cashier')}
+                    className={`flex-1 h-16 rounded-xl border-2 items-center justify-center flex-row ${role === 'cashier' ? 'border-white bg-white/10' : 'bg-transparent border-white/10'} ml-4`}
                   >
-                    <Text className={`text-white ${role === 'salesperson' ? 'font-black' : 'font-bold opacity-40'}`}>Sales Pro</Text>
+                    <Text className={`text-white ${role === 'cashier' ? 'font-black' : 'font-bold opacity-40'}`}>Salesman</Text>
                   </Pressable>
                 </View>
               </View>

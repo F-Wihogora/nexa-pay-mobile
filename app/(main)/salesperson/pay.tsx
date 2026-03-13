@@ -106,7 +106,7 @@ export default function SalespersonPay() {
     <SafeAreaView className="flex-1 bg-white">
       <AgentTopbar 
         name={currentUser?.username || 'Sales Pro'} 
-        role={currentUser?.role === 'admin' ? 'Nexa Pro Agent' : 'Nexa Sales Pro'} 
+        role={currentUser?.role === 'admin' ? 'Nexa Agent' : 'Nexa Salesman'} 
         primaryNavy={primaryNavy} 
       />
       

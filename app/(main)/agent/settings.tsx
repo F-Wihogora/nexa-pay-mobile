@@ -85,7 +85,7 @@ const AgentSettingsScreen = () => {
   const handleAboutNexa = () => {
     Alert.alert(
       "About Nexa",
-      "Nexa Pro Agent v2.1.0\n\nA secure RFID payment solution for modern businesses.\n\n© 2024 Nexa Technologies",
+      "Nexa Agent v2.1.0\n\nA secure RFID payment solution for modern businesses.\n\n© 2024 Nexa Technologies",
       [
         { text: "Terms of Service", onPress: () => {} },
         { text: "Privacy Policy", onPress: () => {} },
@@ -183,7 +183,7 @@ const AgentSettingsScreen = () => {
     <SafeAreaView className="flex-1 bg-slate-50">
       <AgentTopbar 
         name={currentUser?.username || 'Agent'} 
-        role={currentUser?.role === 'admin' ? 'Nexa Pro Agent' : 'Nexa Sales Pro'} 
+        role={currentUser?.role === 'admin' ? 'Nexa Agent' : 'Nexa Salesman'} 
         primaryNavy={primaryNavy} 
         showWelcome={false} 
       />
@@ -233,7 +233,7 @@ const AgentSettingsScreen = () => {
               <Text style={{ 
                 color: '#64748b',
                 fontFamily: 'Poppins_600SemiBold'
-              }} className="text-sm mb-1">{currentUser?.role === 'admin' ? 'Nexa Pro Agent' : 'Nexa Sales Pro'}</Text>
+              }} className="text-sm mb-1">{currentUser?.role === 'admin' ? 'Nexa Agent' : 'Nexa Salesman'}</Text>
               <Text style={{ 
                 color: '#94a3b8',
                 fontFamily: 'Poppins_500Medium'
