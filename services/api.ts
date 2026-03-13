@@ -201,6 +201,23 @@ class ApiService {
         const query = limit ? `?limit=${limit}` : '';
         return this.makeRequest(`/transactions/${uid}${query}`);
     }
+
+    // User-specific endpoints
+    async getUserTransactions(limit?: number): Promise<any> {
+        const query = limit ? `?limit=${limit}` : '';
+        return this.makeRequest(`/user/transactions${query}`);
+    }
+
+    async getUserCards(): Promise<any> {
+        return this.makeRequest('/user/cards');
+    }
+
+    async assignCardToUser(uid: string): Promise<any> {
+        return this.makeRequest('/user/assign-card', {
+            method: 'POST',
+            body: JSON.stringify({ uid }),
+        });
+    }
 }
 
 export const apiService = ApiService.getInstance();

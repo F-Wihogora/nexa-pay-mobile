@@ -30,9 +30,11 @@ export default function AgentTopupScreen() {
   const [amount, setAmount] = useState('');
   const [currentUser, setCurrentUser] = useState<User | null>(null);
   const [isProcessing, setIsProcessing] = useState(false);
-  const [cardUID, setCardUID] = useState('70:77:88:99'); // Simulated card UID
+  const [cardUID, setCardUID] = useState('');
+  const [userCards, setUserCards] = useState([]);
+  const [selectedCard, setSelectedCard] = useState(null);
 
-  // Load current user data
+  // Load current user data and their cards
   useEffect(() => {
     const loadUserData = async () => {
       try {
@@ -44,6 +46,17 @@ export default function AgentTopupScreen() {
         if (token) {
           apiService.setToken(token);
         }
+
+        // Load user's cards
+        const cardsResponse = await apiService.getUserCards();
+        if (cardsResponse.success) {
+          setUserCards(cardsResponse.cards);
+          if (cardsResponse.cards.length > 0) {
+            // Select first card by default
+            setSelectedCard(cardsResponse.cards[0]);
+            setCardUID(cardsResponse.cards[0].cardUid);
+          }
+        }
       } catch (error) {
         console.error('Failed to load user data:', error);
       }
@@ -54,6 +67,11 @@ export default function AgentTopupScreen() {
   const handleTopUp = async () => {
     if (!amount || parseFloat(amount) <= 0) {
       Alert.alert('Invalid Amount', 'Please enter a valid amount');
+      return;
+    }
+
+    if (!cardUID) {
+      Alert.alert('No Card Selected', 'Please select a card or add a new one');
       return;
     }
 
@@ -221,7 +239,7 @@ export default function AgentTopupScreen() {
                 <Text style={{ 
                   color: 'white',
                   fontFamily: 'Poppins_900Black'
-                }} className="text-lg tracking-tighter">70:77:88:99</Text>
+                }} className="text-lg tracking-tighter">{cardUID || 'No card selected'}</Text>
               </View>
             </View>
             <View className="items-end">
@@ -232,8 +250,96 @@ export default function AgentTopupScreen() {
               <Text style={{ 
                 color: 'white',
                 fontFamily: 'Poppins_900Black'
-              }} className="text-2xl">${balance.toFixed(2)}</Text>
+              }} className="text-2xl">${selectedCard ? selectedCard.balance.toFixed(2) : '0.00'}</Text>
             </View>
+          </View>
+        </View>
+
+        {/* Card Selection */}
+        {userCards.length > 0 && (
+          <View className="mb-6">
+            <Text style={{ 
+              color: '#64748b',
+              fontFamily: 'Poppins_800ExtraBold'
+            }} className="text-sm uppercase tracking-widest mb-3 ml-1">Select Card</Text>
+            <View className="flex-row flex-wrap">
+              {userCards.map((card, index) => (
+                <Pressable 
+                  key={card.cardUid}
+                  onPress={() => {
+                    setSelectedCard(card);
+                    setCardUID(card.cardUid);
+                  }}
+                  className={`mr-3 mb-3 px-4 py-3 rounded-xl border-2 ${
+                    selectedCard?.cardUid === card.cardUid 
+                      ? 'border-blue-500 bg-blue-50' 
+                      : 'border-slate-200 bg-white'
+                  }`}
+                >
+                  <Text style={{ 
+                    color: selectedCard?.cardUid === card.cardUid ? primaryNavy : '#64748b',
+                    fontFamily: 'Poppins_600SemiBold'
+                  }} className="text-sm">{card.cardUid}</Text>
+                  <Text style={{ 
+                    color: '#94a3b8',
+                    fontFamily: 'Poppins_500Medium'
+                  }} className="text-xs">${card.balance.toFixed(2)}</Text>
+                </Pressable>
+              ))}
+            </View>
+          </View>
+        )}
+
+        {/* Add New Card Option */}
+        <View className="mb-6">
+          <Text style={{ 
+            color: '#64748b',
+            fontFamily: 'Poppins_800ExtraBold'
+          }} className="text-sm uppercase tracking-widest mb-3 ml-1">Or Add New Card</Text>
+          <View className="flex-row">
+            <TextInput 
+              placeholder="Enter card UID (e.g., 70:77:88:99)"
+              placeholderTextColor="#94a3b8"
+              style={{ 
+                color: primaryNavy, 
+                fontFamily: 'Poppins_600SemiBold',
+                flex: 1,
+                borderWidth: 1,
+                borderColor: '#e2e8f0',
+                borderRadius: 12,
+                paddingHorizontal: 16,
+                paddingVertical: 12,
+                marginRight: 12
+              }}
+              value={cardUID}
+              onChangeText={setCardUID}
+            />
+            <Pressable 
+              onPress={async () => {
+                if (cardUID && !userCards.find(c => c.cardUid === cardUID)) {
+                  try {
+                    await apiService.assignCardToUser(cardUID);
+                    // Reload cards
+                    const cardsResponse = await apiService.getUserCards();
+                    if (cardsResponse.success) {
+                      setUserCards(cardsResponse.cards);
+                      const newCard = cardsResponse.cards.find(c => c.cardUid === cardUID);
+                      if (newCard) {
+                        setSelectedCard(newCard);
+                      }
+                    }
+                  } catch (error) {
+                    Alert.alert('Error', 'Failed to add card');
+                  }
+                }
+              }}
+              className="bg-blue-500 px-4 py-3 rounded-xl"
+            >
+              <Text style={{ 
+                color: 'white',
+                fontFamily: 'Poppins_600SemiBold'
+              }} className="text-sm">Add</Text>
+            </Pressable>
           </View>
         </View>
 

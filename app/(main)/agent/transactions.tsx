@@ -39,12 +39,12 @@ const AgentTransactionsScreen = () => {
   const loadTransactions = async () => {
     try {
       setIsLoading(true);
-      const cardUID = '70:77:88:99'; // Sample card UID
-      const response = await apiService.getTransactions(cardUID, 20);
+      // Use user-specific transactions instead of hardcoded card UID
+      const response = await apiService.getUserTransactions(20);
       
       if (response.success) {
         setTransactions(response.transactions);
-        console.log('✅ Transactions loaded:', response.transactions.length);
+        console.log('✅ User transactions loaded:', response.transactions.length);
       } else {
         console.error('Failed to load transactions:', response.error);
       }
