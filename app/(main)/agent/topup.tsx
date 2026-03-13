@@ -72,7 +72,8 @@ export default function AgentTopupScreen() {
               text: 'OK',
               onPress: () => {
                 setAmount('');
-                router.back();
+                // Navigate to scan screen instead of going back to maintain session
+                router.replace('/(main)/agent/scan');
               }
             }
           ]

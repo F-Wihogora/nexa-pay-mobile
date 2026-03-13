@@ -77,7 +77,10 @@ const AgentTransactionsScreen = () => {
   const successCount = useMemo(() => {
     return transactions.filter(t => t.status === 'SUCCESS').length;
   }, [transactions]);
-  const failedCount = useMemo(() => allTransactions.filter(t => t.status === 'FAILED').length, [allTransactions]);
+  
+  const failedCount = useMemo(() => {
+    return transactions.filter(t => t.status === 'FAILED').length;
+  }, [transactions]);
 
   const handleFilterChange = useCallback((filter: 'all' | 'success' | 'failed') => {
     setActiveFilter(filter);
@@ -208,7 +211,7 @@ const AgentTransactionsScreen = () => {
               <Text style={{ 
                 color: activeFilter === 'all' ? primaryNavy : '#64748b',
                 fontFamily: 'Poppins_600SemiBold'
-              }} className="text-sm">All ({allTransactions.length})</Text>
+              }} className="text-sm">All ({transactions.length})</Text>
             </Pressable>
             <Pressable 
               onPress={() => handleFilterChange('success')}
@@ -308,12 +311,12 @@ const AgentTransactionsScreen = () => {
                       <Text style={{ 
                         color: item.status === 'SUCCESS' ? '#10b981' : '#ef4444',
                         fontFamily: 'Poppins_700Bold'
-                      }} className="text-xs">{item.status}</Text>
+                      }} className="text-xs uppercase tracking-wider">{item.status}</Text>
                     </View>
                   </View>
                 </View>
                 
-                <View className="flex-row justify-between items-center pt-4 border-t border-slate-50">
+                <View className="flex-row items-center justify-between pt-4 border-t border-slate-50">
                   <View className="flex-row items-center">
                     <Clock size={14} color="#94a3b8" />
                     <Text style={{ 
@@ -331,32 +334,6 @@ const AgentTransactionsScreen = () => {
               </View>
             ))
           )}
-                    <Text style={{ 
-                      color: item.status === 'SUCCESS' ? '#10b981' : '#ef4444',
-                      fontFamily: 'Poppins_700Bold'
-                    }} className="text-xs uppercase tracking-wider">{item.status}</Text>
-                  </View>
-                </View>
-              </View>
-              
-              <View className="flex-row items-center justify-between pt-4 border-t border-slate-50">
-                <View className="flex-row items-center">
-                  <Calendar size={14} color="#94a3b8" />
-                  <Text style={{ 
-                    color: '#94a3b8',
-                    fontFamily: 'Poppins_500Medium'
-                  }} className="text-xs ml-2">{item.date.split(',')[0]}</Text>
-                </View>
-                <View className="flex-row items-center">
-                  <Clock size={14} color="#94a3b8" />
-                  <Text style={{ 
-                    color: '#94a3b8',
-                    fontFamily: 'Poppins_500Medium'
-                  }} className="text-xs ml-2">{item.time}</Text>
-                </View>
-              </View>
-            </View>
-          ))}
         </View>
         <View className="h-40" />
       </ScrollView>

@@ -95,6 +95,10 @@ export class StorageService {
         }
     }
 
+    static async clearAuth(): Promise<void> {
+        return this.clearAuthData();
+    }
+
     static async initializeAuth(): Promise<{ token: string | null; user: User | null; isLoggedIn: boolean }> {
         try {
             console.log('🔄 Initializing auth...');

@@ -1,7 +1,7 @@
 import { useRouter } from 'expo-router';
 import { useEffect, useState } from 'react';
 import { StorageService } from './storage';
-import { User } from './api';
+import { User, apiService } from './api';
 
 export const useSessionGuard = () => {
     const router = useRouter();
@@ -18,8 +18,16 @@ export const useSessionGuard = () => {
 
             if (!isLoggedIn || !user) {
                 console.log('❌ No valid session found, redirecting to welcome');
+                setIsAuthenticated(false);
                 router.replace('/');
                 return;
+            }
+
+            // Set API token for authenticated requests
+            const token = await StorageService.getToken();
+            if (token) {
+                apiService.setToken(token);
+                console.log('🔑 API token set for authenticated requests');
             }
 
             setIsAuthenticated(true);
@@ -28,9 +36,15 @@ export const useSessionGuard = () => {
         } catch (error) {
             console.error('❌ Session check failed:', error);
             setIsAuthenticated(false);
+            // Clear any corrupted session data
+            await StorageService.clearAuth();
             router.replace('/');
         }
     };
 
-    return { isAuthenticated, currentUser, checkAuthStatus };
+    const refreshSession = async () => {
+        await checkAuthStatus();
+    };
+
+    return { isAuthenticated, currentUser, checkAuthStatus, refreshSession };
 };
