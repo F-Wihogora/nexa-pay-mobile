@@ -59,11 +59,7 @@ const AgentSettingsScreen = () => {
   };
 
   const handleHelpCenter = () => {
-    Alert.alert(
-      "Help Center",
-      "Access FAQs, guides, and tutorials.",
-      [{ text: "OK" }]
-    );
+    router.push('/(main)/agent/help-center');
   };
 
   const handleContactSupport = () => {
