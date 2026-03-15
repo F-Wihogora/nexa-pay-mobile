@@ -31,11 +31,7 @@ const AgentSettingsScreen = () => {
   }, []);
 
   const handleEditProfile = () => {
-    Alert.alert(
-      "Edit Profile",
-      "Profile editing functionality will be available soon.",
-      [{ text: "OK" }]
-    );
+    router.push('/(main)/agent/edit-profile');
   };
 
   const handleLanguageSettings = () => {

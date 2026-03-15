@@ -218,6 +218,19 @@ class ApiService {
             body: JSON.stringify({ uid }),
         });
     }
+
+    // Profile management endpoints
+    async updateProfile(profileData: {
+        username?: string;
+        email?: string;
+        currentPassword?: string;
+        newPassword?: string;
+    }): Promise<any> {
+        return this.makeRequest('/user/profile', {
+            method: 'PUT',
+            body: JSON.stringify(profileData),
+        });
+    }
 }
 
 export const apiService = ApiService.getInstance();
