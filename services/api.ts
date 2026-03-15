@@ -231,6 +231,34 @@ class ApiService {
             body: JSON.stringify(profileData),
         });
     }
+
+    // Notification endpoints
+    async getNotifications(limit?: number): Promise<any> {
+        const query = limit ? `?limit=${limit}` : '';
+        return this.makeRequest(`/user/notifications${query}`);
+    }
+
+    async getUnreadNotificationCount(): Promise<any> {
+        return this.makeRequest('/user/notifications/unread-count');
+    }
+
+    async markNotificationAsRead(notificationId: string): Promise<any> {
+        return this.makeRequest(`/user/notifications/${notificationId}/read`, {
+            method: 'PUT',
+        });
+    }
+
+    async markAllNotificationsAsRead(): Promise<any> {
+        return this.makeRequest('/user/notifications/mark-all-read', {
+            method: 'PUT',
+        });
+    }
+
+    async deleteNotification(notificationId: string): Promise<any> {
+        return this.makeRequest(`/user/notifications/${notificationId}`, {
+            method: 'DELETE',
+        });
+    }
 }
 
 export const apiService = ApiService.getInstance();

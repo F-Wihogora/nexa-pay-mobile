@@ -25,6 +25,7 @@ export default function AgentScanScreen() {
   const [selectedCurrency, setSelectedCurrency] = useState<'NGN' | 'USD' | 'EUR'>('NGN');
   const [scanResult, setScanResult] = useState<{id: string, name: string, balance: number} | null>(null);
   const [currentUser, setCurrentUser] = useState<User | null>(null);
+  const [notificationCount, setNotificationCount] = useState(2); // Mock notification count
 
   // Load current user data
   useEffect(() => {
@@ -225,7 +226,8 @@ export default function AgentScanScreen() {
       <AgentTopbar 
         name={currentUser?.username || 'Agent'} 
         role={currentUser?.role === 'admin' ? 'Nexa Agent' : 'Nexa Salesman'} 
-        primaryNavy={primaryNavy} 
+        primaryNavy={primaryNavy}
+        notificationCount={notificationCount}
       />
       
       <ScrollView className="flex-1" showsVerticalScrollIndicator={false}>
