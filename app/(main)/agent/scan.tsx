@@ -25,12 +25,22 @@ export default function AgentScanScreen() {
   const [selectedCurrency, setSelectedCurrency] = useState<'NGN' | 'USD' | 'EUR'>('NGN');
   const [scanResult, setScanResult] = useState<{id: string, name: string, balance: number} | null>(null);
   const [currentUser, setCurrentUser] = useState<User | null>(null);
-  const [notificationCount, setNotificationCount] = useState(2); // Mock notification count
+  const [notificationCount, setNotificationCount] = useState(0);
+  const [userCards, setUserCards] = useState<any[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
 
-  // Load current user data
+  // Currency conversion rates (in a real app, these would come from an API)
+  const currencyRates = {
+    NGN: 1600, // 1 USD = 1600 NGN
+    USD: 1,    // Base currency
+    EUR: 0.85  // 1 USD = 0.85 EUR
+  };
+
+  // Load current user data and their cards
   useEffect(() => {
     const loadUserData = async () => {
       try {
+        setIsLoading(true);
         const user = await StorageService.getUser();
         setCurrentUser(user);
         
@@ -39,13 +49,45 @@ export default function AgentScanScreen() {
         if (token) {
           apiService.setToken(token);
           console.log('🔑 API token set for authenticated requests');
+          
+          // Load user's cards
+          const cardsResponse = await apiService.getUserCards();
+          if (cardsResponse.success) {
+            setUserCards(cardsResponse.cards || []);
+            console.log('📱 User cards loaded:', cardsResponse.cards);
+          }
+          
+          // Load notification count
+          const notifCountResponse = await apiService.getUnreadNotificationCount();
+          if (notifCountResponse.success) {
+            setNotificationCount(notifCountResponse.count || 0);
+            console.log('🔔 Notification count loaded:', notifCountResponse.count);
+          }
         }
       } catch (error) {
         console.error('Failed to load user data:', error);
+        Alert.alert('Error', 'Failed to load user data. Please try again.');
+      } finally {
+        setIsLoading(false);
       }
     };
     loadUserData();
   }, []);
+
+  // Convert balance to selected currency
+  const convertCurrency = (amountInUSD: number): string => {
+    const convertedAmount = amountInUSD * currencyRates[selectedCurrency];
+    
+    switch (selectedCurrency) {
+      case 'NGN':
+        return `₦${convertedAmount.toLocaleString('en-NG', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+      case 'EUR':
+        return `€${convertedAmount.toLocaleString('en-EU', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+      case 'USD':
+      default:
+        return `$${convertedAmount.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+    }
+  };
 
   // Animation values
   const pulseScale = useSharedValue(1);
@@ -142,21 +184,32 @@ export default function AgentScanScreen() {
     setScanResult(null);
     
     try {
-      // Simulate RFID card detection - in real implementation, this would connect to RFID hardware
-      // For now, we'll simulate with a known card UID
-      const simulatedCardUID = '70:77:88:99';
+      // Check if user has any cards
+      if (userCards.length === 0) {
+        setIsScanning(false);
+        Alert.alert(
+          'No Cards Found', 
+          'You don\'t have any cards assigned to your account. Please contact an administrator to assign a card.',
+          [{ text: 'OK' }]
+        );
+        return;
+      }
+
+      // For demo purposes, we'll use the first card from user's cards
+      // In a real RFID implementation, this would detect the actual card being scanned
+      const cardToScan = userCards[0];
       
-      console.log('🔍 Scanning RFID card:', simulatedCardUID);
+      console.log('🔍 Scanning RFID card:', cardToScan.cardUid);
       
-      // Get wallet balance from backend
-      const balanceResponse = await apiService.getBalance(simulatedCardUID);
+      // Get fresh balance from backend
+      const balanceResponse = await apiService.getBalance(cardToScan.cardUid);
       
       if (balanceResponse.success) {
         setTimeout(() => {
           setIsScanning(false);
           setScanResult({
-            id: simulatedCardUID,
-            name: 'Card Holder',
+            id: cardToScan.cardUid,
+            name: currentUser?.username || 'Card Holder',
             balance: balanceResponse.balance
           });
           console.log('✅ Card scanned successfully:', balanceResponse);
@@ -171,55 +224,65 @@ export default function AgentScanScreen() {
     }
   };
 
-  const NexaCard = () => (
-    <View className="px-4 mt-2">
-      <View 
-        style={{ height: 280, backgroundColor: primaryNavy, borderRadius: 16, padding: 30 }} 
-        className="shadow-2xl shadow-blue-900/20 border border-blue-100 relative overflow-hidden"
-      >
-        <View style={{ backgroundColor: 'rgba(255,255,255,0.1)', width: 200, height: 200, borderRadius: 100, position: 'absolute', top: -100, right: -100 }} />
-        <View className="flex-row justify-between items-start mb-6">
-          <View style={{ backgroundColor: '#FFD700', width: 50, height: 38, borderRadius: 8, opacity: 0.9, position: 'relative', overflow: 'hidden' }}>
-             <View className="absolute inset-0 border border-black/10 opacity-20" />
-             <View className="absolute top-1/2 w-full h-[1px] bg-black/10" />
-             <View className="absolute left-1/2 h-full w-[1px] bg-black/10" />
+  const NexaCard = () => {
+    // Use first user card or show placeholder
+    const primaryCard = userCards.length > 0 ? userCards[0] : null;
+    const displayBalance = primaryCard ? primaryCard.balance / 100 : 0; // Convert from cents to dollars
+    
+    return (
+      <View className="px-4 mt-2">
+        <View 
+          style={{ height: 280, backgroundColor: primaryNavy, borderRadius: 16, padding: 30 }} 
+          className="shadow-2xl shadow-blue-900/20 border border-blue-100 relative overflow-hidden"
+        >
+          <View style={{ backgroundColor: 'rgba(255,255,255,0.1)', width: 200, height: 200, borderRadius: 100, position: 'absolute', top: -100, right: -100 }} />
+          <View className="flex-row justify-between items-start mb-6">
+            <View style={{ backgroundColor: '#FFD700', width: 50, height: 38, borderRadius: 8, opacity: 0.9, position: 'relative', overflow: 'hidden' }}>
+               <View className="absolute inset-0 border border-black/10 opacity-20" />
+               <View className="absolute top-1/2 w-full h-[1px] bg-black/10" />
+               <View className="absolute left-1/2 h-full w-[1px] bg-black/10" />
+            </View>
+            <Wifi size={24} color="white" opacity={0.6} />
           </View>
-          <Wifi size={24} color="white" opacity={0.6} />
-        </View>
-        <Text style={{ 
-          color: 'white',
-          fontFamily: 'Poppins_900Black'
-        }} className="text-2xl tracking-[4px] mb-8 opacity-80">
-          **** **** **** ****
-        </Text>
-        <View className="flex-row justify-between items-end mt-auto">
-          <View>
-            <Text style={{ 
-              color: 'rgba(255,255,255,0.6)',
-              fontFamily: 'Poppins_800ExtraBold'
-            }} className="text-[10px] uppercase tracking-[2px] mb-2">CARD UID</Text>
-            <View className="flex-row items-center">
-              <Cpu size={14} color="white" className="mr-2" opacity={0.7} />
+          <Text style={{ 
+            color: 'white',
+            fontFamily: 'Poppins_900Black'
+          }} className="text-2xl tracking-[4px] mb-8 opacity-80">
+            **** **** **** ****
+          </Text>
+          <View className="flex-row justify-between items-end mt-auto">
+            <View>
+              <Text style={{ 
+                color: 'rgba(255,255,255,0.6)',
+                fontFamily: 'Poppins_800ExtraBold'
+              }} className="text-[10px] uppercase tracking-[2px] mb-2">CARD UID</Text>
+              <View className="flex-row items-center">
+                <Cpu size={14} color="white" className="mr-2" opacity={0.7} />
+                <Text style={{ 
+                  color: 'white',
+                  fontFamily: 'Poppins_900Black'
+                }} className="text-lg tracking-tighter">
+                  {primaryCard ? primaryCard.cardUid : 'No Card'}
+                </Text>
+              </View>
+            </View>
+            <View className="items-end">
+              <Text style={{ 
+                color: 'rgba(255,255,255,0.6)',
+                fontFamily: 'Poppins_800ExtraBold'
+              }} className="text-[10px] uppercase tracking-[2px] mb-2">WALLET BALANCE</Text>
               <Text style={{ 
                 color: 'white',
                 fontFamily: 'Poppins_900Black'
-              }} className="text-lg tracking-tighter">70:77:88:99</Text>
+              }} className="text-2xl">
+                {isLoading ? '...' : convertCurrency(displayBalance)}
+              </Text>
             </View>
-          </View>
-          <View className="items-end">
-            <Text style={{ 
-              color: 'rgba(255,255,255,0.6)',
-              fontFamily: 'Poppins_800ExtraBold'
-            }} className="text-[10px] uppercase tracking-[2px] mb-2">WALLET BALANCE</Text>
-            <Text style={{ 
-              color: 'white',
-              fontFamily: 'Poppins_900Black'
-            }} className="text-2xl">$1,250.00</Text>
           </View>
         </View>
       </View>
-    </View>
-  );
+    );
+  };
 
   return (
     <SafeAreaView className="flex-1 bg-white">
@@ -234,6 +297,60 @@ export default function AgentScanScreen() {
         <NexaCard />
         
         <View className="px-6 mt-10">
+          {/* User Cards Section */}
+          {userCards.length > 0 && (
+            <View className="mb-8">
+              <Text style={{ color: primaryNavy, fontFamily: 'Poppins_800ExtraBold' }} className="text-xl mb-4">Your Cards</Text>
+              <ScrollView horizontal showsHorizontalScrollIndicator={false} className="flex-row">
+                {userCards.map((card, index) => (
+                  <View key={card.cardUid} className="mr-4">
+                    <View className="bg-white rounded-2xl p-4 border border-slate-100 shadow-sm" style={{ width: 200 }}>
+                      <View className="flex-row items-center justify-between mb-3">
+                        <View className="bg-slate-100 p-2 rounded-xl">
+                          <CreditCard size={16} color={primaryNavy} />
+                        </View>
+                        <Text style={{ color: '#64748b', fontFamily: 'Poppins_500Medium' }} className="text-xs">
+                          Card #{index + 1}
+                        </Text>
+                      </View>
+                      <Text style={{ color: primaryNavy, fontFamily: 'Poppins_700Bold' }} className="text-sm mb-1">
+                        {card.cardUid}
+                      </Text>
+                      <Text style={{ color: primaryNavy, fontFamily: 'Poppins_800ExtraBold' }} className="text-lg">
+                        {convertCurrency(card.balance / 100)}
+                      </Text>
+                      <Text style={{ color: '#64748b', fontFamily: 'Poppins_400Regular' }} className="text-xs mt-1">
+                        Added {new Date(card.assignedAt).toLocaleDateString()}
+                      </Text>
+                    </View>
+                  </View>
+                ))}
+              </ScrollView>
+            </View>
+          )}
+
+          {/* No Cards Message */}
+          {!isLoading && userCards.length === 0 && (
+            <View className="mb-8 bg-amber-50 p-6 rounded-2xl border border-amber-200">
+              <View className="flex-row items-start">
+                <View className="bg-amber-100 p-3 rounded-xl mr-4">
+                  <CreditCard size={24} color="#d97706" />
+                </View>
+                <View className="flex-1">
+                  <Text style={{ 
+                    color: '#d97706',
+                    fontFamily: 'Poppins_700Bold'
+                  }} className="text-lg mb-2">No Cards Assigned</Text>
+                  <Text style={{ 
+                    color: '#92400e',
+                    fontFamily: 'Poppins_500Medium'
+                  }} className="text-sm leading-5">
+                    You don't have any cards assigned to your account. Please contact an administrator to assign a card to start using the system.
+                  </Text>
+                </View>
+              </View>
+            </View>
+          )}
           {/* Quick Actions */}
           <View className="mb-8">
             <Text style={{ color: primaryNavy, fontFamily: 'Poppins_800ExtraBold' }} className="text-xl mb-4">Quick Actions</Text>
@@ -243,12 +360,15 @@ export default function AgentScanScreen() {
                 onPress={() => router.push('/(main)/agent/topup')}
                 className="flex-1 bg-gradient-to-br from-blue-500 to-blue-600 rounded-2xl p-4 mr-2 shadow-lg"
                 style={{ backgroundColor: primaryNavy }}
+                disabled={userCards.length === 0}
               >
                 <View className="bg-white/20 p-2 rounded-xl mb-3 self-start">
                   <Zap size={20} color="white" />
                 </View>
                 <Text style={{ color: 'white', fontFamily: 'Poppins_700Bold' }} className="text-sm">Top-up</Text>
-                <Text style={{ color: 'rgba(255,255,255,0.8)', fontFamily: 'Poppins_500Medium' }} className="text-xs">Add funds</Text>
+                <Text style={{ color: 'rgba(255,255,255,0.8)', fontFamily: 'Poppins_500Medium' }} className="text-xs">
+                  {userCards.length === 0 ? 'No cards' : 'Add funds'}
+                </Text>
               </Pressable>
 
               <Pressable 
@@ -323,7 +443,7 @@ export default function AgentScanScreen() {
                   <View className="items-center justify-center py-8">
                     <Pressable 
                       onPress={handleStartScan}
-                      disabled={isScanning}
+                      disabled={isScanning || userCards.length === 0}
                       className="items-center justify-center"
                     >
                       {/* Multiple ripple effects */}
@@ -434,14 +554,14 @@ export default function AgentScanScreen() {
                         {/* Card number */}
                         <View className="absolute bottom-8 left-4">
                           <Text className="text-white font-mono text-sm tracking-wider">
-                            7048 •••• •••• 0349
+                            {primaryCard ? `${primaryCard.cardUid.slice(0, 4)} •••• •••• ${primaryCard.cardUid.slice(-4)}` : '•••• •••• •••• ••••'}
                           </Text>
                         </View>
                         
                         {/* Cardholder name */}
                         <View className="absolute bottom-3 left-4">
                           <Text className="text-white/80 text-xs font-medium uppercase tracking-wide">
-                            GERTRUDE AMELL KENT
+                            {currentUser?.username?.toUpperCase() || 'CARD HOLDER'}
                           </Text>
                         </View>
                         
@@ -485,10 +605,10 @@ export default function AgentScanScreen() {
                     </Pressable>
                     
                     <Text style={{ 
-                      color: isScanning ? '#2563eb' : '#64748b',
+                      color: isScanning ? '#2563eb' : userCards.length === 0 ? '#94a3b8' : '#64748b',
                       fontFamily: 'Poppins_700Bold'
                     }} className="text-lg mt-6">
-                      {isScanning ? 'Scanning RFID card...' : 'Tap to scan RFID card'}
+                      {isScanning ? 'Scanning RFID card...' : userCards.length === 0 ? 'No cards available to scan' : 'Tap to scan RFID card'}
                     </Text>
                     
                     {isScanning && (
@@ -542,9 +662,15 @@ export default function AgentScanScreen() {
                      <Text className="text-slate-400 font-bold text-[10px] uppercase">Owner</Text>
                      <Text style={{ color: primaryNavy }} className="font-black text-sm">{scanResult.name}</Text>
                   </View>
-                  <View className="flex-row justify-between">
+                  <View className="flex-row justify-between mb-2">
                      <Text className="text-slate-400 font-bold text-[10px] uppercase">UID</Text>
                      <Text style={{ color: primaryNavy }} className="font-mono text-sm">{scanResult.id}</Text>
+                  </View>
+                  <View className="flex-row justify-between">
+                     <Text className="text-slate-400 font-bold text-[10px] uppercase">Balance</Text>
+                     <Text style={{ color: primaryNavy }} className="font-black text-lg">
+                       {convertCurrency(scanResult.balance / 100)}
+                     </Text>
                   </View>
                </View>
 
