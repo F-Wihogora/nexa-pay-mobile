@@ -31,7 +31,10 @@ export const AgentTopbar = ({ name, role, primaryNavy, showWelcome = true, notif
         
         {/* Right side - Profile and Notification */}
         <View className="flex-row items-center">
-          <View className="relative shadow-lg shadow-blue-900/10 mr-3">
+          <Pressable 
+            onPress={() => router.push('/(main)/agent/profile')}
+            className="relative shadow-lg shadow-blue-900/10 mr-3"
+          >
             <View 
               style={{ backgroundColor: primaryNavy, width: 48, height: 48, borderRadius: 24 }} 
               className="items-center justify-center"
@@ -44,7 +47,7 @@ export const AgentTopbar = ({ name, role, primaryNavy, showWelcome = true, notif
             <View className="absolute bottom-[-1] right-[-1] bg-white rounded-full p-[2px] border border-white">
                <View className="bg-green-500 w-3 h-3 rounded-full" />
             </View>
-          </View>
+          </Pressable>
           
           <Pressable 
             onPress={() => router.push('/(main)/agent/notifications')}
