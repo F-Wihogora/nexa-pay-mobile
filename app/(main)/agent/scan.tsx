@@ -331,28 +331,22 @@ export default function AgentScanScreen() {
 
           {/* No Cards Message */}
           {!isLoading && userCards.length === 0 && (
-            <View className="mb-8">
-              <View className="bg-white rounded-2xl p-8 border border-slate-100 shadow-sm">
-                <View className="items-center">
-                  <View className="w-20 h-20 rounded-full bg-gradient-to-br from-amber-50 to-orange-50 items-center justify-center mb-4 border-4 border-amber-100">
-                    <CreditCard size={32} color="#f59e0b" />
-                  </View>
+            <View className="mb-8 bg-blue-50 p-6 rounded-2xl border border-blue-200">
+              <View className="flex-row items-start">
+                <View className="bg-blue-100 p-3 rounded-xl mr-4">
+                  <CreditCard size={24} color="#3b82f6" />
+                </View>
+                <View className="flex-1">
                   <Text style={{ 
-                    color: primaryNavy,
-                    fontFamily: 'Poppins_800ExtraBold'
-                  }} className="text-xl mb-2 text-center">No Cards Assigned</Text>
+                    color: '#1e40af',
+                    fontFamily: 'Poppins_700Bold'
+                  }} className="text-lg mb-2">No Cards Assigned</Text>
                   <Text style={{ 
-                    color: '#64748b',
+                    color: '#1d4ed8',
                     fontFamily: 'Poppins_500Medium'
-                  }} className="text-sm text-center leading-6 mb-6 px-4">
-                    You don't have any cards assigned to your account yet. Contact your administrator to get started with card assignments.
+                  }} className="text-sm leading-5">
+                    You don't have any cards assigned to your account. Please contact an administrator to assign a card to start using the system.
                   </Text>
-                  <View className="bg-amber-50 px-4 py-2 rounded-full border border-amber-200">
-                    <Text style={{ 
-                      color: '#d97706',
-                      fontFamily: 'Poppins_600SemiBold'
-                    }} className="text-xs">Contact Administrator</Text>
-                  </View>
                 </View>
               </View>
             </View>

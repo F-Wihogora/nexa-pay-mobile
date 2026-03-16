@@ -123,7 +123,7 @@ export default function ProfileScreen() {
               }} className="text-xs mb-6">{currentUser?.email || 'Not available'}</Text>
               
               {/* Action Buttons */}
-              <View className="flex-row space-x-3">
+              <View className="flex-row space-x-4">
                 <Pressable 
                   onPress={() => router.push('/(main)/agent/edit-profile')}
                   style={{ backgroundColor: primaryNavy }}
