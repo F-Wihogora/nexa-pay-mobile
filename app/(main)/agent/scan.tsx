@@ -554,7 +554,7 @@ export default function AgentScanScreen() {
                         {/* Card number */}
                         <View className="absolute bottom-8 left-4">
                           <Text className="text-white font-mono text-sm tracking-wider">
-                            {primaryCard ? `${primaryCard.cardUid.slice(0, 4)} •••• •••• ${primaryCard.cardUid.slice(-4)}` : '•••• •••• •••• ••••'}
+                            {userCards.length > 0 ? `${userCards[0].cardUid.slice(0, 4)} •••• •••• ${userCards[0].cardUid.slice(-4)}` : '•••• •••• •••• ••••'}
                           </Text>
                         </View>
                         
