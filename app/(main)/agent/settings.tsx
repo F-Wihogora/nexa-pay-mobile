@@ -266,9 +266,6 @@ const AgentSettingsScreen = () => {
                   </View>
                 </View>
                 <View className="absolute bottom-1 right-1 w-7 h-7 bg-green-500 rounded-full border-3 border-white shadow-md" />
-                <Pressable className="absolute -bottom-2 -right-2 w-8 h-8 bg-white rounded-full border border-slate-200 items-center justify-center shadow-sm">
-                  <Text className="text-xs">📷</Text>
-                </Pressable>
               </View>
               
               {/* Profile Info */}
@@ -346,7 +343,7 @@ const AgentSettingsScreen = () => {
           </View>
 
           {/* Settings List */}
-          <View className="space-y-6">
+          <View className="space-y-8">
             {settingsItems.map((item, idx) => (
               <Pressable 
                 key={idx} 
@@ -393,7 +390,7 @@ const AgentSettingsScreen = () => {
               fontFamily: 'Poppins_800ExtraBold'
             }} className="text-lg mb-4">Support & Help</Text>
             
-            <View className="space-y-6">
+            <View className="space-y-8">
               <Pressable 
                 onPress={handleHelpCenter}
                 className="flex-row items-center justify-between bg-white border border-slate-100 p-5 rounded-2xl shadow-sm active:bg-slate-50"
