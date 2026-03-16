@@ -397,8 +397,15 @@ export default function AgentScanScreen() {
 
           {/* Currency Selection Section */}
           <View className="mb-8">
-            <Text style={{ color: primaryNavy, fontFamily: 'Poppins_800ExtraBold' }} className="text-2xl mb-6">Currency</Text>
-            <View className="flex-row justify-between">
+            <View className="flex-row items-center justify-between mb-4">
+              <Text style={{ color: primaryNavy, fontFamily: 'Poppins_800ExtraBold' }} className="text-2xl">Currency</Text>
+              <View className="bg-blue-50 px-3 py-1 rounded-full">
+                <Text style={{ color: primaryNavy, fontFamily: 'Poppins_500Medium' }} className="text-xs">
+                  Display Only
+                </Text>
+              </View>
+            </View>
+            <View className="flex-row justify-between mb-3">
               <Pressable 
                 onPress={() => setSelectedCurrency('NGN')}
                 style={{ backgroundColor: selectedCurrency === 'NGN' ? primaryNavy : '#f1f5f9' }}
@@ -429,6 +436,14 @@ export default function AgentScanScreen() {
                   fontFamily: 'Poppins_700Bold'
                 }} className="text-lg text-center">EUR</Text>
               </Pressable>
+            </View>
+            {/* Exchange Rate Info */}
+            <View className="bg-slate-50 p-3 rounded-xl">
+              <Text style={{ color: '#64748b', fontFamily: 'Poppins_500Medium' }} className="text-xs text-center">
+                {selectedCurrency === 'USD' ? 'Base currency' : 
+                 selectedCurrency === 'NGN' ? '1 USD = ₦1,600' : 
+                 '1 USD = €0.85'} • Rates are approximate
+              </Text>
             </View>
           </View>
 
