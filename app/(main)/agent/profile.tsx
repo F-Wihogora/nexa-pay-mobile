@@ -206,69 +206,69 @@ export default function ProfileScreen() {
             <Text style={{ 
               color: primaryNavy,
               fontFamily: 'Poppins_800ExtraBold'
-            }} className="text-lg mb-4">Profile Details</Text>
+            }} className="text-lg mb-6">Profile Details</Text>
             
-            <View className="space-y-4">
-              <View className="flex-row items-center">
-                <View className="w-10 h-10 rounded-xl bg-blue-50 items-center justify-center mr-4">
-                  <User size={18} color="#3b82f6" />
+            <View className="space-y-5">
+              <View className="flex-row items-center p-4 bg-gradient-to-r from-blue-50 to-blue-50 rounded-xl border border-blue-100">
+                <View className="w-12 h-12 rounded-xl bg-blue-500 items-center justify-center mr-4 shadow-sm">
+                  <User size={20} color="white" />
                 </View>
                 <View className="flex-1">
                   <Text style={{ 
-                    color: '#64748b',
-                    fontFamily: 'Poppins_500Medium'
-                  }} className="text-xs mb-1">Full Name</Text>
+                    color: '#3b82f6',
+                    fontFamily: 'Poppins_600SemiBold'
+                  }} className="text-xs mb-1 uppercase tracking-wider">Full Name</Text>
                   <Text style={{ 
                     color: primaryNavy,
-                    fontFamily: 'Poppins_600SemiBold'
+                    fontFamily: 'Poppins_700Bold'
                   }} className="text-base">{currentUser?.username || 'Not available'}</Text>
                 </View>
               </View>
               
-              <View className="flex-row items-center">
-                <View className="w-10 h-10 rounded-xl bg-green-50 items-center justify-center mr-4">
-                  <Mail size={18} color="#10b981" />
+              <View className="flex-row items-center p-4 bg-gradient-to-r from-green-50 to-green-50 rounded-xl border border-green-100">
+                <View className="w-12 h-12 rounded-xl bg-green-500 items-center justify-center mr-4 shadow-sm">
+                  <Mail size={20} color="white" />
                 </View>
                 <View className="flex-1">
                   <Text style={{ 
-                    color: '#64748b',
-                    fontFamily: 'Poppins_500Medium'
-                  }} className="text-xs mb-1">Email Address</Text>
+                    color: '#10b981',
+                    fontFamily: 'Poppins_600SemiBold'
+                  }} className="text-xs mb-1 uppercase tracking-wider">Email Address</Text>
                   <Text style={{ 
                     color: primaryNavy,
-                    fontFamily: 'Poppins_600SemiBold'
+                    fontFamily: 'Poppins_700Bold'
                   }} className="text-base">{currentUser?.email || 'Not available'}</Text>
                 </View>
               </View>
               
-              <View className="flex-row items-center">
-                <View className="w-10 h-10 rounded-xl bg-purple-50 items-center justify-center mr-4">
-                  <Shield size={18} color="#8b5cf6" />
+              <View className="flex-row items-center p-4 bg-gradient-to-r from-purple-50 to-purple-50 rounded-xl border border-purple-100">
+                <View className="w-12 h-12 rounded-xl bg-purple-500 items-center justify-center mr-4 shadow-sm">
+                  <Shield size={20} color="white" />
                 </View>
                 <View className="flex-1">
                   <Text style={{ 
-                    color: '#64748b',
-                    fontFamily: 'Poppins_500Medium'
-                  }} className="text-xs mb-1">Role</Text>
+                    color: '#8b5cf6',
+                    fontFamily: 'Poppins_600SemiBold'
+                  }} className="text-xs mb-1 uppercase tracking-wider">Role</Text>
                   <Text style={{ 
                     color: primaryNavy,
-                    fontFamily: 'Poppins_600SemiBold'
+                    fontFamily: 'Poppins_700Bold'
                   }} className="text-base">{currentUser?.role === 'admin' ? 'Nexa Agent' : 'Nexa Salesman'}</Text>
                 </View>
               </View>
               
-              <View className="flex-row items-center">
-                <View className="w-10 h-10 rounded-xl bg-orange-50 items-center justify-center mr-4">
-                  <Calendar size={18} color="#f59e0b" />
+              <View className="flex-row items-center p-4 bg-gradient-to-r from-orange-50 to-orange-50 rounded-xl border border-orange-100">
+                <View className="w-12 h-12 rounded-xl bg-orange-500 items-center justify-center mr-4 shadow-sm">
+                  <Calendar size={20} color="white" />
                 </View>
                 <View className="flex-1">
                   <Text style={{ 
-                    color: '#64748b',
-                    fontFamily: 'Poppins_500Medium'
-                  }} className="text-xs mb-1">Member Since</Text>
+                    color: '#f59e0b',
+                    fontFamily: 'Poppins_600SemiBold'
+                  }} className="text-xs mb-1 uppercase tracking-wider">Member Since</Text>
                   <Text style={{ 
                     color: primaryNavy,
-                    fontFamily: 'Poppins_600SemiBold'
+                    fontFamily: 'Poppins_700Bold'
                   }} className="text-base">March 2024</Text>
                 </View>
               </View>
@@ -279,64 +279,85 @@ export default function ProfileScreen() {
             <Text style={{ 
               color: primaryNavy,
               fontFamily: 'Poppins_800ExtraBold'
-            }} className="text-lg mb-4">Quick Actions</Text>
+            }} className="text-lg mb-6">Quick Actions</Text>
             
-            <View className="space-y-3">
+            <View className="space-y-4">
               <Pressable 
                 onPress={() => router.push('/(main)/agent/transactions')}
-                className="flex-row items-center justify-between p-4 bg-slate-50 rounded-xl"
+                className="flex-row items-center p-5 bg-gradient-to-r from-blue-50 to-indigo-50 rounded-xl border border-blue-100 shadow-sm active:scale-95"
+                style={{ transform: [{ scale: 1 }] }}
               >
-                <View className="flex-row items-center">
-                  <View className="w-8 h-8 rounded-lg bg-blue-100 items-center justify-center mr-3">
-                    <Text className="text-sm">📊</Text>
-                  </View>
+                <View className="w-12 h-12 rounded-xl bg-blue-500 items-center justify-center mr-4 shadow-sm">
+                  <Text className="text-xl">📊</Text>
+                </View>
+                <View className="flex-1">
                   <Text style={{ 
                     color: primaryNavy,
-                    fontFamily: 'Poppins_600SemiBold'
-                  }} className="text-base">View Transactions</Text>
+                    fontFamily: 'Poppins_700Bold'
+                  }} className="text-base mb-1">View Transactions</Text>
+                  <Text style={{ 
+                    color: '#64748b',
+                    fontFamily: 'Poppins_500Medium'
+                  }} className="text-sm">Check your transaction history</Text>
                 </View>
-                <Text style={{ 
-                  color: '#64748b',
-                  fontFamily: 'Poppins_500Medium'
-                }} className="text-sm">→</Text>
+                <View className="w-8 h-8 rounded-full bg-blue-500 items-center justify-center">
+                  <Text style={{ 
+                    color: 'white',
+                    fontFamily: 'Poppins_700Bold'
+                  }} className="text-sm">→</Text>
+                </View>
               </Pressable>
               
               <Pressable 
                 onPress={() => router.push('/(main)/agent/notifications')}
-                className="flex-row items-center justify-between p-4 bg-slate-50 rounded-xl"
+                className="flex-row items-center p-5 bg-gradient-to-r from-yellow-50 to-orange-50 rounded-xl border border-yellow-100 shadow-sm active:scale-95"
+                style={{ transform: [{ scale: 1 }] }}
               >
-                <View className="flex-row items-center">
-                  <View className="w-8 h-8 rounded-lg bg-yellow-100 items-center justify-center mr-3">
-                    <Text className="text-sm">🔔</Text>
-                  </View>
+                <View className="w-12 h-12 rounded-xl bg-yellow-500 items-center justify-center mr-4 shadow-sm">
+                  <Text className="text-xl">🔔</Text>
+                </View>
+                <View className="flex-1">
                   <Text style={{ 
                     color: primaryNavy,
-                    fontFamily: 'Poppins_600SemiBold'
-                  }} className="text-base">Notifications</Text>
+                    fontFamily: 'Poppins_700Bold'
+                  }} className="text-base mb-1">Notifications</Text>
+                  <Text style={{ 
+                    color: '#64748b',
+                    fontFamily: 'Poppins_500Medium'
+                  }} className="text-sm">View alerts and updates</Text>
                 </View>
-                <Text style={{ 
-                  color: '#64748b',
-                  fontFamily: 'Poppins_500Medium'
-                }} className="text-sm">→</Text>
+                <View className="w-8 h-8 rounded-full bg-yellow-500 items-center justify-center">
+                  <Text style={{ 
+                    color: 'white',
+                    fontFamily: 'Poppins_700Bold'
+                  }} className="text-sm">→</Text>
+                </View>
               </Pressable>
               
               <Pressable 
                 onPress={() => router.push('/(main)/agent/help-center')}
-                className="flex-row items-center justify-between p-4 bg-slate-50 rounded-xl"
+                className="flex-row items-center p-5 bg-gradient-to-r from-green-50 to-emerald-50 rounded-xl border border-green-100 shadow-sm active:scale-95"
+                style={{ transform: [{ scale: 1 }] }}
               >
-                <View className="flex-row items-center">
-                  <View className="w-8 h-8 rounded-lg bg-green-100 items-center justify-center mr-3">
-                    <Text className="text-sm">❓</Text>
-                  </View>
+                <View className="w-12 h-12 rounded-xl bg-green-500 items-center justify-center mr-4 shadow-sm">
+                  <Text className="text-xl">❓</Text>
+                </View>
+                <View className="flex-1">
                   <Text style={{ 
                     color: primaryNavy,
-                    fontFamily: 'Poppins_600SemiBold'
-                  }} className="text-base">Help Center</Text>
+                    fontFamily: 'Poppins_700Bold'
+                  }} className="text-base mb-1">Help Center</Text>
+                  <Text style={{ 
+                    color: '#64748b',
+                    fontFamily: 'Poppins_500Medium'
+                  }} className="text-sm">Get support and guidance</Text>
                 </View>
-                <Text style={{ 
-                  color: '#64748b',
-                  fontFamily: 'Poppins_500Medium'
-                }} className="text-sm">→</Text>
+                <View className="w-8 h-8 rounded-full bg-green-500 items-center justify-center">
+                  <Text style={{ 
+                    color: 'white',
+                    fontFamily: 'Poppins_700Bold'
+                  }} className="text-sm">→</Text>
+                </View>
               </Pressable>
             </View>
           </View>
