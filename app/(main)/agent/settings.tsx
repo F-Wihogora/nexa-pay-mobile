@@ -16,19 +16,73 @@ const AgentSettingsScreen = () => {
   const [biometrics, setBiometrics] = useState(true);
   const [darkMode, setDarkMode] = useState(false);
   const [currentUser, setCurrentUser] = useState<UserType | null>(null);
+  const [userStats, setUserStats] = useState({
+    totalTransactions: 0,
+    totalVolume: 0,
+    successRate: 0,
+    isLoading: true
+  });
 
-  // Load current user data
+  // Load current user data and stats
   useEffect(() => {
     const loadUserData = async () => {
       try {
         const user = await StorageService.getUser();
         setCurrentUser(user);
+        
+        // Set API token for authenticated requests
+        const token = await StorageService.getToken();
+        if (token) {
+          apiService.setToken(token);
+          
+          // Load user statistics
+          await loadUserStats();
+        }
       } catch (error) {
         console.error('Failed to load user data:', error);
       }
     };
     loadUserData();
   }, []);
+
+  const loadUserStats = async () => {
+    try {
+      setUserStats(prev => ({ ...prev, isLoading: true }));
+      
+      // Get user transactions to calculate stats
+      const transactionsResponse = await apiService.getUserTransactions(1000); // Get more transactions for accurate stats
+      
+      if (transactionsResponse.success) {
+        const transactions = transactionsResponse.transactions || [];
+        
+        // Calculate total transactions
+        const totalTransactions = transactions.length;
+        
+        // Calculate total volume (sum of all transaction amounts)
+        const totalVolume = transactions.reduce((sum: number, tx: any) => {
+          return sum + (tx.amount || 0);
+        }, 0);
+        
+        // Calculate success rate (percentage of successful transactions)
+        const successfulTransactions = transactions.filter((tx: any) => tx.status === 'SUCCESS').length;
+        const successRate = totalTransactions > 0 ? Math.round((successfulTransactions / totalTransactions) * 100) : 0;
+        
+        setUserStats({
+          totalTransactions,
+          totalVolume: totalVolume / 100, // Convert from cents to dollars
+          successRate,
+          isLoading: false
+        });
+        
+        console.log('📊 User stats loaded:', { totalTransactions, totalVolume: totalVolume / 100, successRate });
+      } else {
+        throw new Error('Failed to load transactions');
+      }
+    } catch (error) {
+      console.error('Failed to load user stats:', error);
+      setUserStats(prev => ({ ...prev, isLoading: false }));
+    }
+  };
 
   const handleEditProfile = () => {
     router.push('/(main)/agent/edit-profile');
@@ -237,7 +291,9 @@ const AgentSettingsScreen = () => {
                   <Text style={{ 
                     color: primaryNavy,
                     fontFamily: 'Poppins_800ExtraBold'
-                  }} className="text-xl">247</Text>
+                  }} className="text-xl">
+                    {userStats.isLoading ? '...' : userStats.totalTransactions.toLocaleString()}
+                  </Text>
                   <Text style={{ 
                     color: '#64748b',
                     fontFamily: 'Poppins_500Medium'
@@ -248,7 +304,13 @@ const AgentSettingsScreen = () => {
                   <Text style={{ 
                     color: primaryNavy,
                     fontFamily: 'Poppins_800ExtraBold'
-                  }} className="text-xl">$12.5K</Text>
+                  }} className="text-xl">
+                    {userStats.isLoading ? '...' : 
+                     userStats.totalVolume >= 1000 
+                       ? `$${(userStats.totalVolume / 1000).toLocaleString('en-US', { minimumFractionDigits: 1, maximumFractionDigits: 1 })}K`
+                       : `$${userStats.totalVolume.toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 0 })}`
+                    }
+                  </Text>
                   <Text style={{ 
                     color: '#64748b',
                     fontFamily: 'Poppins_500Medium'
@@ -259,7 +321,9 @@ const AgentSettingsScreen = () => {
                   <Text style={{ 
                     color: primaryNavy,
                     fontFamily: 'Poppins_800ExtraBold'
-                  }} className="text-xl">98%</Text>
+                  }} className="text-xl">
+                    {userStats.isLoading ? '...' : `${userStats.successRate}%`}
+                  </Text>
                   <Text style={{ 
                     color: '#64748b',
                     fontFamily: 'Poppins_500Medium'
@@ -282,7 +346,7 @@ const AgentSettingsScreen = () => {
           </View>
 
           {/* Settings List */}
-          <View className="space-y-4">
+          <View className="space-y-6">
             {settingsItems.map((item, idx) => (
               <Pressable 
                 key={idx} 
@@ -329,7 +393,7 @@ const AgentSettingsScreen = () => {
               fontFamily: 'Poppins_800ExtraBold'
             }} className="text-lg mb-4">Support & Help</Text>
             
-            <View className="space-y-4">
+            <View className="space-y-6">
               <Pressable 
                 onPress={handleHelpCenter}
                 className="flex-row items-center justify-between bg-white border border-slate-100 p-5 rounded-2xl shadow-sm active:bg-slate-50"
