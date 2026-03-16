@@ -413,6 +413,9 @@ export default function EditProfileScreen() {
                 </View>
               </View>
 
+              {/* Additional spacing after confirm password */}
+              <View className="h-4" />
+
               {/* Password Requirements */}
               <View className="bg-blue-50 border border-blue-200 rounded-xl p-4">
                 <Text style={{ 
